@@ -10,8 +10,6 @@
  */
 
 
-$secrets     = json_decode(file_get_contents($_SERVER['APP_SECRETS']), true);
-
 return [
 
     /*
@@ -179,15 +177,6 @@ return [
             // 'visibility' => 'public',
             // 'eventable'  => true,
             // 'cache'      => 'foo'
-        ],
-
-        's3' => [
-            'driver'   => 's3',
-            'key'      => $secrets['OBJECT_STORAGE']['KEY'],
-            'secret'   => $secrets['OBJECT_STORAGE']['SECRET'],
-            'bucket'   => $secrets['OBJECT_STORAGE']['BUCKET'],
-            'endpoint' => 'https://'. $secrets['OBJECT_STORAGE']['SERVER'],
-            'region'   => $secrets['OBJECT_STORAGE']['REGION']
         ],
 
     ],

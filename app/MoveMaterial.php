@@ -10,6 +10,7 @@ namespace App;
 use Illuminate\Http\Request;
 use GrahamCampbell\Flysystem\Facades\Flysystem;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 
 class MoveMaterial
@@ -60,8 +61,9 @@ class MoveMaterial
 
         if($check == 'gg'){
 
-            Flysystem::put('bye.txt', 'bar');
+            Storage::disk('local')->put('file.txt', 'Contents');
             dd($this->request->all());
+
         }
 //        $projectName = $this->fetchProjectName($id);
 //        $fileName = $this->sizeMoveFile($material, $projectName);
