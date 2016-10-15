@@ -27,7 +27,7 @@
         <div class="component--block">
             <dashboard v-show="activeView=='dashboard'"></dashboard>
             <statistics v-show="activeView=='statistics'"></statistics>
-            <background-vide token='{{csrf_token()}}' v-show="activeView=='background'"></background-vide>
+            <background-video token='{{csrf_token()}}' v-show="activeView=='background'"></background-video>
         </div>
     </div>
 </div>
