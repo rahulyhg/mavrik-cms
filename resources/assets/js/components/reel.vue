@@ -2,7 +2,7 @@
     <div class="content">
         <div class="video--reel full flex-column-center">
             <video id="reel" v-el:video class="video-js vjs-default-skin">
-                <source src="/video/promo.mp4" type="video/mp4" />
+                <source src="storage/video/promo-copy.mp4" type="video/mp4" />
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <template v-if="isPlay">

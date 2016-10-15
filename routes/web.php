@@ -15,6 +15,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/storage/{type}/{filename}', function ($type, $filename)
+{
+    $path = storage_path() . '/app/public/' . $type . '/' . $filename;
+
+    if(!File::exists($path)) abort(404);
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+});
+
 
 Route::group(['prefix' => 'auth'], function(){
     Route::get('login', 'Auth\LoginController@index');

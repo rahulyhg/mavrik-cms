@@ -44,10 +44,7 @@ class MaterialController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        $this->material->moveMaterial();
-
+        return $this->material->moveMaterial();
     }
 
     /**

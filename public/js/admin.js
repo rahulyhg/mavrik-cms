@@ -45411,7 +45411,8 @@ exports.default = {
     props: ['token'],
     data: function data() {
         return {
-            msg: 'fuck'
+            msg: 'fuck',
+            isUpload: false
         };
     },
 
@@ -45420,7 +45421,7 @@ exports.default = {
     },
     methods: {
         successVideoUpload: function successVideoUpload(results) {
-            console.log(results);
+            this.isUpload = true;
         },
         getHttp: function getHttp(url, callback) {
             var params = {
@@ -45477,7 +45478,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content\">\n        <div class=\"content--video-upload gutters\">\n            <video-upload></video-upload>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content\">\n        <div class=\"content--video-upload gutters\">\n            <video-upload :feedback=\"isUpload\"></video-upload>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -45545,6 +45546,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
+    props: ['feedback'],
     ready: function ready() {
         this.checkStat();
     },
@@ -45607,7 +45609,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div id=\"drop_zone\" :class=\"{'file-opacity': isFileHover}\">\n                <h1 v-show=\"!isFileStaged\">Drop files here</h1>\n                <div class=\"load--bar\" v-else=\"\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-show=\"isFileStaged\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div id=\"drop_zone\" :class=\"{'file-opacity': isFileHover}\">\n                <h1 v-show=\"!isFileStaged\">Drop files here</h1>\n                <div class=\"load--bar\" v-show=\"isFileStaged &amp;&amp; !feedback\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-show=\"isFileStaged &amp;&amp; !feedback\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

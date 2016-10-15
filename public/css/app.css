@@ -191,11 +191,21 @@ h1 {
   -webkit-transform: translateY(0);
   transform: translateY(0); }
 
-.slideUp-enter {
+.slideUp-enter, .slideUp-leave {
   -webkit-transform: translateY(100%);
   transform: translateY(100%); }
 
-.slideUp-leave {
+.slideUpHalf-transition {
+  -webkit-transition: all .5s ease;
+  transition: all .5s ease;
+  -webkit-transform: translateY(0);
+  transform: translateY(0); }
+
+.slideUpHalf-enter {
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%); }
+
+.slideUpHalf-leave {
   display: none; }
 
 /*!

@@ -21,17 +21,28 @@
 }
 
 
-// slide up transition
+// slide up full transition
 
 .slideUp-transition{
   transition: all .5s ease;
   transform: translateY(0);
 }
 
-.slideUp-enter{
+.slideUp-enter, .slideUp-leave{
   transform: translateY(100%);
 }
 
-.slideUp-leave{
+// slide up half transition
+
+.slideUpHalf-transition{
+  transition: all .5s ease;
+  transform: translateY(0);
+}
+
+.slideUpHalf-enter{
+  transform: translateY(100%);
+}
+
+.slideUpHalf-leave{
   display: none;
 }

@@ -16,7 +16,6 @@ class CreateMaterialTable extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
-            $table->string('alias')->nullable();
             $table->enum('type', array('reel', 'image','video'));
             $table->string('path')->nullable();
             $table->enum('status', array('active', 'inactive'));

@@ -3,7 +3,7 @@
         <div class="content no-show">
             <div id="drop_zone" :class="{'file-opacity': isFileHover}">
                 <h1 v-show="!isFileStaged">Drop files here</h1>
-                <div class="load--bar" v-else>
+                <div class="load--bar" v-show="isFileStaged && !feedback">
                     <div class="preloader-wrapper big active">
                         <div class="spinner-layer spinner-blue">
                             <div class="circle-clipper left">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
             </div>
-            <output id="list" v-show="isFileStaged" transition="slideUp">
+            <output id="list" v-show="isFileStaged && !feedback" transition="slideUp">
                 <ul class="content flex-center">
                     <li class="file--data">
                         <span>{{fileName}}</span>
@@ -61,6 +61,7 @@
 
 <script>
     export default{
+        props: ['feedback'],
         ready(){
           this.checkStat();
         },

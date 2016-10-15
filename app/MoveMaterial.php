@@ -8,7 +8,6 @@
 
 namespace App;
 use Illuminate\Http\Request;
-use GrahamCampbell\Flysystem\Facades\Flysystem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,59 +21,85 @@ class MoveMaterial
         $this->request = $request;
     }
 
-    public function checkMaterial()
+    public function checkMaterial($material, $type)
     {
-        $type = $this->request->get('type');
 
-
-        $material = $this->request->all();
-
-        $exists = [];
         //check for any pre-existing file names in the directory.
-        for($x = 0; $x < count($material); $x++){
 
             if($type == 'image'){
-                $toVerify = $material['image-'. $x]->getClientOriginalName();
+                $toVerify = $material->getClientOriginalName();
                 $isExist = file_exists (public_path().'/'. $type . '/originals/' . $toVerify);
             } else{
-                $toVerify = $material['video']->getClientOriginalName();
-                $isExist = file_exists (public_path().'/'. $type .'/'. $toVerify);
-            }
+                $toVerify = $material->getClientOriginalName();
+                $isExist = file_exists (storage_path().'/app/public/'. $type .'/'. $toVerify);
 
-            $isExist = file_exists (public_path().'/'. $type . '/originals/' . $toVerify);
+//                $exists = Storage::disk('s3')->exists($type . 'file.jpg');
+            }
 
             if($isExist){
-                array_push($exists, $toVerify);
+                return $toVerify;
             }
-        }
-        //if duplicate file names are found return them.
-        if(count($exists) > 0){
-            return $exists;
-        }
 
         return 'gg';
     }
 
+    public function storeMaterial($material, $type){
+
+            Storage::disk('s3')->put($type . '/' . $material->getClientOriginalName(), file_get_contents($material));
+        
+            return $this;
+    }
+
+    public function createMaterialObject(){
+        $material = $this->request->all();
+
+        $type = $material['type'];
+
+        if($type == 'image'){
+            $name = $material['image']->getClientOriginalName();
+        } else{
+            $name = $material['video']->getClientOriginalName();
+        }
+
+        $material = [
+            'name' => $name,
+            'type' => $material['type'],
+            'path' => 'storage/'. $type .'/'. $name
+        ];
+
+        return $material;
+    }
+
+    public function saveMaterial(){
+
+        return Materials::saveMaterial($this->createMaterialObject());
+    }
+
     public function moveMaterial()
     {
-        $check = $this->checkMaterial();
+        $type = $this->request->get('type');
 
-        if($check == 'gg'){
+        $material = $this->request->all();
 
-//            Flysystem::put('bye.txt', 'bar');
-            Storage::disk('s3')->put('poop.txt', 'Contents');
-            dd($this->request->all());
-            
+        if($type == 'video'){
+
+            $check = $this->checkMaterial($material['video'], $type);
+
+            if( $check != 'gg'){
+                return 'there was an error';
+            }
+
+                return $this->storeMaterial($material['video'], $type)
+                    ->saveMaterial();
+
+
+
+        } else {
+            for($x = 0; $x < count($material); $x++){
+
+            }
         }
-//        $projectName = $this->fetchProjectName($id);
-//        $fileName = $this->sizeMoveFile($material, $projectName);
-//        $originalFilename = $material->getClientOriginalName();
-//        $data = [
-//            'name' => $fileName,
-//            'alias' => $originalFilename,
-//            'type' => 'image'
-//        ];
-//        return Material::createMaterial($data, $id);
+
     }
 
 }

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content">
             <div class="content--video-upload gutters">
-                <video-upload></video-upload>
+                <video-upload :feedback="isUpload"></video-upload>
             </div>
         </div>
     </div>
@@ -14,7 +14,8 @@
         props: ['token'],
         data(){
             return{
-                msg:'fuck'
+                msg:'fuck',
+                isUpload: false
             }
         },
         components:{
@@ -22,7 +23,7 @@
         },
         methods: {
             successVideoUpload: function (results) {
-                console.log(results);
+                this.isUpload = true;
             },
             getHttp: function (url,callback) {
                 const params = {
