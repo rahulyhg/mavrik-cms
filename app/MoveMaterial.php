@@ -61,7 +61,8 @@ class MoveMaterial
 
         if($check == 'gg'){
 
-            Flysystem::put('bye.txt', 'bar');
+//            Flysystem::put('bye.txt', 'bar');
+            Storage::disk('local')->put('file.txt', 'Contents');
             dd($this->request->all());
             
         }
