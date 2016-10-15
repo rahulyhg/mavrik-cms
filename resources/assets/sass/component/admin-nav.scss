@@ -1,0 +1,67 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+.component--row{
+  @include flex();
+  @include flex-row(no-wrap);
+}
+.component--nav{
+  flex-basis: 35%;
+  background-color: #FFFFFF;
+  @include flex();
+  @include flex-column();
+}
+
+.nav--greet {
+  @include flex();
+  @include flex-center();
+}
+
+.nav--welcome{
+  @include flex();
+  @include flex-column();
+}
+
+.nav--selects--container{
+  width: 50%;
+  @media #{$desktop} {
+    width: 60%;
+  }
+}
+.nav--selects{
+  @include flex();
+  @include flex-row(no-wrap);
+  justify-content: space-around;
+}
+
+.nav-portal{
+  position: absolute;
+  top: 0;
+  left: 0;
+  @include flex();
+  @include flex-row(nowrap);
+  align-items: flex-end;
+}
+
+.links--nav{
+  width: 400px;
+  position: relative;
+}
+
+.links > a {
+  color: #636b6f;
+  padding: 0 25px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#links--line{
+  height: 5px;
+  background-color: #636b6f;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

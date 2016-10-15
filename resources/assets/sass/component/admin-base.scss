@@ -1,0 +1,91 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+html, body {
+  background-color: $light-grey;
+  color: #636b6f;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 100;
+  height: 100vh;
+  margin: 0;
+}
+
+.container, .content{
+  max-width: none;
+  background: transparent;
+  @include cover();
+}
+
+.gutters{
+  padding:2%;
+}
+
+ul{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.f-h {
+  height: 100vh;
+}
+.f-w{
+  width: 100%;
+}
+
+.no-show{
+  overflow: hidden;
+}
+
+.flex-center {
+  @include flex();
+  align-items: center;
+  justify-content: center;
+}
+
+.position-ref {
+  position: relative;
+}
+
+.component--block, .not-available{
+  flex: 1;
+  @include cover();
+}
+
+.not-available, .pre-launch{
+  @include flex();
+  @include flex-center();
+}
+
+.content--video-upload{
+  height: 500px;
+}
+
+.working-svg{
+  width: 25%;
+}
+
+.top-right {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+}
+.m-b-md {
+  margin-bottom: 30px;
+}
+.m-t-sm {
+  margin-top: 5%;
+}
+.m-t-xs {
+  margin-top: 2%;
+}
+.hv:hover{
+  cursor: pointer;
+}
+.of-sc{
+  overflow: scroll;
+}

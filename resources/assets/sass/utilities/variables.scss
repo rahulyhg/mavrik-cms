@@ -1,0 +1,53 @@
+
+//window varibles for flexibility and media quieres
+
+$mobile      : 'only screen and (max-width : 767px)';
+$tablet      : 'only screen and (min-width : 768px) and (max-width : 991px)';
+$tabletUp    : 'only screen and (min-width : 768px)';
+$tabletDown  : 'only screen and (max-width : 991px)';
+$desktop     : 'only screen and (min-width : 992px) and (max-width : 1280px)';
+$desktopUp   : 'only screen and (min-width : 992px)';
+$desktopDown : 'only screen and (max-width : 1280px)';
+$desktopBig  : 'only screen and (min-width : 1300px)';
+
+$light-grey: #7e7e7e;
+
+
+// Body
+$body-bg: #f5f8fa;
+
+// Borders
+$laravel-border-color: darken($body-bg, 10%);
+$list-group-border: $laravel-border-color;
+$navbar-default-border: $laravel-border-color;
+$panel-default-border: $laravel-border-color;
+$panel-inner-border: $laravel-border-color;
+
+// Brands
+$brand-primary: #3097D1;
+$brand-info: #8eb4cb;
+$brand-success: #2ab27b;
+$brand-warning: #cbb956;
+$brand-danger:  #bf5329;
+
+// Typography
+$font-family-sans-serif: "Raleway", sans-serif;
+$font-size-base: 14px;
+$line-height-base: 1.6;
+$text-color: #636b6f;
+
+// Navbar
+$navbar-default-bg: #fff;
+
+// Buttons
+$btn-default-color: $text-color;
+
+// Inputs
+$input-border: lighten($text-color, 40%);
+$input-border-focus: lighten($brand-primary, 25%);
+$input-color-placeholder: lighten($text-color, 30%);
+
+// Panels
+$panel-default-heading-bg: #fff;
+$light-grey: #FCFAFB;
+$accent: #848A8A;

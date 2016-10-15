@@ -1,0 +1,15 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+textarea{
+  width: 100%;
+  padding: 0;
+  border: none;
+  background-color: inherit;
+  font-size: 13px;
+  font-family: 'Raleway', sans-serif;
+  color: #636b6f;
+}
+textarea:focus{
+  outline: none;
+}

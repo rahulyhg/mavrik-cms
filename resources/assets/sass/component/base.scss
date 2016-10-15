@@ -1,0 +1,120 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+html, body {
+  background-color: #fff;
+  color: #636b6f;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 100;
+  @include cover();
+  margin: 0;
+}
+
+ul{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.full-height {
+  height: 100vh;
+}
+.full{
+  @include cover();
+}
+
+.flex-center {
+  align-items: center;
+  @include flex();
+  justify-content: center;
+}
+
+.position-ref {
+  position: relative;
+}
+
+.top-right {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+}
+
+.content {
+  overflow: hidden;
+  @include cover();
+  text-align: center;
+}
+
+.title {
+  font-size: 35px;
+  @media #{$desktop}{
+    font-size: 44px;
+  }
+  @media #{$desktopBig} {
+    font-size: 64px;
+  }
+}
+
+.links--nav{
+  width: 100%;
+  @media #{$tabletUp}{
+    width: 400px;
+  }
+  position: relative;
+}
+
+.links > a {
+  color: #636b6f;
+  padding: 0 25px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#links--line{
+  height: 5px;
+  background-color: #636b6f;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.m-b-md {
+  margin-bottom: 30px;
+}
+.hv:hover{
+  cursor: pointer;
+}
+
+.content--nav{
+  height: 100%;
+  border: 1px solid black;
+  position: absolute;
+}
+
+.nav--inactive{
+  margin-left: -30%;
+}
+
+.content--active{
+  margin-left: 30%;
+}
+
+#reel{
+  position: absolute;
+  top: 50%; left: 50%;
+  z-index: 1;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.video--options{
+  z-index: 99;
+}

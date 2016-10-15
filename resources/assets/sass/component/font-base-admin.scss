@@ -1,0 +1,31 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+.caps{
+  text-transform: capitalize;
+}
+.content {
+  text-align: center;
+}
+
+.t-c{
+  text-align: center;
+}
+
+.title {
+  font-size: 40px;
+  @media #{$desktop}{
+    font-size: 44px;
+  }
+  @media #{$desktopBig} {
+    font-size: 64px;
+  }
+}
+.sub-title{
+  font-size: 24px;
+}
+
+.accent{
+  color: $accent;
+  font-weight: 800;
+}

@@ -1,0 +1,35 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+
+.flex-column-center{
+  @include flex();
+  @include flex-center();
+}
+
+.flex-row-center{
+  @include flex();
+  @include flex-row(nowrap);
+}
+
+.basis--30{
+  flex-basis: 30%;
+  width: 30%;
+}
+.basis--40{
+  width: 40%;
+  flex-basis: 40%;
+}
+.basis--100{
+  width: 100%;
+  flex-basis: 100%;
+}
+.space-btw{
+  justify-content: space-between;
+}
+.space-ard{
+  justify-content: space-around;
+}
+.just-center{
+  justify-content: center;
+}

@@ -1,0 +1,49 @@
+@import "../mixins/mixins";
+@import "../utilities/variables";
+
+.panel--container{
+  @include cover();
+  @include flex-column();
+  justify-content: flex-start;
+  align-items: center;
+}
+.panel--main{
+  width: 100%;
+  padding: 5%;
+}
+
+.pre-launch--edit{
+  padding: 10%;
+}
+
+.panel{
+  padding: 2%;
+  margin-bottom: 5%;
+  border: 1px solid darken($light-grey, 5%);
+  background-color: lighten($light-grey, 5%);
+}
+.contact--panel{
+  @include flex-row(nowrap);
+  justify-content: space-between;
+}
+
+.panel--sideBar{
+  top: 0;
+  left: 0;
+  width: 1%;
+  height: 100%;
+  position: absolute;
+  background-color: $accent;
+}
+
+.panel li{
+  padding: 2%;
+  margin-bottom: 2%;
+  border-bottom: 1px solid grey;
+}
+
+.panel li a{
+    color: #636b6f;
+    text-decoration: none;
+    text-transform: capitalize;
+}
