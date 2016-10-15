@@ -60,7 +60,7 @@ class MoveMaterial
 
         if($check == 'gg'){
 
-            Flysystem::put('hi.txt', 'foo');
+            Flysystem::put('bye.txt', 'bar');
             dd($this->request->all());
         }
 //        $projectName = $this->fetchProjectName($id);
