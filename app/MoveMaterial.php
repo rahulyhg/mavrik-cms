@@ -61,9 +61,9 @@ class MoveMaterial
 
         if($check == 'gg'){
 
-            Storage::disk('s3')->put('file.txt', 'Contents');
+            Flysystem::put('bye.txt', 'bar');
             dd($this->request->all());
-
+            
         }
 //        $projectName = $this->fetchProjectName($id);
 //        $fileName = $this->sizeMoveFile($material, $projectName);
