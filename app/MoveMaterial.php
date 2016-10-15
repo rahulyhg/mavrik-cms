@@ -61,8 +61,8 @@ class MoveMaterial
 
         if($check == 'gg'){
 
-//            Flysystem::put('bye.txt', 'bar');
-            Storage::disk('s3')->put('file.txt', 'Contents');
+            Flysystem::put('bye.txt', 'bar');
+//            Storage::disk('s3')->put('file.txt', 'Contents');
             dd($this->request->all());
             
         }
