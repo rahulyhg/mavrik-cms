@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Materials;
 use App\MoveMaterial;
 use Illuminate\Http\Request;
 
@@ -15,27 +16,19 @@ class MaterialController extends Controller
 
         $this->material = $material;
 
+        $this->middleware('auth', [
+            'except' => [
+                'index',
+            ],
+        ]);
+
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        return Materials::showAll();
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -55,20 +48,13 @@ class MaterialController extends Controller
      */
     public function show($id)
     {
-        //
+        if($id == 'video' || $id == 'image' || $id == 'reel'){
+            return Materials::showMaterialGroup($id);
+        }
+        
+        return Materials::showMaterial($id);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -78,7 +64,7 @@ class MaterialController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return Materials::updateActiveMaterial($request->all(), $id);
     }
 
     /**
@@ -89,6 +75,15 @@ class MaterialController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($this->material->deleteMaterial($id)){
+            return response([
+                'status' => 'success',
+                'material_id' => $id
+            ], 200);
+        }
+
+        return response([
+            'status' => 'failure'
+        ]);
     }
 }

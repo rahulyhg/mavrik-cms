@@ -13,6 +13,7 @@
 
     <!-- Styles -->
     <link href="/css/video-js.css" rel="stylesheet" type="text/css">
+    <link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
     <link href="/css/app.css" rel="stylesheet">
 
     <!-- Scripts -->
@@ -26,6 +27,8 @@
     @yield('content')
 
     <!-- Scripts -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/materialize.min.js"></script>
     <script type="text/javascript" src="/js/video.js"></script>
     <script src="/js/app.js"></script>
 </body>

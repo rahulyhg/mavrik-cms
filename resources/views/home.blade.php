@@ -13,7 +13,7 @@
             <div class="nav--greet f-h">
                 <div class="nav--welcome">
                     <span class="sub-title">Welcome</span>
-                    <span class="title">Fabiana Formica</span>
+                    <span class="title">Fabiana</span>
                 </div>
                 <div class="nav--selects--container m-t-sm">
                     <ul class="nav--selects">

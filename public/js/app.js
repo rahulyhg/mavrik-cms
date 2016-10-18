@@ -45304,9 +45304,10 @@ Vue.config.debug = true;
 
 new Vue({
     el: 'body',
-    components: { background: _reel2.default, about: _about2.default, work: _work2.default, contact: _contacts2.default, writing: _writing2.default },
+    components: { showreel: _reel2.default, bio: _about2.default, photos: _work2.default, contact: _contacts2.default, videos: _writing2.default },
     ready: function ready() {
         this.setHome();
+        this.fetchMaterials();
         // this.incrementDate();
     },
 
@@ -45319,20 +45320,49 @@ new Vue({
         view: '',
         linkBoxWidth: '',
         spanWidth: '',
-        views: ['Home', 'About', 'Work', 'Writing', 'Contact'],
+        materials: '',
+        views: ['Showreel', 'Bio', 'Photos', 'Videos', 'Contact'],
         isTitle: false,
         isTag: false,
         isLinks: false,
         isCountDown: false,
-        activeReel: true
+        activeReel: false
 
+    },
+    computed: {
+        filteredReelMaterials: function filteredReelMaterials() {
+            if (this.materials) {
+                return this.$options.filters.filterFor(this.materials, 'reel');
+            }
+            return null;
+        },
+        filteredImageMaterials: function filteredImageMaterials() {
+            if (this.materials) {
+                return this.$options.filters.filterFor(this.materials, 'image');
+            }
+        },
+        filteredVideoMaterials: function filteredVideoMaterials() {
+            if (this.materials) {
+                return this.$options.filters.filterFor(this.materials, 'video');
+            }
+        }
     },
     methods: {
         seeView: function seeView(view, $index) {
             switch (view) {
-                case 'Home':
-                    this.view = 'reel';
-                    break;
+                case 'Showreel':
+                    if (this.view != 'Showreel') {
+                        clearTimeout(this.myTimeOut);
+                        this.myTimeOut = setTimeout(function () {
+                            this.activeReel = false;
+                            this.$broadcast('show-reel', true);
+                        }.bind(this), 1000);
+                        break;
+                    } else {
+                        this.activeReel = false;
+                        this.$broadcast('show-reel', true);
+                    }
+                    this.view = 'Showreel';
                 default:
                     this.view = view;
                     break;
@@ -45341,9 +45371,8 @@ new Vue({
             this.$broadcast('change-view', view);
         },
         setHome: function setHome() {
-            this.view = 'reel';
+            this.view = 'Showreel';
             // this.setLinkSpan();
-            console.log('come set');
         },
         incrementDate: function incrementDate() {
             clearTimeout(this.countDown);
@@ -45372,6 +45401,24 @@ new Vue({
             this.myTimeOut = setTimeout(function () {
                 this.$els.spanLink.style.left = this.spanWidth * this.activeLink + 'px';
             }.bind(this), timeOut);
+        },
+        fetchMaterials: function fetchMaterials() {
+            this.getHttp('/auth/materials', this.sortMaterials);
+        },
+        sortMaterials: function sortMaterials(results) {
+            this.materials = results.data;
+
+            this.$broadcast('init-reel', true);
+        },
+        getHttp: function getHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.get(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
         }
     },
     filters: {
@@ -45390,11 +45437,21 @@ new Vue({
         days: function days(now) {
             var a = moment(now); //now
             return a.diff(this.launch, 'days') * -1;
+        },
+        filterFor: function filterFor($array, filterBy) {
+            var filtered = [];
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i].type == filterBy) {
+                    filtered.push(filterlist[i]);
+                }
+            }
+            return filtered;
         }
     },
     events: {
         'control-reel': function controlReel(control) {
-            console.log(control);
             this.activeReel = control;
         }
     }
@@ -45505,14 +45562,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
-    ready: function ready() {
-        this.initReel();
-    },
-
+    props: ['reel'],
     data: function data() {
         return {
+            myTimeOut: 0,
+            vjsPlayer: '',
+            isFadeIn: false,
+            isLoadScreen: true,
             isPlay: true,
-            myTimeOut: 0
+            isInitReel: false
         };
     },
     methods: {
@@ -45520,29 +45578,38 @@ exports.default = {
             switch (control) {
                 case 'play':
                     this.isPlay = true;
-                    this.$dispatch('control-reel', true);
+                    this.$dispatch('control-reel', false);
                     break;
                 case 'skip':
                     this.isPlay = false;
-                    this.$dispatch('control-reel', false);
+                    this.$dispatch('control-reel', true);
                     break;
+                case 'pause':
+                    this.isPlay = false;
                 default:
                     return;
             }
         },
         initReel: function initReel() {
+
             var self = this;
 
             this.setWindow();
 
-            videojs(document.getElementById("reel"), { "controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true }, function () {
-                var video = this;
-                // Start playing the video.
+            var $element = document.getElementById('reel');
+            this.vjsPlayer = videojs($element, { "controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true, "loadingSpinner": false });
 
+            this.vjsPlayer.ready(function () {
+                //                    this.src(self.activeReel);
+                this.play();
                 clearTimeout(self.myTimeOut);
                 self.myTimeOut = setTimeout(function () {
-                    video.play();
-                }.bind(self), 2000);
+                    this.isFadeIn = true;
+                    clearTimeout(self.myTimeOut);
+                    self.myTimeOut = setTimeout(function () {
+                        this.isLoadScreen = false;
+                    }.bind(self), 1000);
+                }.bind(self), 1000);
             });
         },
         setWindow: function setWindow() {
@@ -45552,10 +45619,31 @@ exports.default = {
             this.$els.video.style.width = w + 200 + 'px';
             this.$els.video.style.height = h + 'px';
         }
+    },
+    events: {
+        'init-reel': function initReel(action) {
+            this.isInitReel = true;
+            clearTimeout(this.myTimeOut);
+            this.myTimeOut = setTimeout(function () {
+                this.initReel();
+            }.bind(this), 200);
+        },
+        'show-reel': function showReel(control) {
+            if (control) {
+                this.isPlay = true;
+                this.vjsPlayer.currentTime(0); // 2 minutes into the video
+                this.vjsPlayer.pause();
+
+                clearTimeout(this.myTimeOut);
+                this.myTimeOut = setTimeout(function () {
+                    this.vjsPlayer.play();
+                }.bind(this), 1000);
+            }
+        }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\">\n        <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n            <source src=\"storage/video/promo-copy.mp4\" type=\"video/mp4\">\n            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n        </video>\n        <template v-if=\"isPlay\">\n            <span @click=\"controlReel('skip')\" class=\"video--options\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <span @click=\"controlReel('play')\" class=\"video--options\">Play</span>\n        </template>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\" v-show=\"isInitReel\" transition=\"fade\" :class=\"{'no-show': !isFadeIn}\">\n        <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n            <template v-if=\"reel\">\n                <source :src=\"reel[0].path\" type=\"video/mp4\">\n            </template>\n            <template v-else=\"\">\n                <source src=\"/local/video/promo-copy.mp4\" type=\"video/mp4\">\n            </template>\n            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n        </video>\n        <template v-if=\"isPlay\">\n            <span @click=\"controlReel('skip')\" class=\"video--options\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <span @click=\"controlReel('play')\" class=\"video--options\">\n                <img class=\"video-sprite--icon\" src=\"/image/svg/ic_play_circle_outline_black_24px.svg\">\n            </span>\n        </template>\n    </div>\n    <div class=\"content--load-screen\" v-show=\"isLoadScreen\">\n        <h1>FABIANA</h1>\n        <p>Loading...</p>\n        <div class=\"progress-container\">\n            <div class=\"progress\">\n                <div class=\"indeterminate\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

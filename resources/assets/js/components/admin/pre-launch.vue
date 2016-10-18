@@ -1,7 +1,7 @@
 <template>
     <div class="container f-h of-sc">
         <div v-if="isPreMessage" class="pre-launch f-h">
-            <img class="working-svg" src="/image/svg/rocket.svg" alt="working--svg">
+            <img class="icon" src="/image/svg/rocket.svg" alt="working--svg">
             <div class="not--message t-c">
                 <h1>
                     <span>3.2.1...</span>

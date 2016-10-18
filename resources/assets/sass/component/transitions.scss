@@ -21,6 +21,41 @@
 }
 
 
+//fadeIn transition
+
+.fadeIn-transition{
+  transition: all .5s ease;
+  z-index: 98;
+  opacity: .9;
+}
+
+.fadeIn-enter, .fadeIn-leave{
+  opacity: 0;
+}
+
+//fadeIn slowly
+
+//fadeIn transition
+
+.fadeSlow-transition{
+  transition: all 1.5s ease;
+}
+
+.fadeSlow-enter, .fadeSlow-leave{
+  opacity: 0;
+}
+
+
+.fade-transition{
+  transition: all .5s ease;
+  opacity: 1;
+}
+
+.fade-enter, .fade-leave{
+  opacity: 0;
+}
+
+
 // slide up full transition
 
 .slideUp-transition{
@@ -45,4 +80,32 @@
 
 .slideUpHalf-leave{
   display: none;
+}
+
+
+
+//content transitions
+
+.slide--content{
+  -webkit-transition: margin .5s ease;
+  -moz-transition: margin .5s ease;
+  -ms-transition: margin .5s ease;
+  -o-transition: margin .5s ease;
+  transition: margin .5s ease;
+}
+
+.video-upload{
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
+}
+
+#reel{
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
 }

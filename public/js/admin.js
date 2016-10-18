@@ -45409,10 +45409,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
     props: ['token'],
+    ready: function ready() {
+        this.fetchReels();
+    },
     data: function data() {
         return {
-            msg: 'fuck',
-            isUpload: false
+            myTimeOut: 0,
+            activeIndex: 0,
+            videoRepository: '',
+            activeReel: '',
+            vjsPlayer: '',
+            activeVerify: '',
+            isUpload: false,
+            activeVideo: false,
+            isOptionOpen: false,
+            isVideoReady: false,
+            isVerify: false
         };
     },
 
@@ -45420,8 +45432,152 @@ exports.default = {
         videoUpload: _materialVideoUpload2.default
     },
     methods: {
+        fetchReels: function fetchReels() {
+            this.getHttp('materials/reel', this.successFetch);
+        },
+        initReel: function initReel() {
+            var self = this;
+
+            this.setWindow();
+
+            var $element = document.getElementById('vReel');
+
+            this.vjsPlayer = videojs($element, { "controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true, "loadingSpinner": false });
+
+            this.vjsPlayer.ready(function () {
+                this.src(self.activeReel);
+                this.load();
+                this.play();
+            });
+        },
+        setWindow: function setWindow() {
+            var w = window.innerWidth / 2;
+            this.$els.video.style.width = w + 200 + 'px';
+            this.$els.video.style.height = 'auto';
+        },
+        successFetch: function successFetch(results) {
+            this.videoRepository = results.data;
+
+            if (this.videoRepository.length > 0) {
+                for (var i = 0; i < this.videoRepository.length; i++) {
+                    if (this.videoRepository[i].status == 'active') {
+                        this.activeReel = this.videoRepository[i].path;
+                        this.activeIndex = i;
+                    }
+                }
+                if (!this.activeReel) {
+                    this.activeReel = this.videoRepository[0].path;
+                    this.activeIndex = 0;
+                }
+                this.activeVideo = true;
+                this.initReel();
+            }
+        },
+        callVerifyDelete: function callVerifyDelete($index) {
+            var modal = document.getElementById('modal1');
+            var jquerymodal = $(modal); //convert to jQuery Element
+            //                jquerymodal.openModal();
+            this.confirmDelete($index);
+        },
+        confirmDelete: function confirmDelete($index) {
+            var $videoID = this.videoRepository[$index].id;
+            this.deleteHttp('materials/' + $videoID, this.removeVideo);
+        },
+        removeVideo: function removeVideo(results) {
+            if (results.data.status == 'success') {
+                this.verifyDelete(results.data.material_id);
+
+                var $index = this.findIndex(results.data.material_id);
+
+                if (this.activeIndex == $index) {
+                    this.activeVideo = false;
+                    this.activeReel = '';
+                }
+
+                clearTimeout(this.myTimeOut);
+                this.myTimeOut = setTimeout(function () {
+                    this.videoRepository.splice($index, 1);
+                    this.isOptionOpen = true;
+                    if (this.activeIndex != 0) {
+                        this.activeIndex--;
+                    }
+                }.bind(this), 1000);
+            }
+        },
+        findIndex: function findIndex($id) {
+            for (var i = 0; i < this.videoRepository.length; i++) {
+                if (this.videoRepository[i].id == $id) {
+                    return i;
+                }
+            }
+        },
         successVideoUpload: function successVideoUpload(results) {
             this.isUpload = true;
+            this.videoRepository.push(results.data);
+            this.activeIndex = this.findIndex(results.data.id);
+            this.activeReel = results.data.path;
+            this.isVideoReady = false;
+            clearTimeout(this.myTimeOut);
+            this.myTimeOut = setTimeout(function () {
+                this.isUpload = false;
+                this.activeVideo = true;
+            }.bind(this), 1000);
+            this.initReel();
+        },
+        toggleVideo: function toggleVideo($index) {
+            if (this.activeIndex != $index) {
+                this.activeVideo = false;
+
+                this.activeReel = this.videoRepository[$index].path;
+                this.activeIndex = $index;
+
+                clearTimeout(this.myTimeOut);
+                this.myTimeOut = setTimeout(function () {
+                    this.initReel();
+                    clearTimeout(this.myTimeOut);
+                    this.myTimeOut = setTimeout(function () {
+                        this.activeVideo = true;
+                    }.bind(this), 1000);
+                }.bind(this), 500);
+            }
+        },
+        verifyDelete: function verifyDelete($index) {
+
+            this.isVerify = !this.isVerify;
+
+            if (!this.activeVerify) {
+                return this.activeVerify = $index;
+            }
+
+            return this.activeVerify = '';
+        },
+        updateActivity: function updateActivity($index) {
+            var status;
+
+            var video = this.videoRepository[$index];
+            if (video.status == "active") {
+                status = 'inactive';
+            } else {
+                status = 'active';
+            }
+            var data = {
+                'status': status
+            };
+            this.updateHttp('materials/' + video.id, data, this.successUpdate);
+        },
+        successUpdate: function successUpdate(results) {
+
+            for (var i = 0; i < results.data.deactivated.length; i++) {
+                var $index = this.findIndex(results.data.deactivated[i].id);
+                this.videoRepository[$index].status = 'inactive';
+            }
+
+            var $newActiveIndex = this.findIndex(results.data.new_active.id);
+            this.videoRepository[$newActiveIndex].status = results.data.new_active.status;
+
+            if (this.activeIndex != $newActiveIndex && results.data.new_active.status == 'active') {
+                this.toggleVideo($newActiveIndex);
+            }
         },
         getHttp: function getHttp(url, callback) {
             var params = {
@@ -45445,13 +45601,13 @@ exports.default = {
                 return console.error(err);
             });
         },
-        deleteHttp: function deleteHttp(url, data, callback) {
+        deleteHttp: function deleteHttp(url, callback) {
             var params = {
                 headers: {
                     'X-CSRF-TOKEN': this.token
                 }
             };
-            this.$http.delete(url, data, params).then(callback).catch(function (err) {
+            this.$http.delete(url, params).then(callback).catch(function (err) {
                 return console.error(err);
             });
         },
@@ -45470,15 +45626,18 @@ exports.default = {
     },
     events: {
         'ready-material-video': function readyMaterialVideo(file) {
+            this.isVideoReady = true;
+            this.isOptionOpen = false;
+            this.activeVideo = false;
             var formData = new FormData();
             formData.append('video', file);
-            formData.append('type', 'video');
-            this.sendHttp('/auth/material', formData, this.successVideoUpload);
+            formData.append('type', 'reel');
+            this.sendHttp('materials', formData, this.successVideoUpload);
         }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content\">\n        <div class=\"content--video-upload gutters\">\n            <video-upload :feedback=\"isUpload\"></video-upload>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content background--content\">\n        <div v-el:video-overlay=\"\" class=\"video-upload gutters\" :class=\"{'upload--centered': videoRepository.length <= 0}\">\n            <div class=\"video-upload--content\">\n                <div class=\"upload--options\">\n                    <a class=\"btn-floating btn-large waves-effect waves-light red\" @click=\"isOptionOpen = !isOptionOpen\"><i class=\"material-icons\">+</i></a>\n                </div>\n                <video-upload :feedback=\"isUpload\" v-show=\"isOptionOpen || isVideoReady || videoRepository.length <= 0\" transition=\"fadeIn\" :class=\"{'upload--processing': isVideoReady}\"></video-upload>\n                <div class=\"video-overlay gutters--xs\" v-show=\"activeVideo\" transition=\"fade\">\n                    <div class=\"overlay--content\">\n                        <video id=\"vReel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n                            <source v-if=\"activeVideo\" type=\"video/mp4\">\n                            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n                        </video>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"video-repository gutters\" v-show=\"videoRepository.length > 0\" transition=\"fade\">\n            <div class=\"repository--nav\">\n                <div class=\"nav--namespace\">\n                    Video-Reel Archive\n                </div>\n                <div class=\"nav--search\">\n                    search bar\n                </div>\n            </div>\n            <ul class=\"video-repository--content\">\n                <template v-if=\"videoRepository &amp;&amp; videoRepository.length > 0\">\n                    <li class=\"repository--video waves-effect waves-red hoverable\" v-for=\"video in videoRepository\">\n                        <div class=\"slide--content\" :class=\"{'slide--left': isVerify &amp;&amp; activeVerify == $index}\" @click.self=\"toggleVideo($index)\">\n                            <div class=\"video--callout\">\n                                <div class=\"video--icon\">\n                                    <template v-if=\"activeIndex == $index\">\n                                        <img class=\"video-sprite--icon\" src=\"/image/svg/ic_pause_circle_outline_black_24px.svg\">\n                                    </template>\n                                    <template v-else=\"\">\n                                        <div class=\"video-sprite--icon\"></div>\n                                    </template>\n                                </div>\n                                <div class=\"video--nameSpace\">\n                                    <span><strong>{{video.name}}</strong></span>\n                                    <span>{{video.created_at}}</span>\n                                </div>\n                            </div>\n                            <div class=\"video--options\">\n                                <div class=\"video--status\" @click=\"updateActivity($index)\">\n                                    <a class=\"waves-effect btn-flat\" :class=\"{'red': video.status == 'active'}\">{{video.status}}</a>\n                                </div>\n                                <div class=\"video--delete\" @click=\"verifyDelete($index)\">\n                                    <img src=\"/image/svg/ic_more_vert_black_24px.svg\">\n                                </div>\n                            </div>\n                            </div>\n                        <div class=\"slide--verify\" @click=\"callVerifyDelete($index)\">\n                            <img class=\"svg-icon\" src=\"/image/svg/ic_delete_white_24px.svg\">\n                            <span>delete</span>\n                        </div>\n                    </li>\n                </template>\n                <template v-else=\"\">\n                    <div class=\"emptyState emptyState--video\">\n                        <p>No videos saved in the archive.</p>\n                    </div>\n                </template>\n            </ul>\n        </div>\n        <!-- Modal Structure -->\n        <div id=\"modal1\" class=\"modal\">\n            <div class=\"modal-content\">\n                <h4>Modal Header</h4>\n                <p>A bunch of text</p>\n            </div>\n            <div class=\"modal-footer\">\n                <a href=\"#!\" class=\" modal-action modal-close waves-effect waves-green btn-flat\">Agree</a>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -45503,7 +45662,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container f-h\">\n    <div class=\"not-available\">\n        <img class=\"working-svg\" src=\"/image/svg/workspace.svg\" alt=\"working--svg\">\n        <div class=\"not--message t-c\">\n            <h1>Putting in Work!</h1>\n            <p>\n                This section is under construction but should be available shortly.\n                <br>\n                Check back in later for all the cool features made to fit your needs exactly.\n            </p>\n            <span>-Ricki</span>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container f-h\">\n    <div class=\"not-available\">\n        <img class=\"icon\" src=\"/image/svg/workspace.svg\" alt=\"working--svg\">\n        <div class=\"not--message t-c\">\n            <h1>Putting in Work!</h1>\n            <p>\n                This section is under construction but should be available shortly.\n                <br>\n                Check back in later for all the cool features made to fit your needs exactly.\n            </p>\n            <span>-Ricki</span>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -45528,7 +45687,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container f-h\">\n    <div class=\"not-available\">\n        <img class=\"working-svg\" src=\"/image/svg/workspace.svg\" alt=\"working--svg\">\n        <div class=\"not--message t-c\">\n            <h1>Putting in Work!</h1>\n            <p>\n                This section is under construction but should be available shortly.\n                <br>\n                Check back in later for all the cool features made to fit your needs exactly.\n            </p>\n            <span>-Ricki</span>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container f-h\">\n    <div class=\"not-available\">\n        <img class=\"icon\" src=\"/image/svg/workspace.svg\" alt=\"working--svg\">\n        <div class=\"not--message t-c\">\n            <h1>Putting in Work!</h1>\n            <p>\n                This section is under construction but should be available shortly.\n                <br>\n                Check back in later for all the cool features made to fit your needs exactly.\n            </p>\n            <span>-Ricki</span>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -45553,12 +45712,25 @@ exports.default = {
 
     data: function data() {
         return {
+            myTimeOut: 0,
             fileName: '',
             fileSize: '',
             fileModified: '',
             isFileHover: false,
             isFileStaged: false
         };
+    },
+    computed: {
+        state: function state() {
+            if (this.feedback) {
+                clearTimeout(this.myTimeOut);
+                this.myTimeOut = setTimeout(function () {
+                    this.isFileStaged = false;
+                }.bind(this), 2000);
+                return true;
+            }
+            return false;
+        }
     },
     methods: {
         checkStat: function checkStat() {
@@ -45609,7 +45781,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div id=\"drop_zone\" :class=\"{'file-opacity': isFileHover}\">\n                <h1 v-show=\"!isFileStaged\">Drop files here</h1>\n                <div class=\"load--bar\" v-show=\"isFileStaged &amp;&amp; !feedback\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-show=\"isFileStaged &amp;&amp; !feedback\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div id=\"drop_zone\" :class=\"{'file-opacity': isFileHover}\">\n                <template v-if=\"!isFileStaged\">\n                    <img class=\"icon\" src=\"/image/svg/clapboard.svg\">\n                    <p><strong>Click</strong> or <strong>Drag and Drop</strong> <br> to upload video files here... </p>\n                </template>\n                <div class=\"load--bar\" v-show=\"isFileStaged &amp;&amp; !state\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-show=\"isFileStaged &amp;&amp; !state\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

@@ -1,7 +1,7 @@
 <template>
     <div class="container f-h">
         <div class="not-available">
-            <img class="working-svg" src="/image/svg/workspace.svg" alt="working--svg">
+            <img class="icon" src="/image/svg/workspace.svg" alt="working--svg">
             <div class="not--message t-c">
                 <h1>Putting in Work!</h1>
                 <p>

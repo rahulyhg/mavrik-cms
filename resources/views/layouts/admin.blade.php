@@ -11,7 +11,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/video-js.css" rel="stylesheet" type="text/css">
     <link href="/css/admin.css" rel="stylesheet">
 
     <!-- Scripts -->
@@ -27,6 +29,7 @@
         <!-- Scripts -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/video.js"></script>
 <script src="/js/admin.js"></script>
 </body>
 </html>

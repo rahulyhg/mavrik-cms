@@ -1,4 +1,5 @@
 @import "../mixins/mixins";
+@import "../mixins/material-card";
 @import "../utilities/variables";
 
 .component--row{
@@ -6,13 +7,14 @@
   @include flex-row(no-wrap);
 }
 .component--nav{
-  flex-basis: 35%;
+  flex-basis: 20%;
   background-color: #FFFFFF;
   @include flex();
   @include flex-column();
 }
 
 .nav--greet {
+  @include card(1);
   @include flex();
   @include flex-center();
 }
@@ -30,8 +32,7 @@
 }
 .nav--selects{
   @include flex();
-  @include flex-row(no-wrap);
-  justify-content: space-around;
+  @include flex-column();
 }
 
 .nav-portal{
@@ -64,4 +65,22 @@
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+.repository--nav{
+  color: white;
+  @include flex();
+  @include flex-row(nowrap);
+}
+
+
+.upload--options{
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  z-index: 99;
+}
+
+.process--upload{
+  opacity: 1!important;
 }

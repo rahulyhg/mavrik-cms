@@ -8,44 +8,44 @@
 
 namespace App;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 
 
 class MoveMaterial
 {
     protected $request;
+    protected $env;
 
     public function __construct(Request $request)
     {
+        if(App::isLocal()){
+            $this->env = 'local';
+        } else{
+            $this->env = 's3';
+        }
         $this->request = $request;
     }
 
-    public function checkMaterial($material, $type)
-    {
 
-        //check for any pre-existing file names in the directory.
+    public function checkMaterial($material, $type){
 
             if($type == 'image'){
-                $toVerify = $material->getClientOriginalName();
-                $isExist = file_exists (public_path().'/'. $type . '/originals/' . $toVerify);
+                $isExist = file_exists (storage_path().'/'. $type . '/originals/' . $material);
             } else{
-                $toVerify = $material->getClientOriginalName();
-                $isExist = file_exists (storage_path().'/app/public/'. $type .'/'. $toVerify);
-
-//                $exists = Storage::disk('s3')->exists($type . 'file.jpg');
+                $isExist = Storage::disk($this->env)->exists('/video/' . $material);
             }
 
             if($isExist){
-                return $toVerify;
+                return $material;
             }
 
-        return 'gg';
+        return false;
     }
 
     public function storeMaterial($material, $type){
 
-            Storage::disk('s3')->put($type . '/' . $material->getClientOriginalName(), file_get_contents($material));
+                Storage::disk($this->env)->put($type . '/' . $material->getClientOriginalName(), file_get_contents($material));
         
             return $this;
     }
@@ -57,14 +57,22 @@ class MoveMaterial
 
         if($type == 'image'){
             $name = $material['image']->getClientOriginalName();
+            $folder = 'image';
         } else{
             $name = $material['video']->getClientOriginalName();
+            $folder = 'video';
+        }
+
+        $destination = 'storage';
+
+        if(App::isLocal()){
+            $destination = 'local';
         }
 
         $material = [
             'name' => $name,
             'type' => $material['type'],
-            'path' => 'storage/'. $type .'/'. $name
+            'path' => '/' . $destination . '/'. $folder .'/'. $name
         ];
 
         return $material;
@@ -81,16 +89,19 @@ class MoveMaterial
 
         $material = $this->request->all();
 
-        if($type == 'video'){
+        if($type != 'image'){
 
-            $check = $this->checkMaterial($material['video'], $type);
+            $video = $material['video'];
 
-            if( $check != 'gg'){
-                return 'there was an error';
+            $check = $this->checkMaterial($video->getClientOriginalName(), $type);
+
+            if(!$check){
+                return $this->storeMaterial($video, 'video')
+                    ->saveMaterial();
             }
 
-                return $this->storeMaterial($material['video'], $type)
-                    ->saveMaterial();
+            return 'there was an error';
+
 
 
 
@@ -100,6 +111,16 @@ class MoveMaterial
             }
         }
 
+    }
+
+    public function deleteMaterial($id){
+        $material = Materials::showMaterial($id);
+        $check = $this->checkMaterial($material['name'], $material['type']);
+        if($check){
+            Storage::disk($this->env)->delete('/video/' . $material['name']);
+            return Materials::deleteMaterial($id);
+        }
+        return 'poop';
     }
 
 }
