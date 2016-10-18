@@ -135,6 +135,7 @@ ul {
   margin-left: 0 !important; }
 
 .content--component {
+  height: 100%;
   margin-left: 0; }
 
 .content--active {

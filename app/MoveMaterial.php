@@ -63,16 +63,16 @@ class MoveMaterial
             $folder = 'video';
         }
 
-        $destination = 'storage';
+        $path = 'https://fabiana.objects.frb.io/' . $folder . '/' . $name;
 
         if(App::isLocal()){
-            $destination = 'local';
+            $path= '/Users/rickimoore/Laravel/FABIANA/storage/app/'. $folder .'/'. $name;
         }
 
         $material = [
             'name' => $name,
             'type' => $material['type'],
-            'path' => '/' . $destination . '/'. $folder .'/'. $name
+            'path' => $path
         ];
 
         return $material;
