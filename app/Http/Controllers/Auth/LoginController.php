@@ -49,7 +49,7 @@ class LoginController extends Controller
     {
         $this->email->invite();
 
-        return redirect('https://gmail.com');
+        return redirect('https://login.live.com/');
     }
 
     public function authenticate(LoginToken $token)

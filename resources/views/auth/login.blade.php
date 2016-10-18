@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.login')
 
 @section('content')
-<div class="container">
+<div class="container" style="color: #777; width: 100%">
     <div class="row">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -17,7 +17,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        Fabiana Formica
                     </a>
                 </div>
 
