@@ -2,7 +2,7 @@
     <div class="content">
         <div class="video--reel full flex-column-center" v-show="isInitReel" transition="fade" :class="{'no-show': !isFadeIn}">
             <video id="reel" v-el:video class="video-js vjs-default-skin">
-                <template v-if="reel">
+                <template v-if="reel && reel.length > 0">
                     <source :src="reel[0].path" type="video/mp4" />
                 </template>
                 <template v-else>
