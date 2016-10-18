@@ -45352,6 +45352,7 @@ new Vue({
             switch (view) {
                 case 'Showreel':
                     if (this.view != 'Showreel') {
+                        this.view = 'Showreel';
                         clearTimeout(this.myTimeOut);
                         this.myTimeOut = setTimeout(function () {
                             this.activeReel = false;
@@ -45362,7 +45363,6 @@ new Vue({
                         this.activeReel = false;
                         this.$broadcast('show-reel', true);
                     }
-                    this.view = 'Showreel';
                 default:
                     this.view = view;
                     break;
