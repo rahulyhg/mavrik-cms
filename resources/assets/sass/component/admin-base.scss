@@ -12,6 +12,33 @@ html, body {
   margin: 0;
 }
 
+nav{
+  height: 10%!important;
+}
+
+.modal--show{
+  top: 0;
+  z-index: 1003;
+  display: block!important;
+}
+
+.lean--overlay{
+  position: fixed;
+  z-index: 1002;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 125%;
+  width: 100%;
+  background: #000;
+  opacity: .5;
+}
+
+.hide--overlay{
+  display: none;
+}
+
+
 .container, .content{
   max-width: none;
   background: transparent;
@@ -20,6 +47,22 @@ html, body {
 
 .gutters{
   padding:2%;
+}
+
+.nav-wrapper{
+  text-align: left;
+  padding-left: 2%;
+}
+
+nav .brand-logo{
+  position: relative!important;
+}
+
+.nav-wrapper{
+  @include flex();
+  @include flex-row(nowrap);
+  justify-content: space-between;
+  align-items: center;
 }
 
 .gutters--xs{
@@ -72,15 +115,33 @@ ul{
   background: #F44336;
 }
 
-.video-upload{
+.upload-box{
   height: 500px;
   width: 100%;
   max-width: 900px;
+}
+
+#previewFile{
+  width: 100%;
+}
+
+.gallery--repository{
+  @include cover();
+  @include flex();
+  @include flex-center();
+}
+
+.video-upload{
   display: block;
   margin: auto;
   overflow: hidden;
   position: relative;
   z-index: 99;
+}
+
+.image--upload{
+  background: white;
+  @include card(1);
 }
 
 .upload--centered{
@@ -169,6 +230,56 @@ margin-left: -100px;
   left:0;
 }
 
+.component--state{
+  height:90%;
+  width: 100%;
+  position: relative;
+}
+
+.upload--header, .upload--content, .upload--footer{
+  width: 100%;
+}
+
+.upload--header{
+  height: 15%;
+  padding-left: 2%;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+  span{
+    font-size: 22px;
+  }
+  .row{
+    margin-bottom: 0;
+    height: 100%;
+  }
+  form{
+    height: 100%;
+  }
+}
+
+.upload--content{
+  height: 70%;
+  background: #e0e0e0;
+  overflow: hidden;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.upload--footer{
+  height: 15%;
+  @include flex();
+  @include flex-row(nowrap);
+  justify-content: flex-end;
+  align-items: center;
+  a{
+    margin: 0 5px;
+  }
+}
+
+.empty--state{
+  @include cover();
+  @include flex();
+  @include flex-center();
+}
 
 .video-overlay{
   position: absolute;
@@ -214,5 +325,5 @@ margin-left: -100px;
   overflow: scroll;
 }
 .red{
-  color: white;
+  color: white!important;
 }

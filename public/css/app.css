@@ -245,6 +245,13 @@ strong {
 .fadeSlow-enter, .fadeSlow-leave {
   opacity: 0; }
 
+.fadeOverlay-transition {
+  -webkit-transition: all 1.5s ease;
+  transition: all 1.5s ease; }
+
+.fadeOverlay-enter, .fadeOverlay-leave {
+  opacity: .5; }
+
 .fade-transition {
   -webkit-transition: all .5s ease;
   transition: all .5s ease;

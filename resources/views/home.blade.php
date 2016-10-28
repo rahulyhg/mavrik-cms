@@ -13,7 +13,7 @@
             <div class="nav--greet f-h">
                 <div class="nav--welcome">
                     <span class="sub-title">Welcome</span>
-                    <span class="title">Fabiana</span>
+                    <span class="title">{{ Auth::user()->name}}</span>
                 </div>
                 <div class="nav--selects--container m-t-sm">
                     <ul class="nav--selects">
@@ -28,6 +28,7 @@
             <dashboard v-show="activeView=='dashboard'"></dashboard>
             <statistics v-show="activeView=='statistics'"></statistics>
             <background-video token='{{csrf_token()}}' v-show="activeView=='background'"></background-video>
+            <photo-gallery token='{{csrf_token()}}' v-show="activeView=='photo galleries'"></photo-gallery>
         </div>
     </div>
 </div>

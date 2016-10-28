@@ -32,7 +32,7 @@ Route::get('/local/{type}/{filename}', function ($type, $filename)
 
 Route::get('/storage/{type}/{filename}', function ($type, $filename)
 {
-    $path = storage_path() . '/app/public/' . $type . '/' . $filename;
+    $path = storage_path() . '/app/' . $type . '/' . $filename;
 
     if(!File::exists($path)) abort(404);
 
@@ -53,7 +53,10 @@ Route::group(['prefix' => 'auth'], function(){
     Route::get('logout', 'AdminController@logout');
     Route::get('token/{token}', 'Auth\LoginController@authenticate');
     Route::get('admin', 'AdminController@index');
+    
+    Route::put('/materials/reel/{id}', 'MaterialController@updateReel');
 
     Route::resource('/materials', 'MaterialController');
+    Route::resource('/gallery', 'GalleryController');
 });
 

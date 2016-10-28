@@ -45270,6 +45270,10 @@ var _background = require('./components/admin/background.vue');
 
 var _background2 = _interopRequireDefault(_background);
 
+var _photoGalleries = require('./components/admin/photo-galleries.vue');
+
+var _photoGalleries2 = _interopRequireDefault(_photoGalleries);
+
 var _statistics = require('./components/admin/statistics.vue');
 
 var _statistics2 = _interopRequireDefault(_statistics);
@@ -45297,7 +45301,7 @@ Vue.config.debug = true;
 
 new Vue({
     el: 'body',
-    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default },
+    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default, 'photo-gallery': _photoGalleries2.default },
     ready: function ready() {
         // this.incrementDate();
         console.log('fuck');
@@ -45308,7 +45312,7 @@ new Vue({
         myTimeOut: 0,
         activeView: 'dashboard',
         launch: '2016-10-06T20:03:55',
-        views: ['dashboard', 'statistics', 'background']
+        views: ['dashboard', 'statistics', 'background', 'photo galleries']
     },
     methods: {
         incrementDate: function incrementDate() {
@@ -45346,7 +45350,7 @@ new Vue({
 
 });
 
-},{"./bootstrap":10,"./components/admin/background.vue":11,"./components/admin/dashboard.vue":12,"./components/admin/statistics.vue":13,"moment":4,"vue":8,"vue-resource":7}],10:[function(require,module,exports){
+},{"./bootstrap":10,"./components/admin/background.vue":11,"./components/admin/dashboard.vue":12,"./components/admin/photo-galleries.vue":13,"./components/admin/statistics.vue":14,"moment":4,"vue":8,"vue-resource":7}],10:[function(require,module,exports){
 'use strict';
 
 window._ = require('lodash');
@@ -45401,9 +45405,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _materialVideoUpload = require('../elements/material-video-upload.vue');
+var _materialFileUpload = require('../elements/material-file-upload.vue');
 
-var _materialVideoUpload2 = _interopRequireDefault(_materialVideoUpload);
+var _materialFileUpload2 = _interopRequireDefault(_materialFileUpload);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45429,7 +45433,7 @@ exports.default = {
     },
 
     components: {
-        videoUpload: _materialVideoUpload2.default
+        fileUpload: _materialFileUpload2.default
     },
     methods: {
         fetchReels: function fetchReels() {
@@ -45563,7 +45567,7 @@ exports.default = {
             var data = {
                 'status': status
             };
-            this.updateHttp('materials/' + video.id, data, this.successUpdate);
+            this.updateHttp('materials/reel/' + video.id, data, this.successUpdate);
         },
         successUpdate: function successUpdate(results) {
 
@@ -45625,19 +45629,22 @@ exports.default = {
         }
     },
     events: {
-        'ready-material-video': function readyMaterialVideo(file) {
+        'ready-material': function readyMaterial(files) {
             this.isVideoReady = true;
             this.isOptionOpen = false;
             this.activeVideo = false;
             var formData = new FormData();
-            formData.append('video', file);
+            formData.append('name', files[0].name);
+            formData.append('video', files[0]);
+            formData.append('gallery_id', null);
             formData.append('type', 'reel');
+            formData.append('credit', null);
             this.sendHttp('materials', formData, this.successVideoUpload);
         }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content background--content\">\n        <div v-el:video-overlay=\"\" class=\"video-upload gutters\" :class=\"{'upload--centered': videoRepository.length <= 0}\">\n            <div class=\"video-upload--content\">\n                <div class=\"upload--options\">\n                    <a class=\"btn-floating btn-large waves-effect waves-light red\" @click=\"isOptionOpen = !isOptionOpen\"><i class=\"material-icons\">+</i></a>\n                </div>\n                <video-upload :feedback=\"isUpload\" v-show=\"isOptionOpen || isVideoReady || videoRepository.length <= 0\" transition=\"fadeIn\" :class=\"{'upload--processing': isVideoReady}\"></video-upload>\n                <div class=\"video-overlay gutters--xs\" v-show=\"activeVideo\" transition=\"fade\">\n                    <div class=\"overlay--content\">\n                        <video id=\"vReel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n                            <source v-if=\"activeVideo\" type=\"video/mp4\">\n                            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n                        </video>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"video-repository gutters\" v-show=\"videoRepository.length > 0\" transition=\"fade\">\n            <div class=\"repository--nav\">\n                <div class=\"nav--namespace\">\n                    Video-Reel Archive\n                </div>\n                <div class=\"nav--search\">\n                    search bar\n                </div>\n            </div>\n            <ul class=\"video-repository--content\">\n                <template v-if=\"videoRepository &amp;&amp; videoRepository.length > 0\">\n                    <li class=\"repository--video waves-effect waves-red hoverable\" v-for=\"video in videoRepository\">\n                        <div class=\"slide--content\" :class=\"{'slide--left': isVerify &amp;&amp; activeVerify == $index}\" @click.self=\"toggleVideo($index)\">\n                            <div class=\"video--callout\">\n                                <div class=\"video--icon\">\n                                    <template v-if=\"activeIndex == $index\">\n                                        <img class=\"video-sprite--icon\" src=\"/image/svg/ic_pause_circle_outline_black_24px.svg\">\n                                    </template>\n                                    <template v-else=\"\">\n                                        <div class=\"video-sprite--icon\"></div>\n                                    </template>\n                                </div>\n                                <div class=\"video--nameSpace\">\n                                    <span><strong>{{video.name}}</strong></span>\n                                    <span>{{video.created_at}}</span>\n                                </div>\n                            </div>\n                            <div class=\"video--options\">\n                                <div class=\"video--status\" @click=\"updateActivity($index)\">\n                                    <a class=\"waves-effect btn-flat\" :class=\"{'red': video.status == 'active'}\">{{video.status}}</a>\n                                </div>\n                                <div class=\"video--delete\" @click=\"verifyDelete($index)\">\n                                    <img src=\"/image/svg/ic_more_vert_black_24px.svg\">\n                                </div>\n                            </div>\n                            </div>\n                        <div class=\"slide--verify\" @click=\"callVerifyDelete($index)\">\n                            <img class=\"svg-icon\" src=\"/image/svg/ic_delete_white_24px.svg\">\n                            <span>delete</span>\n                        </div>\n                    </li>\n                </template>\n                <template v-else=\"\">\n                    <div class=\"emptyState emptyState--video\">\n                        <p>No videos saved in the archive.</p>\n                    </div>\n                </template>\n            </ul>\n        </div>\n        <!-- Modal Structure -->\n        <div id=\"modal1\" class=\"modal\">\n            <div class=\"modal-content\">\n                <h4>Modal Header</h4>\n                <p>A bunch of text</p>\n            </div>\n            <div class=\"modal-footer\">\n                <a href=\"#!\" class=\" modal-action modal-close waves-effect waves-green btn-flat\">Agree</a>\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"container\">\n    <div class=\"content background--content\">\n        <div v-el:video-overlay=\"\" class=\"upload-box video-upload gutters\" :class=\"{'upload--centered': videoRepository.length <= 0}\">\n            <div class=\"video-upload--content\">\n                <div class=\"upload--options\">\n                    <a class=\"btn-floating btn-large waves-effect waves-light red\" @click=\"isOptionOpen = !isOptionOpen\"><i class=\"material-icons\">+</i></a>\n                </div>\n                <file-upload type=\"video\" :feedback=\"isUpload\" v-show=\"isOptionOpen || isVideoReady || videoRepository.length <= 0\" transition=\"fadeIn\" :class=\"{'upload--processing': isVideoReady}\"></file-upload>\n                <div class=\"video-overlay gutters--xs\" v-show=\"activeVideo\" transition=\"fade\">\n                    <div class=\"overlay--content\">\n                        <video id=\"vReel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n                            <source v-if=\"activeVideo\" type=\"video/mp4\">\n                            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n                        </video>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"video-repository gutters\" v-show=\"videoRepository.length > 0\" transition=\"fade\">\n            <div class=\"repository--nav\">\n                <div class=\"nav--namespace\">\n                    Video-Reel Archive\n                </div>\n                <div class=\"nav--search\">\n                    search bar\n                </div>\n            </div>\n            <ul class=\"video-repository--content\">\n                <template v-if=\"videoRepository &amp;&amp; videoRepository.length > 0\">\n                    <li class=\"repository--video waves-effect waves-red hoverable\" v-for=\"video in videoRepository\">\n                        <div class=\"slide--content\" :class=\"{'slide--left': isVerify &amp;&amp; activeVerify == $index}\" @click.self=\"toggleVideo($index)\">\n                            <div class=\"video--callout\">\n                                <div class=\"video--icon\">\n                                    <template v-if=\"activeIndex == $index\">\n                                        <img class=\"video-sprite--icon\" src=\"/image/svg/ic_pause_circle_outline_black_24px.svg\">\n                                    </template>\n                                    <template v-else=\"\">\n                                        <div class=\"video-sprite--icon\"></div>\n                                    </template>\n                                </div>\n                                <div class=\"video--nameSpace\">\n                                    <span><strong>{{video.name}}</strong></span>\n                                    <span>{{video.created_at}}</span>\n                                </div>\n                            </div>\n                            <div class=\"video--options\">\n                                <div class=\"video--status\" @click=\"updateActivity($index)\">\n                                    <a class=\"waves-effect btn-flat\" :class=\"{'red': video.status == 'active'}\">{{video.status}}</a>\n                                </div>\n                                <div class=\"video--delete\" @click=\"verifyDelete($index)\">\n                                    <img src=\"/image/svg/ic_more_vert_black_24px.svg\">\n                                </div>\n                            </div>\n                            </div>\n                        <div class=\"slide--verify\" @click=\"callVerifyDelete($index)\">\n                            <img class=\"svg-icon\" src=\"/image/svg/ic_delete_white_24px.svg\">\n                            <span>delete</span>\n                        </div>\n                    </li>\n                </template>\n                <template v-else=\"\">\n                    <div class=\"emptyState emptyState--video\">\n                        <p>No videos saved in the archive.</p>\n                    </div>\n                </template>\n            </ul>\n        </div>\n        <!-- Modal Structure -->\n        <div id=\"modal1\" class=\"modal\">\n            <div class=\"modal-content\">\n                <h4>Modal Header</h4>\n                <p>A bunch of text</p>\n            </div>\n            <div class=\"modal-footer\">\n                <a href=\"#!\" class=\" modal-action modal-close waves-effect waves-green btn-flat\">Agree</a>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -45648,7 +45655,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2cdf09af", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-video-upload.vue":14,"vue":8,"vue-hot-reload-api":6}],12:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":15,"vue":8,"vue-hot-reload-api":6}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45679,6 +45686,306 @@ if (module.hot) {(function () {  module.hot.accept()
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _materialFileUpload = require('../elements/material-file-upload.vue');
+
+var _materialFileUpload2 = _interopRequireDefault(_materialFileUpload);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    components: {
+        fileUpload: _materialFileUpload2.default
+    },
+    ready: function ready() {
+        this.fetchGalleryRepository();
+    },
+    data: function data() {
+        return {
+            timeOut: 0,
+            repository: [],
+            isShowMain: true,
+            isPreviewFile: false,
+            isOverlay: false,
+            isModalShown: false,
+            firstUpload: false,
+            isUploading: false,
+            isUpload: false,
+            isImageUploaded: false,
+            isOpenGallery: false,
+            isAddImageCard: false,
+            newImageCardText: '',
+            newImageCredit: '',
+            activeGallery: '',
+            newGalleryName: '',
+            newImageName: '',
+            fileStage: ''
+        };
+    },
+
+    computed: {
+        filteredActiveGallery: function filteredActiveGallery() {
+            if (this.activeGallery) {
+                return this.$options.filters.filterFor(this.repository, this.activeGallery)[0];
+            }
+            return null;
+        }
+    },
+    methods: {
+        fetchGalleryRepository: function fetchGalleryRepository() {
+            this.getHttp('gallery', this.setGalleries);
+        },
+        setGalleries: function setGalleries(results) {
+            if (results.data.length > 0) {
+                return this.repository = results.data;
+            }
+        },
+        initialUpload: function initialUpload() {
+            this.firstUpload = true;
+            this.showDock();
+        },
+        showDock: function showDock() {
+            this.isUploading = true;
+        },
+        initFileReader: function initFileReader(file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#previewFile').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        },
+        submitNewGallery: function submitNewGallery() {
+            if (this.newGalleryName) {
+                if (this.fileStage) {
+                    var formData = new FormData();
+                    for (var i = 0; i < this.fileStage.length; i++) {
+                        formData.append('image-' + i, this.fileStage[i]);
+                    }
+                    formData.append('name', this.newGalleryName);
+                    formData.append('type', 'gallery');
+                    formData.append('gallery_id', null);
+                    formData.append('credit', null);
+                    return this.sendHttp('gallery', formData, this.successGalleryUpload);
+                }
+                var data = {
+                    'name': this.newGalleryName
+                };
+
+                return this.sendHttp('gallery', data, this.successGalleryUpload);
+            }
+        },
+        successGalleryUpload: function successGalleryUpload(results) {
+            this.repository.push(results.data);
+        },
+        submitNewImage: function submitNewImage($galleryId) {
+            if (this.newImageName) {
+                var formData = new FormData();
+                formData.append('image', this.fileStage[0]);
+                formData.append('name', this.newImageName);
+                formData.append('type', 'image');
+                formData.append('gallery_id', $galleryId);
+                formData.append('credit', this.newImageCredit);
+                formData.append('notes', this.newImageCardText);
+                return this.sendHttp('materials', formData, this.successCardUpload);
+            }
+
+            console.log('nope');
+        },
+        successCardUpload: function successCardUpload(results) {
+            var gallery_index = this.findGalleryByID(results.data.gallery_id);
+            this.repository[gallery_index].materials.push(results.data);
+
+            this.returnToGallery();
+        },
+        returnToMain: function returnToMain() {
+            this.isOpenGallery = false;
+            this.isUploading = false;
+            this.isAddImageCard = false;
+            this.activeGallery = '';
+            this.resetInputs();
+        },
+        returnToGallery: function returnToGallery() {
+            this.isShowMain = true;
+            this.isAddImageCard = false;
+            this.resetInputs();
+        },
+        resetInputs: function resetInputs() {
+            this.newImageName = '';
+            this.newImageCredit = '';
+            this.fileStage = '';
+            this.isPreviewFile = false;
+            this.isImageUploaded = false;
+        },
+        openGallery: function openGallery($id) {
+            this.activeGallery = $id;
+            this.isOpenGallery = true;
+            this.isShowMain = true;
+        },
+        moveToDataUpload: function moveToDataUpload() {
+            if (this.fileStage) {
+                this.isImageUploaded = true;
+            }
+        },
+
+        revealSave: function revealSave($id) {
+            var element = document.getElementById('cardSave' + $id);
+
+            element.style.display = 'inline-block';
+        },
+
+        saveCardStatus: function saveCardStatus($index) {
+            var card = this.filteredActiveGallery.materials[$index];
+            var toggle = this.filteredActiveGallery.materials[$index].status;
+            var status;
+
+            if (toggle == 'active') {
+                status = 'inactive';
+            } else {
+                status = 'active';
+            }
+
+            var data = {
+                'status': status
+            };
+
+            this.updateHttp('materials/' + card.id, data, this.successCardActivityUpdate);
+        },
+
+        removeCard: function removeCard($id) {
+            this.deleteHttp('materials/' + $id, this.successCardDelete);
+        },
+        successCardDelete: function successCardDelete(results) {
+
+            var $index = this.findMaterialById(results.data.material_id);
+            var gallery_index = this.findGalleryByID(this.filteredActiveGallery.id);
+
+            console.log(gallery_index + '   ' + $index);
+
+            this.repository[gallery_index].materials.splice($index, 1);
+        },
+
+        successCardActivityUpdate: function successCardActivityUpdate(results) {
+            var $index = this.findMaterialById(results.data.id);
+            this.filteredActiveGallery.materials[$index].status = results.data.status;
+
+            var $toastContent = $('<span>I am toast content</span>');
+            Materialize.toast($toastContent, 5000);
+        },
+        findMaterialById: function findMaterialById($id) {
+            for (var i = 0; i < this.filteredActiveGallery.materials.length; i++) {
+                if ($id == this.filteredActiveGallery.materials[i].id) {
+                    return i;
+                }
+            }
+        },
+        findGalleryByID: function findGalleryByID($id) {
+            for (var i = 0; i < this.repository.length; i++) {
+                if ($id == this.repository[i].id) {
+                    return i;
+                }
+            }
+        },
+
+        saveCardEdit: function saveCardEdit($index) {
+            var data = this.filteredActiveGallery.materials[$index];
+            this.updateHttp('materials/' + data.id, data, this.successUpdate);
+        },
+
+        successUpdate: function successUpdate(results) {
+            console.log(results);
+        },
+
+        //vue resource methods
+        getHttp: function getHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.get(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        sendHttp: function sendHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.post(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        deleteHttp: function deleteHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.delete(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        updateHttp: function updateHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.put(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        }
+    },
+    events: {
+        'ready-material': function readyMaterial(files) {
+            //initiate fileReader
+            clearTimeout(this.timeOut);
+            this.timeOut = setTimeout(function () {
+                this.isPreviewFile = true;
+                this.fileStage = files;
+                this.initFileReader(files[0]);
+                this.isUpload = false;
+            }.bind(this), 1000);
+        }
+    },
+    filters: {
+        filterFor: function filterFor($array, filterBy) {
+            var filtered = [];
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i].id == filterBy) {
+                    filtered.push(filterlist[i]);
+                }
+            }
+            return filtered;
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <nav>\n        <div class=\"nav-wrapper\">\n            <div class=\"col s12\">\n                <a href=\"#!\" class=\"breadcrumb\" @click=\"returnToMain\">Photo Gallery</a>\n                <a href=\"#!\" v-if=\"activeGallery\" @click=\"returnToGallery\" class=\"breadcrumb\">{{filteredActiveGallery.name}}</a>\n                <a href=\"#!\" v-show=\"isUploading\" class=\"breadcrumb\">New Gallery</a>\n                <a href=\"#!\" v-show=\"isAddImageCard\" class=\"breadcrumb\">New Image</a>\n            </div>\n            <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                <li><a href=\"#\" @click=\"isUploading = true, activeGallery = ''\">Add Gallery</a></li>\n                <li><a href=\"#\">Clear All</a></li>\n            </ul>\n        </div>\n    </nav>\n    <div class=\"component--state\">\n        <template v-if=\"repository.length > 0 || firstUpload\">\n            <div class=\"gallery--repository\">\n                <template v-if=\"isUploading\">\n                    <div class=\"upload-box image--upload\">\n                        <div class=\"upload--header\">\n                            <div class=\"row\">\n                                <form class=\"col s12\">\n                                    <div class=\"row\">\n                                        <div class=\"input-field col s6\">\n                                            <i class=\"material-icons prefix\">account_circle</i>\n                                            <input id=\"icon_prefix\" type=\"text\" class=\"validate\" v-model=\"newGalleryName\">\n                                            <label for=\"icon_prefix\">New Gallery Name</label>\n                                        </div>\n                                    </div>\n                                </form>\n                            </div>\n                        </div>\n                        <div class=\"upload--content\">\n                            <template v-if=\"isPreviewFile\">\n                                <img id=\"previewFile\" src=\"#\">\n                            </template>\n                            <template v-else=\"\">\n                                <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\"></file-upload>\n                            </template>\n                        </div>\n                        <div class=\"upload--footer\">\n                            <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"submitNewGallery\">Submit\n                                <i class=\"material-icons right\">send</i>\n                            </button>\n                            <a class=\"waves-effect waves-teal btn-flat\" @click=\"returnToMain\">Cancel</a>\n                        </div>\n                    </div>\n                </template>\n                <template v-else=\"\">\n                    <template v-if=\"isOpenGallery\">\n                        <div class=\"gallery--contents\">\n                            <div class=\"gallery--header\" :style=\"{ 'background-image': 'url(' + filteredActiveGallery.image + ')' }\">\n                                <div class=\"card--overlay\"></div>\n                                <span class=\"card--headline\">{{filteredActiveGallery.name}}</span>\n                                <span class=\"card--headline\">{{filteredActiveGallery.updated_at}}</span>\n                                <a class=\"add--gallery btn-floating btn-large waves-effect waves-light red\" @click=\"isAddImageCard = true, isShowMain = false\"><i class=\"material-icons\">add</i></a>\n                            </div>\n                            <h3 class=\"gallery--callout\">Photos</h3>\n                            <div class=\"gallery--main\" :class=\"{'center-gallery': filteredActiveGallery.materials.length < 1, 'order-gallery': filteredActiveGallery.materials.length > 1}\">\n                                <template v-if=\"filteredActiveGallery.materials.length > 0 &amp;&amp; isShowMain\">\n                                    <div class=\"gallery--image-card card\" v-for=\"material in filteredActiveGallery.materials\">\n                                        <div class=\"card-image waves-effect waves-block waves-light\">\n                                            <img class=\"activator\" :src=\"material.path\">\n                                        </div>\n                                        <div class=\"card-content\">\n                                            <span class=\"card-title activator grey-text text-darken-4\">{{material.name}}<i class=\"material-icons right\">more_vert</i></span>\n                                        </div>\n                                        <div class=\"card-reveal\">\n                                            <span class=\"card-title grey-text text-darken-4\">Card Title<i class=\"material-icons right\">close</i></span>\n                                            <div class=\"row\">\n                                                <div class=\"input-field col s6\">\n                                                    <input :value=\"material.name\" :id=\"'cardName' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.name\" @keydown=\"revealSave(material.id)\">\n                                                    <label class=\"active\" :for=\"'cardName' + material.id\">Name</label>\n                                                </div>\n                                            </div>\n                                            <div class=\"row\">\n                                                <div class=\"input-field col s6\">\n                                                    <input :value=\"material.credit\" :id=\"'cardCredit' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.credit\" @keydown=\"revealSave(material.id)\">\n                                                    <label class=\"active\" :for=\"'cardCredit' + material.id\">Credits</label>\n                                                </div>\n                                            </div>\n                                            <a :id=\"'cardSave' + material.id\" class=\"waves-effect waves-light btn-flat red hidden\" @click=\"saveCardEdit($index)\">Save Edit</a>\n                                        </div>\n                                        <div class=\"card-action\">\n                                            <a class=\"waves-effect waves-red btn-flat\" :class=\"{'red': material.status == 'active'}\" @click=\"saveCardStatus($index)\">{{material.status}}</a>\n                                            <a class=\"waves-effect waves-red btn-flat\" @click=\"removeCard(material.id)\">Remove</a>\n                                        </div>\n                                    </div>\n                                </template>\n                                <template v-else=\"\">\n                                    <div class=\"gallery--add-image\" v-show=\"isAddImageCard\">\n                                        <div class=\"upload-box image--upload\">\n                                            <div class=\"upload--header\">\n                                                <div class=\"row\">\n                                                    <form class=\"col s12\">\n                                                        <div class=\"row\">\n                                                            <div class=\"input-field col s6\">\n                                                                <i class=\"material-icons prefix\">account_circle</i>\n                                                                <input id=\"icon_prefix\" type=\"text\" class=\"validate\" v-model=\"newImageName\">\n                                                                <label for=\"icon_prefix\">New Name</label>\n                                                            </div>\n                                                        </div>\n                                                    </form>\n                                                </div>\n                                            </div>\n                                            <div class=\"upload--content\">\n                                                <template v-if=\"isPreviewFile &amp;&amp; !isImageUploaded\">\n                                                    <img id=\"previewFile\" src=\"#\">\n                                                </template>\n                                                <template v-else=\"\">\n                                                    <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\"></file-upload>\n                                                    <div class=\"upload--data\" v-else=\"\">\n                                                        <div class=\"upload--instructions\">\n                                                            <h3>Additional Info</h3>\n                                                            <p>We require some additional information about your new upload. Please fill in the below form fields before submitting your new material.</p>\n                                                        </div>\n                                                        <div class=\"upload--credit-input\">\n                                                            <div class=\"row\">\n                                                                <form class=\"col s12\">\n                                                                    <div class=\"row\">\n                                                                        <div class=\"input-field col s12\">\n                                                                            <input id=\"credit\" type=\"text\" class=\"validate\" v-model=\"newImageCredit\">\n                                                                            <label for=\"credit\" data-error=\"wrong\" data-success=\"right\">Credits: </label>\n                                                                        </div>\n                                                                    </div>\n                                                                </form>\n                                                            </div>\n                                                        </div>\n                                                    </div>\n                                                </template>\n                                            </div>\n                                            <div class=\"upload--footer\">\n                                                <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"moveToDataUpload\" v-show=\"!isImageUploaded\">\n                                                    Next\n                                                </button>\n                                                <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"submitNewImage(filteredActiveGallery.id)\" v-else=\"\">Submit\n                                                    <i class=\"material-icons right\">send</i>\n                                                </button>\n                                                <a class=\"waves-effect waves-teal btn-flat\" @click=\"returnToGallery\">cancel</a>\n                                            </div>\n                                        </div>\n                                    </div>\n                                    <div class=\"empty--state\" transition=\"fade\" v-else=\"\">\n                                        <div class=\"empty\">\n                                            <img src=\"/image/svg/folder.svg\">\n                                            <h1>Welcome to the art show!</h1>\n                                            <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>\n                                            <a class=\"waves-effect waves-light btn red\" @click=\"isAddImageCard = true\"><i class=\"material-icons left\">cloud</i>Add Photo</a>\n                                        </div>\n                                    </div>\n                                </template>\n                            </div>\n                        </div>\n                    </template>\n                    <template v-else=\"\">\n                        <div v-for=\"gallery in repository\" @click=\"openGallery(gallery.id)\" class=\"gallery--card hoverable waves-effect waves-light\" :style=\"{ 'background-image': 'url(' + gallery.image + ')' }\">\n                            <div class=\"card--overlay\"></div>\n                            <span class=\"card--headline\">{{gallery.name}}</span>\n                        </div>\n                    </template>\n                </template>\n            </div>\n        </template>\n        <template v-else=\"\">\n            <div class=\"empty--state\" transition=\"fade\">\n                <div class=\"empty\">\n                    <img src=\"/image/svg/folder.svg\">\n                    <h1>Welcome to the art show!</h1>\n                    <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>\n                    <a class=\"waves-effect waves-light btn red\" @click=\"initialUpload\"><i class=\"material-icons left\">cloud</i>Create Gallery</a>\n                </div>\n            </div>\n        </template>\n    </div>\n    <!-- Modal Structure -->\n    <div v-el:upload=\"\" class=\"modal\" :class=\"{'modal--show': isModalShown }\">\n        <div class=\"modal-content\">\n            <h4>Modal Header</h4>\n            <p>A bunch of text</p>\n        </div>\n        <div class=\"modal-footer\">\n            <a href=\"#!\" class=\" modal-action modal-close waves-effect waves-green btn-flat\">Agree</a>\n        </div>\n    </div>\n    <div id=\"materialize-overlay\" class=\"lean--overlay\" :class=\"{'hide--overlay': !isOverlay}\" transition=\"fadeOverlay\"></div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-01910664", module.exports)
+  } else {
+    hotAPI.update("_v-01910664", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../elements/material-file-upload.vue":15,"vue":8,"vue-hot-reload-api":6}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.default = {
     data: function data() {
         return {
@@ -45698,20 +46005,21 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-047a6324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":8,"vue-hot-reload-api":6}],14:[function(require,module,exports){
+},{"vue":8,"vue-hot-reload-api":6}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
-    props: ['feedback'],
+    props: ['feedback', 'type'],
     ready: function ready() {
-        this.checkStat();
+        this.createId(this.type);
     },
 
     data: function data() {
         return {
+            id: '',
             myTimeOut: 0,
             fileName: '',
             fileSize: '',
@@ -45722,6 +46030,7 @@ exports.default = {
     },
     computed: {
         state: function state() {
+            console.log(this.feedback);
             if (this.feedback) {
                 clearTimeout(this.myTimeOut);
                 this.myTimeOut = setTimeout(function () {
@@ -45733,11 +46042,23 @@ exports.default = {
         }
     },
     methods: {
+        createId: function createId(type) {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < 5; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }this.id = type + '-' + text;
+
+            return this.checkStat();
+        },
         checkStat: function checkStat() {
             // Check for the various File API support.
             if (window.File && window.FileReader && window.FileList && window.Blob) {
                 // Great success! All the File APIs are supported.
-                this.initDragDrop();
+                if (this.id) {
+                    this.initDragDrop();
+                }
             } else {
                 console.log('The File APIs are not fully supported in this browser.');
             }
@@ -45745,7 +46066,7 @@ exports.default = {
         initDragDrop: function initDragDrop(evt) {
 
             // Setup the dnd listeners.
-            var dropZone = document.getElementById('drop_zone');
+            var dropZone = this.$els.upload;
             dropZone.addEventListener('dragover', this.handleDragOver, false);
             dropZone.addEventListener('drop', this.handleFileSelect, false);
         },
@@ -45757,20 +46078,34 @@ exports.default = {
 
             var files = evt.dataTransfer.files; // FileList object.
 
-            if (files[0].type == 'video/mp4') {
-                // files is a FileList of File objects. List some properties.
-                for (var i = 0, f; f = files[i]; i++) {
-                    this.fileName = f.name;
-                    this.fileSize = f.size;
+            this.uploadFiles(files);
+        },
+        uploadFiles: function uploadFiles(files) {
+            var notSupported = [];
+            this.fileName = [];
+            this.fileSize = 0;
+            // files is a FileList of File objects. List some properties.
+            for (var i = 0, f; f = files[i]; i++) {
+                var fileType = this.findFileType(f.type);
+                if (fileType != this.type) {
+                    notSupported.push(f.name);
+                } else {
+                    this.fileName.push(f.name);
+                    this.fileSize = +f.size;
                     this.fileModified = f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a';
                 }
+            }
+            this.isFileStaged = true;
 
-                this.isFileStaged = true;
-
-                return this.$dispatch('ready-material-video', files[0]);
+            if (notSupported.length <= 0) {
+                return this.$dispatch('ready-material', files);
             }
 
             alert('this file type is not supported here yepad');
+        },
+        findFileType: function findFileType(type) {
+            var split = type.split('/');
+            return split[0];
         },
         handleDragOver: function handleDragOver(evt) {
             evt.stopPropagation();
@@ -45778,18 +46113,24 @@ exports.default = {
             this.isFileHover = true;
             evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         }
+    },
+    filters: {
+        fileList: function fileList(list) {
+            return list.join(', ');
+        }
     }
+
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div id=\"drop_zone\" :class=\"{'file-opacity': isFileHover}\">\n                <template v-if=\"!isFileStaged\">\n                    <img class=\"icon\" src=\"/image/svg/clapboard.svg\">\n                    <p><strong>Click</strong> or <strong>Drag and Drop</strong> <br> to upload video files here... </p>\n                </template>\n                <div class=\"load--bar\" v-show=\"isFileStaged &amp;&amp; !state\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-show=\"isFileStaged &amp;&amp; !state\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"mVu container\">\n        <div class=\"content no-show\">\n            <div v-el:upload=\"\" :class=\"{'file-opacity': isFileHover}\" class=\"dropzone\">\n                <template v-if=\"!isFileStaged\">\n                    <template v-if=\"type == 'image'\">\n                        <img class=\"icon\" src=\"/image/svg/camera.svg\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"icon\" src=\"/image/svg/clapboard.svg\">\n                    </template>\n                    <p><strong>Click</strong> or <strong>Drag and Drop</strong> <br> to upload video files here... </p>\n                </template>\n                <div class=\"load--bar\" v-show=\"isFileStaged &amp;&amp; !state\">\n                    <div class=\"preloader-wrapper big active\">\n                        <div class=\"spinner-layer spinner-blue\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-red\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-yellow\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n\n                        <div class=\"spinner-layer spinner-green\">\n                            <div class=\"circle-clipper left\">\n                                <div class=\"circle\"></div>\n                            </div><div class=\"gap-patch\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"circle-clipper right\">\n                            <div class=\"circle\"></div>\n                        </div>\n                        </div>\n                    </div>\n            </div>\n            <output id=\"list\" v-if=\"isFileStaged &amp;&amp; !state\" transition=\"slideUp\">\n                <ul class=\"content flex-center\">\n                    <li class=\"file--data\">\n                        <span>{{fileName | fileList}}</span>\n                        <span>{{fileSize}}</span>\n                        <span>last modified: {{fileModified}}</span>\n                    </li>\n                </ul>\n            </output>\n        </div>\n    </div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-cdfd883c", module.exports)
+    hotAPI.createRecord("_v-4716221a", module.exports)
   } else {
-    hotAPI.update("_v-cdfd883c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4716221a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":8,"vue-hot-reload-api":6}]},{},[9]);

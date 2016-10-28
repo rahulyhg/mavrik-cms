@@ -17,7 +17,10 @@ class CreateMaterialTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->enum('type', array('reel', 'image','video'));
-            $table->string('path')->nullable();
+            $table->integer('gallery_id')->unsigned();
+            $table->foreign('gallery_id')->references('id')->on('galleries')->onDelete('cascade')->nullable();
+            $table->string('path');
+            $table->string('credit');
             $table->enum('status', array('active', 'inactive'));
             $table->timestamps();
         });

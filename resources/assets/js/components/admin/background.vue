@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <div class="content background--content">
-            <div v-el:video-overlay class="video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
+            <div v-el:video-overlay class="upload-box video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
                 <div class="video-upload--content">
                     <div class="upload--options">
                         <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">+</i></a>
                     </div>
-                    <video-upload :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></video-upload>
+                    <file-upload type="video" :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
                     <div class="video-overlay gutters--xs" v-show="activeVideo" transition="fade">
                         <div class="overlay--content">
                             <video id="vReel" v-el:video class="video-js vjs-default-skin">
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-    import videoUpload from '../elements/material-video-upload.vue'
+    import fileUpload from '../elements/material-file-upload.vue'
     export default{
         props: ['token'],
         ready(){
@@ -103,7 +103,7 @@
             }
         },
         components:{
-            videoUpload
+            fileUpload
         },
         methods: {
             fetchReels: function () {
@@ -237,7 +237,7 @@
                 var data = {
                   'status': status
                 };
-              this.updateHttp('materials/' + video.id, data, this.successUpdate);
+              this.updateHttp('materials/reel/' + video.id, data, this.successUpdate);
             },
             successUpdate: function (results) {
 
@@ -289,16 +289,19 @@
                 }
 
                 this.$http.put(url, data, params).then(callback).catch(err => console.error(err));
-            },
+            }
         },
         events: {
-            'ready-material-video': function (file) {
+            'ready-material': function (files) {
                 this.isVideoReady = true;
                 this.isOptionOpen = false;
                 this.activeVideo = false;
                 var formData = new FormData();
-                formData.append('video', file);
+                formData.append('name', files[0].name);
+                formData.append('video', files[0]);
+                formData.append('gallery_id', null);
                 formData.append('type', 'reel');
+                formData.append('credit', null);
                 this.sendHttp('materials', formData, this.successVideoUpload);
             }
         }

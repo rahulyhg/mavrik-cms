@@ -2,7 +2,7 @@
 @import "../mixins/material-card";
 @import "../utilities/variables";
 
-#drop_zone{
+.dropzone{
   @include cover();
   @include flex();
   @include flex-center();

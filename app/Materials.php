@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Materials extends Model
 {
-    protected $fillable = ['name', 'type', 'path', 'status'];
+    protected $fillable = ['name', 'type', 'path', 'status', 'credit'];
 
     public static function showAll(){
         return Materials::where('status', 'active')
@@ -14,16 +14,19 @@ class Materials extends Model
     }
     public static function saveMaterial($material)
     {
-        $material = new Materials(array(
+        $newMaterial = new Materials(array(
             'name' => $material['name'],
             'type' => $material['type'],
             'path' => $material['path'],
+            'credit' => $material['credit'],
             'status' => 'inactive'
         ));
 
-        $material->save();
+        $newMaterial->gallery()->associate(Gallery::find($material['gallery_id']));
 
-        return $material;
+        $newMaterial->save();
+
+        return $newMaterial;
 
     }
 
@@ -35,6 +38,16 @@ class Materials extends Model
     public static function showMaterial($id){
         return Materials::where('id', $id)
             ->first();
+    }
+
+    public static function updateMaterial($update, $id){
+        $material = Materials::find($id);
+
+        $material->fill($update);
+
+        $material->save();
+
+        return $material;
     }
 
     public static function updateActiveMaterial($data, $id){
@@ -66,8 +79,12 @@ class Materials extends Model
     }
 
     public static function deleteMaterial($id){
-        $user = Materials::find($id);
-
-        return $user->delete();
+        $material = Materials::find($id);
+        
+        return $material->delete();
+    }
+    
+    public function gallery(){
+        return $this->belongsTo('App\Gallery');
     }
 }

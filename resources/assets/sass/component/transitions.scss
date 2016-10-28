@@ -45,6 +45,14 @@
   opacity: 0;
 }
 
+.fadeOverlay-transition{
+  transition: all 1.5s ease;
+}
+
+.fadeOverlay-enter, .fadeOverlay-leave{
+  opacity: .5;
+}
+
 
 .fade-transition{
   transition: all .5s ease;
