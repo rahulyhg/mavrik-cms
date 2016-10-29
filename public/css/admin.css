@@ -916,9 +916,55 @@ strong {
   text-align: left;
   width: 50%; }
 
+.card--headline {
+  color: white;
+  position: relative;
+  z-index: 99; }
+
+.card--overlay {
+  position: absolute;
+  width: 100%;
+  height: 70%;
+  bottom: 0;
+  left: 0;
+  opacity: .5;
+  background: -webkit-linear-gradient(bottom, transparent, black);
+  /* For Safari 5.1 to 6.0 */
+  /* For Opera 11.1 to 12.0 */
+  /* For Firefox 3.6 to 15 */
+  background: -webkit-linear-gradient(top, transparent, black);
+  background: linear-gradient(to bottom, transparent, black);
+  /* Standard syntax (must be last) */ }
+
+h1 {
+  margin: 0 !important; }
+
+strong {
+  font-weight: 900 !important; }
+
+.gallery--grid {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-wrap: wrap; }
+
+.gallery--grid .gallery--card {
+  -webkit-box-flex: 1;
+  flex: 1 0 40%;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-top: 10px; }
+
 .gallery--card {
   height: 300px;
-  width: 40%;
   max-width: 500px;
   background: white;
   position: relative;
@@ -939,24 +985,32 @@ strong {
   background-size: cover;
   cursor: pointer; }
 
-.card--headline {
-  color: white;
-  position: relative;
-  z-index: 99; }
+@media (min-width: 410px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(98% - 10px); } }
 
-.card--overlay {
-  position: absolute;
-  width: 100%;
-  height: 70%;
-  bottom: 0;
-  left: 0;
-  opacity: .5;
-  background: -webkit-linear-gradient(bottom, transparent, black);
-  /* For Safari 5.1 to 6.0 */
-  /* For Opera 11.1 to 12.0 */
-  /* For Firefox 3.6 to 15 */
-  background: -webkit-linear-gradient(top, transparent, black);
-  background: linear-gradient(to bottom, transparent, black);
-  /* Standard syntax (must be last) */ }
+@media (min-width: 620px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(49.33333% - 10px); } }
+
+@media (min-width: 830px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(25% - 10px); } }
+
+@media (min-width: 1040px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(20% - 10px); } }
+
+@media (min-width: 1250px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(24.8% - 10px); } }
+
+@media (min-width: 1460px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(24.7% - 10px); } }
+
+@media (min-width: 1670px) {
+  .gallery--grid .gallery--card {
+    min-width: calc(12.5% - 10px); } }
 
 /*# sourceMappingURL=admin.css.map */

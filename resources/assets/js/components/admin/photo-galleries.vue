@@ -9,13 +9,13 @@
                     <a href="#!" v-show="isAddImageCard" class="breadcrumb">New Image</a>
                 </div>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a href="#" @click="isUploading = true, activeGallery = ''">Add Gallery</a></li>
+                    <li><a href="#" @click="moveToUpload">Add Gallery</a></li>
                     <li><a href="#">Clear All</a></li>
                 </ul>
             </div>
         </nav>
         <div class="component--state">
-            <template v-if="repository.length > 0 || firstUpload">
+            <template v-if="repository.length > 0 && !firstUpload || isUploading">
                 <div class="gallery--repository">
                     <template v-if="isUploading">
                         <div class="upload-box image--upload">
@@ -155,9 +155,11 @@
                             </div>
                         </template>
                         <template v-else>
-                            <div v-for="gallery in repository" @click="openGallery(gallery.id)" class="gallery--card hoverable waves-effect waves-light" :style="{ 'background-image': 'url(' + gallery.image + ')' }">
-                                <div class="card--overlay"></div>
-                                <span class="card--headline">{{gallery.name}}</span>
+                            <div class="gallery--grid">
+                                <div v-for="gallery in repository" @click="openGallery(gallery.id)" class="gallery--card hoverable waves-effect waves-light" :style="{ 'background-image': 'url(' + gallery.image + ')' }">
+                                    <div class="card--overlay"></div>
+                                    <span class="card--headline">{{gallery.name}}</span>
+                                </div>
                             </div>
                         </template>
                     </template>
@@ -224,6 +226,12 @@
                     return this.$options.filters.filterFor(this.repository, this.activeGallery)[0];
                 }
                 return null;
+            },
+            firstUpload: function () {
+                if(this.repository.length <= 0){
+                    return true;
+                }
+                return false;
             }
         },
         methods:{
@@ -235,8 +243,11 @@
                   return this.repository = results.data;
               }
             },
+            moveToUpload: function () {
+                this.isUploading = true;
+                this.activeGallery = ''
+            },
             initialUpload: function () {
-                 this.firstUpload = true;
                  this.showDock();
              },
             showDock: function () {
@@ -273,6 +284,8 @@
             },
             successGalleryUpload: function (results) {
                 this.repository.push(results.data);
+                this.openGallery(results.data.id);
+                this.resetInputs();
             },
             submitNewImage: function ($galleryId) {
                 if(this.newImageName){
@@ -308,6 +321,7 @@
             },
             resetInputs: function () {
               this.newImageName = '';
+                this.newGalleryName = '';
                 this.newImageCredit = '';
                 this.fileStage = '';
                 this.isPreviewFile = false;
@@ -316,6 +330,7 @@
             openGallery: function ($id) {
               this.activeGallery = $id;
                 this.isOpenGallery = true;
+                this.isUploading = false;
                 this.isShowMain = true;
             },
             moveToDataUpload: function () {

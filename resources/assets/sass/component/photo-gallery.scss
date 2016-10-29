@@ -96,21 +96,6 @@
   text-align: left;
   width: 50%;
 }
-.gallery--card{
-  height: 300px;
-  width: 40%;
-  max-width: 500px;
-  background: white;
-  position: relative;
-  @include card(1);
-  @include flex();
-  @include flex-center();
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  cursor: pointer;
-}
 
 .card--headline{
   color: white;

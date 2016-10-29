@@ -144,10 +144,10 @@ class MoveMaterial
     public function moveVideo($material, $type){
         $video = $material['video'];
 
-        $check = $this->checkMaterial();
+        $check = $this->createMaterialObject($material, $video, $type)->checkMaterial();
 
         if(!$check){
-            return $this->createMaterialObject($material, $video, $type)->storeMaterial($video)
+            return $this->storeMaterial($video)
                 ->saveMaterial();
         }
 

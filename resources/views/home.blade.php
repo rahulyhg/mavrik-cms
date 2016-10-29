@@ -29,6 +29,7 @@
             <statistics v-show="activeView=='statistics'"></statistics>
             <background-video token='{{csrf_token()}}' v-show="activeView=='background'"></background-video>
             <photo-gallery token='{{csrf_token()}}' v-show="activeView=='photo galleries'"></photo-gallery>
+            <social token='{{csrf_token()}}' v-show="activeView=='video gallery'"></social>
         </div>
     </div>
 </div>

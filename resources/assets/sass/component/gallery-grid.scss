@@ -1,0 +1,66 @@
+@import "../mixins/mixins";
+@import "../mixins/material-card";
+@import "../component/fonts";
+@import "../utilities/variables";
+
+.gallery--grid{
+  @include cover();
+  @include flex();
+  align-items: center;
+  flex-wrap: wrap;
+}
+.gallery--grid .gallery--card {
+  flex: 1 0 40%;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.gallery--card{
+  height: 300px;
+  max-width: 500px;
+  background: white;
+  position: relative;
+  @include card(1);
+  @include flex();
+  @include flex-center();
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  cursor: pointer;
+}
+@media (min-width: 410px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(98% - 10px);
+  }
+}
+@media (min-width: 620px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(49.33333% - 10px);
+  }
+}
+@media (min-width: 830px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(25% - 10px);
+  }
+}
+@media (min-width: 1040px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(20% - 10px);
+  }
+}
+@media (min-width: 1250px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(24.8% - 10px);
+  }
+}
+@media (min-width: 1460px) {
+  .gallery--grid .gallery--card  {
+    max-width: calc(24.7% - 10px);
+  }
+}
+@media (min-width: 1670px) {
+  .gallery--grid .gallery--card  {
+    min-width: calc(12.5% - 10px);
+  }
+}

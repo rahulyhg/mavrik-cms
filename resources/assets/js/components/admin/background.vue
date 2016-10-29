@@ -1,10 +1,21 @@
 <template>
     <div class="container">
         <div class="content background--content">
+            <nav>
+                <div class="nav-wrapper">
+                    <div class="col s12">
+                        <a href="#!" class="breadcrumb">Video Reels</a>
+                    </div>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="#">Add Reel</a></li>
+                        <li><a href="#">Clear All</a></li>
+                    </ul>
+                </div>
+            </nav>
             <div v-el:video-overlay class="upload-box video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
                 <div class="video-upload--content">
                     <div class="upload--options">
-                        <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">+</i></a>
+                        <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">add</i></a>
                     </div>
                     <file-upload type="video" :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
                     <div class="video-overlay gutters--xs" v-show="activeVideo" transition="fade">
