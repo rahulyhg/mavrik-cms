@@ -18,11 +18,10 @@ class Gallery extends Model
         return Gallery::findOrFail($id);
     }
     public static function createGallery($object, $path){
-        
         if($object['path']){
             $imagePath = $object['path'];
         } else {
-            $imagePath = null;
+            $imagePath = '/image/defaults/colors.jpg';
         }
 
 

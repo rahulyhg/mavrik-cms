@@ -10,6 +10,7 @@ namespace App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
+use GuzzleHttp\Client;
 
 
 class MoveMaterial
@@ -31,14 +32,20 @@ class MoveMaterial
 
     public function checkMaterial(){
 
-        $clean_storage = explode("/storage",$this->material_object['path']);
-
-        $isExist = Storage::disk($this->env)->exists($clean_storage[1]);
+        //trigger exception in a "try" block
+        try {
+            $clean_storage = explode("/storage",$this->material_object['path']);
+                    $isExist = Storage::disk($this->env)->exists($clean_storage[1]);
 
             if($isExist){
                 return $isExist;
             }
+        }
 
+        //catch exception
+        catch(\Exception $e) {
+            return false;
+        }
         return false;
     }
 
@@ -58,6 +65,37 @@ class MoveMaterial
             Storage::disk($this->env)->put($clean_storage[1], file_get_contents($material));
         }
 
+
+        return $this;
+    }
+
+    public function createMediaPath(){
+        $type = $this->request['media'];
+        if($type == 'vimeo'){
+            // find image and set as the credit
+            $res = unserialize(file_get_contents("http://vimeo.com/api/v2/video/186154747.php"));
+            $this->request['credit'] = $res[0]['thumbnail_large'];
+
+            // break and reform path
+
+            $videoId = explode('https://vimeo.com/', $this->request['path']);
+            $this->request['path'] = 'https://player.vimeo.com/video/' . $videoId[1];
+
+        }
+        return $this;
+    }
+
+    public function createLinkObject(){
+        $material = $this->request->all();
+        $material = [
+            'name' => $material['name'],
+            'type' => 'video',
+            'gallery_id' => null,
+            'path' => $material['path'],
+            'credit' => $material['credit']
+        ];
+
+        $this->material_object = $material;
 
         return $this;
     }
@@ -110,6 +148,8 @@ class MoveMaterial
             return $this->moveVideo($material, $type);
         } elseif($type == 'image') {
             return $this->moveImage($material, $type);
+        } elseif($type == 'video-link'){
+            return $this->moveVideoLink($material);
         } else {
             return $this->moveGalleryImage($material, 'image');
         }
@@ -154,6 +194,10 @@ class MoveMaterial
         return 'there was an error';
     }
 
+    public function moveVideoLink(){
+        return $this->createMediaPath()
+            ->createLinkObject()->saveMaterial();
+    }
     public function moveImage($material, $type){
 
             $image = $material['image'];
@@ -175,6 +219,8 @@ class MoveMaterial
         if($check){
             $clean_storage = explode("/storage",$this->material_object['path']);
             Storage::disk($this->env)->delete($clean_storage[1]);
+            return Materials::deleteMaterial($id);
+        } else {
             return Materials::deleteMaterial($id);
         }
         return 'poop';

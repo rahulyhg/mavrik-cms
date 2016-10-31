@@ -18,7 +18,7 @@ class MaterialController extends Controller
 
         $this->middleware('auth', [
             'except' => [
-                'index',
+                'index', 'show'
             ],
         ]);
 
@@ -48,7 +48,7 @@ class MaterialController extends Controller
      */
     public function show($id)
     {
-        if($id == 'video' || $id == 'image' || $id == 'reel'){
+        if($id == 'video' || $id == 'image' || $id == 'reel' || $id == 'active'){
             return Materials::showMaterialGroup($id);
         }
         

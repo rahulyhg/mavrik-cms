@@ -16,10 +16,8 @@
                     <span class="title">{{ Auth::user()->name}}</span>
                 </div>
                 <div class="nav--selects--container m-t-sm">
-                    <ul class="nav--selects">
-                        <li class="caps hv" v-for="view in views" @click="changeView(view)">
-                            @{{view}}
-                        </li>
+                    <ul class="collection">
+                        <a href="#!" class="collection-item caps" v-for="view in views" @click="changeView(view)">@{{view}}</a>
                     </ul>
                 </div>
             </div>

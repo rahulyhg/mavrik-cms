@@ -1,12 +1,14 @@
 <template>
     <div class="content full flex-column-center">
-        <div class="title m-b-md">
-            Fabiana's Work
-        </div>
-        <div class="about--fab">
-            <p>
-                Lorem ipsum dolor sit amet, at ferri soluta sit, animal mandamus id eos. Quas constituam mei id. Nam no omnium electram imperdiet. Ferri latine an sed, etiam error necessitatibus mea ea.
-            </p>
+        <div class="repository">
+            <div class="repository--material" v-for="material in repository">
+                <template v-if="material.type == 'image'">
+                    <img :src="material.path">
+                </template>
+                <template v-else>
+                    <img :src="material.credit">
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -15,7 +17,28 @@
     export default {
         props: ['active-view'],
         ready() {
-            console.log('Component ready.')
+            this.fetchWork();
+        },
+        data: function () {
+            return {
+                repository: ''
+            }
+        },
+        methods: {
+            fetchWork: function () {
+                this.getHttp('/auth/materials/active', this.setWork);
+            },
+            setWork: function (results) {
+              this.repository = results.data;
+            },
+            getHttp: function (url,callback) {
+                const params = {
+                    headers: {
+                        'X-CSRF-TOKEN': this.token
+                    }
+                }
+                this.$http.get(url, params).then(callback).catch(err => console.error(err));
+            }
         }
     }
 </script>

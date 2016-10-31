@@ -45663,11 +45663,35 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
     props: ['active-view'],
     ready: function ready() {
-        console.log('Component ready.');
+        this.fetchWork();
+    },
+
+    data: function data() {
+        return {
+            repository: ''
+        };
+    },
+    methods: {
+        fetchWork: function fetchWork() {
+            this.getHttp('/auth/materials/active', this.setWork);
+        },
+        setWork: function setWork(results) {
+            this.repository = results.data;
+        },
+        getHttp: function getHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.get(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"title m-b-md\">\n        Fabiana's Work\n    </div>\n    <div class=\"about--fab\">\n        <p>\n            Lorem ipsum dolor sit amet, at ferri soluta sit, animal mandamus id eos. Quas constituam mei id. Nam no omnium electram imperdiet. Ferri latine an sed, etiam error necessitatibus mea ea.\n        </p>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"repository--material\" v-for=\"material in repository\">\n            <template v-if=\"material.type == 'image'\">\n                <img :src=\"material.path\">\n            </template>\n            <template v-else=\"\">\n                <img :src=\"material.credit\">\n            </template>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

@@ -58,8 +58,8 @@
                                     <a class="add--gallery btn-floating btn-large waves-effect waves-light red" @click="isAddImageCard = true, isShowMain = false"><i class="material-icons">add</i></a>
                                 </div>
                                 <h3 class="gallery--callout">Photos</h3>
-                                <div class="gallery--main" :class="{'center-gallery': filteredActiveGallery.materials.length < 1, 'order-gallery': filteredActiveGallery.materials.length > 1}">
-                                    <template v-if="filteredActiveGallery.materials.length > 0 && isShowMain">
+                                <div class="gallery--main" :class="{'center-gallery': filteredActiveGallery.materials && filteredActiveGallery.materials.length < 1, 'order-gallery': filteredActiveGallery.materials.length > 1}">
+                                    <template v-if="filteredActiveGallery.materials && filteredActiveGallery.materials.length > 0 && isShowMain">
                                         <div class="gallery--image-card card" v-for="material in filteredActiveGallery.materials">
                                             <div class="card-image waves-effect waves-block waves-light">
                                                 <img class="activator" :src="material.path">
@@ -275,7 +275,8 @@
                         return this.sendHttp('gallery', formData, this.successGalleryUpload);
                     }
                     var data = {
-                        'name': this.newGalleryName
+                        'name': this.newGalleryName,
+                        'path': null
                     };
 
                     return this.sendHttp('gallery', data, this.successGalleryUpload);

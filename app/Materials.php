@@ -31,6 +31,10 @@ class Materials extends Model
     }
 
     public static function showMaterialGroup($id){
+        if($id == 'active'){
+            return Materials::where('type', '!=', 'reel')
+                ->where('status', 'active')->get();
+        }
         return Materials::where('type', $id)
             ->get();
     }

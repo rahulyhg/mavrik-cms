@@ -16,6 +16,11 @@ nav{
   height: 10%!important;
 }
 
+.media-icon{
+  width: 25px;
+  cursor: pointer;
+}
+
 .modal--show{
   top: 0;
   z-index: 1003;
@@ -86,6 +91,10 @@ ul{
   width: 100%;
 }
 
+.link-input{
+  width: 100%;
+}
+
 .no-show{
   overflow: hidden;
 }
@@ -119,13 +128,21 @@ ul{
   height: 500px;
   width: 100%;
   max-width: 900px;
+  background: white;
+  @include card(1);
 }
 
 #previewFile{
   width: 100%;
 }
 
-.gallery--repository{
+.gallery--repository, .background--content{
+  @include cover();
+  @include flex();
+  @include flex-center();
+}
+
+.repository{
   @include cover();
   @include flex();
   @include flex-center();
@@ -137,11 +154,6 @@ ul{
   overflow: hidden;
   position: relative;
   z-index: 99;
-}
-
-.image--upload{
-  background: white;
-  @include card(1);
 }
 
 .upload--centered{
@@ -163,9 +175,10 @@ ul{
 .video-upload--content{
   overflow: hidden;
   background: white;
+  @include cover();
 }
 
-.video-upload--content, .video-repository--content{
+.video-repository--content{
   background: white;
   @include card(1);
   @include cover();

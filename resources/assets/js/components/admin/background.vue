@@ -12,70 +12,72 @@
                     </ul>
                 </div>
             </nav>
-            <div v-el:video-overlay class="upload-box video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
-                <div class="video-upload--content">
-                    <div class="upload--options">
-                        <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">add</i></a>
-                    </div>
-                    <file-upload type="video" :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
-                    <div class="video-overlay gutters--xs" v-show="activeVideo" transition="fade">
-                        <div class="overlay--content">
-                            <video id="vReel" v-el:video class="video-js vjs-default-skin">
-                                <source v-if="activeVideo" type="video/mp4" />
-                                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-                            </video>
+            <div class="component--state">
+                <div v-el:video-overlay class="upload-box video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
+                    <div class="video-upload--content">
+                        <div class="upload--options">
+                            <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">add</i></a>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="video-repository gutters" v-show="videoRepository.length > 0" transition="fade">
-                <div class="repository--nav">
-                    <div class="nav--namespace">
-                        Video-Reel Archive
-                    </div>
-                    <div class="nav--search">
-                        search bar
-                    </div>
-                </div>
-                <ul class="video-repository--content">
-                    <template v-if="videoRepository && videoRepository.length > 0">
-                        <li class="repository--video waves-effect waves-red hoverable" v-for="video in videoRepository">
-                            <div class="slide--content" :class="{'slide--left': isVerify && activeVerify == $index}" @click.self="toggleVideo($index)">
-                                <div class="video--callout">
-                                    <div class="video--icon">
-                                        <template v-if="activeIndex == $index">
-                                            <img class="video-sprite--icon" src="/image/svg/ic_pause_circle_outline_black_24px.svg">
-                                        </template>
-                                        <template v-else>
-                                            <div class="video-sprite--icon"></div>
-                                        </template>
-                                    </div>
-                                    <div class="video--nameSpace">
-                                        <span><strong>{{video.name}}</strong></span>
-                                        <span>{{video.created_at}}</span>
-                                    </div>
-                                </div>
-                                <div class="video--options">
-                                    <div class="video--status" @click="updateActivity($index)">
-                                        <a class="waves-effect btn-flat" :class="{'red': video.status == 'active'}">{{video.status}}</a>
-                                    </div>
-                                    <div class="video--delete" @click="verifyDelete($index)">
-                                        <img src="/image/svg/ic_more_vert_black_24px.svg">
-                                    </div>
-                                </div>
-                                </div>
-                            <div class="slide--verify" @click="callVerifyDelete($index)">
-                                <img class="svg-icon" src="/image/svg/ic_delete_white_24px.svg">
-                                <span>delete</span>
+                        <file-upload type="video" :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
+                        <div class="video-overlay gutters--xs" v-show="activeVideo" transition="fade">
+                            <div class="overlay--content">
+                                <video id="vReel" v-el:video class="video-js vjs-default-skin">
+                                    <source v-if="activeVideo" type="video/mp4" />
+                                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                                </video>
                             </div>
-                        </li>
-                    </template>
-                    <template v-else>
-                        <div class="emptyState emptyState--video">
-                            <p>No videos saved in the archive.</p>
                         </div>
-                    </template>
-                </ul>
+                    </div>
+                </div>
+                <div class="video-repository gutters" v-show="videoRepository.length > 0" transition="fade">
+                    <div class="repository--nav">
+                        <div class="nav--namespace">
+                            Video-Reel Archive
+                        </div>
+                        <div class="nav--search">
+                            search bar
+                        </div>
+                    </div>
+                    <ul class="video-repository--content">
+                        <template v-if="videoRepository && videoRepository.length > 0">
+                            <li class="repository--video waves-effect waves-red hoverable" v-for="video in videoRepository">
+                                <div class="slide--content" :class="{'slide--left': isVerify && activeVerify == $index}" @click.self="toggleVideo($index)">
+                                    <div class="video--callout">
+                                        <div class="video--icon">
+                                            <template v-if="activeIndex == $index">
+                                                <img class="video-sprite--icon" src="/image/svg/ic_pause_circle_outline_black_24px.svg">
+                                            </template>
+                                            <template v-else>
+                                                <div class="video-sprite--icon"></div>
+                                            </template>
+                                        </div>
+                                        <div class="video--nameSpace">
+                                            <span><strong>{{video.name}}</strong></span>
+                                            <span>{{video.created_at}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="video--options">
+                                        <div class="video--status" @click="updateActivity($index)">
+                                            <a class="waves-effect btn-flat" :class="{'red': video.status == 'active'}">{{video.status}}</a>
+                                        </div>
+                                        <div class="video--delete" @click="verifyDelete($index)">
+                                            <img src="/image/svg/ic_more_vert_black_24px.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slide--verify" @click="callVerifyDelete($index)">
+                                    <img class="svg-icon" src="/image/svg/ic_delete_white_24px.svg">
+                                    <span>delete</span>
+                                </div>
+                            </li>
+                        </template>
+                        <template v-else>
+                            <div class="emptyState emptyState--video">
+                                <p>No videos saved in the archive.</p>
+                            </div>
+                        </template>
+                    </ul>
+                </div>
             </div>
             <!-- Modal Structure -->
             <div id="modal1" class="modal">

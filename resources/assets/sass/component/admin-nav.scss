@@ -2,6 +2,15 @@
 @import "../mixins/material-card";
 @import "../utilities/variables";
 
+
+.collection{
+  width: 100%;
+  border: none;
+  .collection-item{
+    border-bottom: none;
+    color: #636b6f!important;
+  }
+}
 .component--row{
   @include flex();
   @include flex-row(no-wrap);
@@ -25,10 +34,7 @@
 }
 
 .nav--selects--container{
-  width: 50%;
-  @media #{$desktop} {
-    width: 60%;
-  }
+  width: 100%;
 }
 .nav--selects{
   @include flex();
