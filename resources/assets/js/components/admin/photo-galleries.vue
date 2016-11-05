@@ -18,7 +18,7 @@
             <div class="repository--jumbo" :class="{'passive-jumbo': isUploading}" v-show="!isOpenGallery || isUploading || repository.length == 0">
                 <img class="repository--icon icon-card" src="/image/svg/folder.svg" v-show="repository.length <= 0 && !isUploading">
                 <div class="repository--search" v-show="repository.length > 0 && !isUploading" @mouseenter="isSearching = true" @mouseleave="isSearching = false">
-                    <img class="repository--search-icon" src="/image/svg/ic_search_white_24px.svg">
+                    <img class="repository--search-icon" src="/image/svg/search_icon.svg">
                     <div class="search--box">
                         <input type="text" v-show="isSearching || repositorySearch.length > 0" :class="{'no_result_input': repositorySearch.length > 0 && searchResults.length === 0, 'positive_result_input': repositorySearch.length > 0 && searchResults.length > 0}" v-model="repositorySearch">
                         <span v-else>Search...</span>
