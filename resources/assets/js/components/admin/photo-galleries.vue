@@ -10,13 +10,23 @@
                 </div>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li><a href="#" @click="moveToUpload">Add Gallery</a></li>
-                    <li><a href="#">Clear All</a></li>
+                    <li v-show="isOpenGallery" @click="verifyDeleteGallery(this.filteredActiveGallery.id)"><a href="#">Delete Gallery</a></li>
                 </ul>
             </div>
         </nav>
         <div class="component--state">
+            <div class="repository--jumbo" :class="{'passive-jumbo': isUploading}" v-show="!isOpenGallery || isUploading || repository.length == 0">
+                <img class="repository--icon icon-card" src="/image/svg/folder.svg" v-show="repository.length <= 0 && !isUploading">
+                <div class="repository--search" v-show="repository.length > 0 && !isUploading" @mouseenter="isSearching = true" @mouseleave="isSearching = false">
+                    <img class="repository--search-icon" src="/image/svg/ic_search_white_24px.svg">
+                    <div class="search--box">
+                        <input type="text" v-show="isSearching || repositorySearch.length > 0" :class="{'no_result_input': repositorySearch.length > 0 && searchResults.length === 0, 'positive_result_input': repositorySearch.length > 0 && searchResults.length > 0}" v-model="repositorySearch">
+                        <span v-else>Search...</span>
+                    </div>
+                </div>
+            </div>
             <template v-if="repository.length > 0 && !firstUpload || isUploading">
-                <div class="gallery--repository">
+                <div class="gallery--repository" :class="{'content': isOpenGallery, 'full--center': isUploading}">
                     <template v-if="isUploading">
                         <div class="upload-box image--upload">
                             <div class="upload--header">
@@ -51,14 +61,14 @@
                     <template v-else>
                         <template v-if="isOpenGallery">
                             <div class="gallery--contents">
-                                <div class="gallery--header" :style="{ 'background-image': 'url(' + filteredActiveGallery.image + ')' }">
+                                <div class="gallery--header" v-bind:style="{ 'background-image': 'url(' + filteredActiveGallery.image + ')' }">
                                     <div class="card--overlay"></div>
                                     <span class="card--headline">{{filteredActiveGallery.name}}</span>
                                     <span class="card--headline">{{filteredActiveGallery.updated_at}}</span>
                                     <a class="add--gallery btn-floating btn-large waves-effect waves-light red" @click="isAddImageCard = true, isShowMain = false"><i class="material-icons">add</i></a>
                                 </div>
                                 <h3 class="gallery--callout">Photos</h3>
-                                <div class="gallery--main" :class="{'center-gallery': filteredActiveGallery.materials && filteredActiveGallery.materials.length < 1, 'order-gallery': filteredActiveGallery.materials.length > 1}">
+                                <div class="gallery--main">
                                     <template v-if="filteredActiveGallery.materials && filteredActiveGallery.materials.length > 0 && isShowMain">
                                         <div class="gallery--image-card card" v-for="material in filteredActiveGallery.materials">
                                             <div class="card-image waves-effect waves-block waves-light">
@@ -156,7 +166,7 @@
                         </template>
                         <template v-else>
                             <div class="gallery--grid">
-                                <div v-for="gallery in repository" @click="openGallery(gallery.id)" class="gallery--card hoverable waves-effect waves-light" :style="{ 'background-image': 'url(' + gallery.image + ')' }">
+                                <div v-for="gallery in searchResults" @click="openGallery(gallery.id)" class="gallery--card hoverable waves-effect waves-light" :style="{ 'background-image': 'url(' + gallery.image + ')' }">
                                     <div class="card--overlay"></div>
                                     <span class="card--headline">{{gallery.name}}</span>
                                 </div>
@@ -168,7 +178,6 @@
             <template v-else>
                 <div class="empty--state" transition="fade">
                     <div class="empty">
-                        <img src="/image/svg/folder.svg">
                         <h1>Welcome to the art show!</h1>
                         <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>
                         <a class="waves-effect waves-light btn red" @click="initialUpload"><i class="material-icons left">cloud</i>Create Gallery</a>
@@ -177,16 +186,19 @@
             </template>
         </div>
         <!-- Modal Structure -->
-        <div v-el:upload class="modal" :class="{'modal--show': isModalShown }">
-            <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p>A bunch of text</p>
+        <div class="modal--container" v-show="isInitModal">
+            <div v-el:upload class="modal" :class="{'modal--show': isModalShown}">
+                <div class="modal-content">
+                    <h4>Delete Gallery</h4>
+                    <p>Are you sure you want to remove this gallery from your archive? <br> All images stored in this gallery will be lost as well.</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="waves-effect waves-light btn salmon" @click="closeModal">button</a>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" @click="deleteGallery(filteredActiveGallery.id)">Agree</a>
+                </div>
             </div>
-            <div class="modal-footer">
-                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-            </div>
+            <div id="materialize-overlay" class="lean--overlay" :class="{'hide--overlay': !isOverlay}" transition="fadeOverlay"></div>
         </div>
-        <div id="materialize-overlay" class="lean--overlay" :class="{'hide--overlay': !isOverlay}" transition="fadeOverlay"></div>
     </div>
 </template>
 <script>
@@ -196,6 +208,10 @@
             fileUpload
         },
         ready(){
+            var string = 'lolol';
+            var subset = 'l';
+
+            console.log(string.indexOf(subset));
           this.fetchGalleryRepository();
         },
         data(){
@@ -203,8 +219,6 @@
                 timeOut: 0,
                 repository: [],
                 isShowMain: true,
-                isPreviewFile: false,
-                isOverlay: false,
                 isModalShown: false,
                 firstUpload: false,
                 isUploading: false,
@@ -212,6 +226,13 @@
                 isImageUploaded: false,
                 isOpenGallery: false,
                 isAddImageCard: false,
+                isSearching: false,
+                // modal data
+                isPreviewFile: false,
+                isInitModal: false,
+                isOverlay: false,
+                // form data
+                repositorySearch: '',
                 newImageCardText: '',
                 newImageCredit: '',
                 activeGallery: '',
@@ -223,9 +244,12 @@
         computed: {
             filteredActiveGallery: function(){
                 if(this.activeGallery){
-                    return this.$options.filters.filterFor(this.repository, this.activeGallery)[0];
+                    return this.$options.filters.filterFor(this.repository, this.activeGallery, 'id')[0];
                 }
                 return null;
+            },
+            searchResults: function () {
+              return this.$options.filters.filterInclude(this.repository, this.repositorySearch, 'name');
             },
             firstUpload: function () {
                 if(this.repository.length <= 0){
@@ -284,8 +308,8 @@
 
             },
             successGalleryUpload: function (results) {
-                this.repository.push(results.data);
-                this.openGallery(results.data.id);
+                this.repository.push(results.data[0]);
+                this.openGallery(results.data[0].id);
                 this.resetInputs();
             },
             submitNewImage: function ($galleryId) {
@@ -304,7 +328,17 @@
             },
             successCardUpload: function (results) {
                 var gallery_index = this.findGalleryByID(results.data.gallery_id);
-                this.repository[gallery_index].materials.push(results.data);
+                if(!this.repository[gallery_index].materials){
+                    console.log('make the material');
+                     this.repository[gallery_index].materials = [
+                            results.data
+                    ];
+                    this.filteredActiveGallery.materials = [
+                        results.data
+                    ]
+                } else {
+                    this.repository[gallery_index].materials.push(results.data);
+                }
 
                 this.returnToGallery();
             },
@@ -372,11 +406,34 @@
                 var $index = this.findMaterialById(results.data.material_id);
                     var gallery_index = this.findGalleryByID(this.filteredActiveGallery.id);
 
-                console.log(gallery_index + '   ' + $index);
-
                 this.repository[gallery_index].materials.splice($index, 1);
             },
 
+            verifyDeleteGallery: function (gallery_id) {
+                this.toggleModal();
+            },
+
+            deleteGallery: function (gallery_id) {
+              this.deleteHttp('gallery/' + gallery_id, this.successGalleryDelete);
+            },
+            successGalleryDelete: function (results) {
+                this.closeModal();
+                this.returnToMain();
+
+                var gallery_index = this.findGalleryByID(results.data.material_id);
+                this.repository.splice(gallery_index, 1);
+            },
+
+            toggleModal: function () {
+                this.isInitModal = true;
+                this.isOverlay = true;
+              this.isModalShown = true;
+            },
+            closeModal: function () {
+                this.isModalShown = false;
+                this.isOverlay = false;
+                this.isInitModal = false;
+            },
             successCardActivityUpdate: function (results) {
                 var $index = this.findMaterialById(results.data.id);
                 this.filteredActiveGallery.materials[$index].status = results.data.status;
@@ -459,12 +516,24 @@
             }
         },
         filters: {
-            filterFor: function ($array, filterBy) {
+            filterFor: function ($array, filterBy, filterIn) {
                 var filtered = [];
                 var filterlist = $array;
                 var arrayLength = filterlist.length;
                 for (var i = 0; i < arrayLength; i++) {
-                    if(filterlist[i].id == filterBy){
+                    if(filterlist[i][filterIn] == filterBy){
+                        filtered.push(filterlist[i]);
+                    }
+                }
+                return filtered;
+            },
+            filterInclude: function ($array, filterBy, filterIn) {
+                var filtered = [];
+                var filterlist = $array;
+                var arrayLength = filterlist.length;
+                for (var i = 0; i < arrayLength; i++) {
+                    var string = filterlist[i][filterIn];
+                    if(string.indexOf(filterBy) !== -1){
                         filtered.push(filterlist[i]);
                     }
                 }

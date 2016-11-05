@@ -35,16 +35,6 @@ class GalleryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -108,6 +98,15 @@ class GalleryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($this->material->deleteGallery($id)){
+            return response([
+                'status' => 'success',
+                'material_id' => $id
+            ], 200);
+        }
+
+        return response([
+            'status' => 'failure'
+        ]);
     }
 }

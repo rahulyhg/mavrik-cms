@@ -12,7 +12,10 @@
             </div>
         </nav>
         <div class="component--state">
-            <div class="link--repositiory repository" v-if="repository && repository.length > 0 || isUploading">
+            <div class="repository--jumbo" :class="{'passive-jumbo': isUploading}">
+                <img class="repository--icon icon-card" src="/image/svg/folder.svg" v-show="repository.length <= 0 && !isUploading">
+            </div>
+            <div class="link--repositiory repository" :class="{'flex-center f-h': isUploading}" v-if="repository && repository.length > 0 || isUploading">
                 <template v-if="isUploading">
                     <div class="upload-box">
                         <div class="upload--header">
@@ -79,7 +82,6 @@
             </div>
             <div class="empty--state" transition="fade" v-else>
                 <div class="empty">
-                    <img src="/image/svg/folder.svg">
                     <h1>Welcome to the art show!</h1>
                     <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>
                     <a class="waves-effect waves-light btn red" @click="isUploading = true"><i class="material-icons left">cloud</i>Add Video Link</a>

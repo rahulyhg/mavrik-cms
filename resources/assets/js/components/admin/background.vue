@@ -13,7 +13,8 @@
                 </div>
             </nav>
             <div class="component--state">
-                <div v-el:video-overlay class="upload-box video-upload gutters" :class="{'upload--centered': videoRepository.length <= 0}">
+                <div class="repository--jumbo passive-jumbo"></div>
+                <div v-el:video-overlay class="upload-box video-upload" :class="{'upload--centered': videoRepository.length <= 0, 'top-box-margin': videoRepository.length > 0}">
                     <div class="video-upload--content">
                         <div class="upload--options">
                             <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">add</i></a>

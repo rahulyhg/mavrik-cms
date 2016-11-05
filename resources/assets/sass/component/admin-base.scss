@@ -21,8 +21,26 @@ nav{
   cursor: pointer;
 }
 
+.repository--jumbo{
+  width: 100%;
+  height: 40%;
+  background-image: url("/image/defaults/colors.jpg");
+  background-size: cover;
+  @include flex();
+  @include flex-center();
+}
+
+.passive-jumbo{
+  position: absolute;
+}
+
+.modal--container{
+  @include fullscreen();
+  @include flex();
+  @include flex-center();
+}
+
 .modal--show{
-  top: 0;
   z-index: 1003;
   display: block!important;
 }
@@ -132,17 +150,53 @@ ul{
   @include card(1);
 }
 
+.repository--icon{
+  border-radius: 50%;
+}
+
+.repository--search{
+  @include flex();
+  @include flex-row(nowrap);
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+  .no_result_input{
+    border-bottom: 7px solid red!important;
+  }
+  .positive_result_input{
+    border-bottom: 7px solid green!important;
+  }
+  input {
+    border-bottom: 7px solid white!important;
+    width: 300px;
+  }
+}
+.repository--search-icon{
+  height: 50px;
+  width: 50px;
+}
+.search--box span{
+  color: white;
+  font-size: 25px;
+}
+
+.icon-card{
+  @include card(1);
+}
+
+.delete-icon{
+  width: 25px;
+}
+
 #previewFile{
   width: 100%;
 }
-
-.gallery--repository, .background--content{
-  @include cover();
+.gallery--repository, .repository{
+  width: 100%;
+  position: relative;
   @include flex();
-  @include flex-center();
 }
-
-.repository{
+.background--content{
   @include cover();
   @include flex();
   @include flex-center();
@@ -150,10 +204,19 @@ ul{
 
 .video-upload{
   display: block;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
   position: relative;
   z-index: 99;
+}
+
+.full--center{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .upload--centered{
@@ -247,6 +310,7 @@ margin-left: -100px;
   height:90%;
   width: 100%;
   position: relative;
+  overflow: scroll;
 }
 
 .upload--header, .upload--content, .upload--footer{
@@ -289,7 +353,8 @@ margin-left: -100px;
 }
 
 .empty--state{
-  @include cover();
+  padding: 5%;
+  width: 100%;
   @include flex();
   @include flex-center();
 }
@@ -337,6 +402,11 @@ margin-left: -100px;
 .of-sc{
   overflow: scroll;
 }
-.red{
-  color: white!important;
+
+.top-box-margin{
+  margin-top: 50px;
 }
+
+.salmon{
+    background: $salmon!important;
+  }

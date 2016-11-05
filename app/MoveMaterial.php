@@ -225,5 +225,27 @@ class MoveMaterial
         }
         return 'poop';
     }
+    public function deleteGallery($id){
+        $gallery = Gallery::findGallery($id);
+        if($this->env == 'local'){
+            $path = explode("/storage",$gallery['path'])[1];
+        } else {
+            $path = $gallery['path'];
+        }
+        Storage::disk($this->env)->deleteDirectory($path);
+
+
+        if (strpos($gallery['image'], 'colors.jpg') === false) {
+            if($this->env == 'local'){
+                $image_path = explode("/storage",$gallery['image'])[1];
+            } else {
+                $image_path = $gallery['image'];
+            }
+
+            Storage::disk($this->env)->delete($image_path);
+        }
+
+        return Gallery::deleteGallery($id);
+    }
 
 }

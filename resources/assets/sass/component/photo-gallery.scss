@@ -78,6 +78,11 @@
   color: black!important;
 }
 
+.card .card-action .red{
+  background: #ee6e73!important;
+  color: white!important;
+}
+
 .upload--data{
   background: white;
   @include cover();

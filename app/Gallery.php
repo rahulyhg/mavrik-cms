@@ -25,16 +25,24 @@ class Gallery extends Model
         }
 
 
-        $newGallery = new Gallery(array(
+        $gallery = new Gallery(array(
             'name' => $object['name'],
             'image' => $imagePath,
             'path' => $path,
             'status' => 'inactive'
         ));
 
-        $newGallery->save();
+        $gallery->save();
 
-        return $newGallery;
+        return $newGallery = Gallery::where('id', $gallery->id)
+            ->with('materials')
+            ->get();
+    }
+
+    public static function deleteGallery($id){
+        $gallery = Gallery::find($id);
+
+        return $gallery->delete();
     }
 
     public function materials()

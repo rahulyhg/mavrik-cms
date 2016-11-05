@@ -20,8 +20,49 @@ nav {
   width: 25px;
   cursor: pointer; }
 
-.modal--show {
+.repository--jumbo {
+  width: 100%;
+  height: 40%;
+  background-image: url("/image/defaults/colors.jpg");
+  background-size: cover;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center; }
+
+.passive-jumbo {
+  position: absolute; }
+
+.modal--container {
+  height: 100%;
+  width: 100%;
   top: 0;
+  left: 0;
+  position: absolute;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center; }
+
+.modal--show {
   z-index: 1003;
   display: block !important; }
 
@@ -144,11 +185,51 @@ ul {
   background: white;
   box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12); }
 
+.repository--icon {
+  border-radius: 50%; }
+
+.repository--search {
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 40%; }
+  .repository--search .no_result_input {
+    border-bottom: 7px solid red !important; }
+  .repository--search .positive_result_input {
+    border-bottom: 7px solid green !important; }
+  .repository--search input {
+    border-bottom: 7px solid white !important;
+    width: 300px; }
+
+.repository--search-icon {
+  height: 50px;
+  width: 50px; }
+
+.search--box span {
+  color: white;
+  font-size: 25px; }
+
+.icon-card {
+  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12); }
+
+.delete-icon {
+  width: 25px; }
+
 #previewFile {
   width: 100%; }
 
-.gallery--repository, .background--content {
-  height: 100%;
+.gallery--repository, .repository {
   width: 100%;
   position: relative;
   display: -webkit-box;
@@ -156,16 +237,9 @@ ul {
   /* OLD - Firefox 19- (buggy but mostly works) */
   /* TWEENER - IE 10 */
   /* NEW - Chrome */
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center; }
+  display: flex; }
 
-.repository {
+.background--content {
   height: 100%;
   width: 100%;
   position: relative;
@@ -185,10 +259,23 @@ ul {
 
 .video-upload {
   display: block;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
   position: relative;
   z-index: 99; }
+
+.full--center {
+  height: 100%;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center; }
 
 .upload--centered {
   -webkit-transform: translateY(30%);
@@ -306,7 +393,8 @@ ul {
 .component--state {
   height: 90%;
   width: 100%;
-  position: relative; }
+  position: relative;
+  overflow: scroll; }
 
 .upload--header, .upload--content, .upload--footer {
   width: 100%; }
@@ -350,9 +438,8 @@ ul {
     margin: 0 5px; }
 
 .empty--state {
-  height: 100%;
+  padding: 5%;
   width: 100%;
-  position: relative;
   display: -webkit-box;
   /* OLD - iOS 6-, Safari 3.1-6 */
   /* OLD - Firefox 19- (buggy but mostly works) */
@@ -408,8 +495,11 @@ ul {
 .of-sc {
   overflow: scroll; }
 
-.red {
-  color: white !important; }
+.top-box-margin {
+  margin-top: 50px; }
+
+.salmon {
+  background: #ee6e73 !important; }
 
 .collection {
   width: 100%;
@@ -917,6 +1007,10 @@ strong {
 
 .card .card-action a {
   color: black !important; }
+
+.card .card-action .red {
+  background: #ee6e73 !important;
+  color: white !important; }
 
 .upload--data {
   background: white;
