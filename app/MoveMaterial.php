@@ -104,27 +104,27 @@ class MoveMaterial
 
     public function createMaterialObject($material, $image, $type){
         $name = $image->getClientOriginalName();
-        $material = [
+        $newMaterial = [
             'name' => $material['name'],
             'type' => $type,
             'gallery_id' => $material['gallery_id'],
-            'path' => $this->createStoragePath($material, $name, $type),
+            'path' => $this->createStoragePath($material, $name),
             'credit' => $material['credit']
         ];
 
-        $this->material_object = $material;
+        $this->material_object = $newMaterial;
 
         return $this;
     }
 
-    public function createStoragePath($material, $fileName, $type){
+    public function createStoragePath($material, $fileName){
         
         $gallery = $this->fetchGallery($material);
 
         if($gallery){
             $folder = $gallery['name'];
         } else {
-            $folder = $type;
+            $folder = 'gallery';
         }
 
         $path = 'https://fabiana.objects.frb.io/' . $folder . '/' . $fileName;
