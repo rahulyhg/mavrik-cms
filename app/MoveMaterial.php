@@ -60,9 +60,9 @@ class MoveMaterial
             Storage::disk($this->env)->put($path . '/' . $material->getClientOriginalName(), file_get_contents($material));
         } else {
             if($this->env == 'local'){
-                $image_path = explode("/storage",$gallery['image'])[1];
+                $image_path = explode("/storage",$gallery['path'])[1];
             } else {
-                $image_path = $gallery['image'];
+                $image_path = $gallery['path'];
             }
             Storage::disk($this->env)->put($image_path, file_get_contents($material));
         }
