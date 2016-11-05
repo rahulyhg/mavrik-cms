@@ -63,6 +63,8 @@ class MoveMaterial
                 $image_path = explode("/storage",$gallery['path'])[1];
             } else {
                 $image_path = explode("https://fabiana.objects.frb.io/",$gallery['path'])[1];
+
+                dd($image_path);
             }
             Storage::disk($this->env)->put($image_path, file_get_contents($material));
         }
