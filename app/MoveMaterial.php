@@ -241,10 +241,11 @@ class MoveMaterial
             if($this->env == 'local'){
                 $image_path = explode("/storage",$gallery['image'])[1];
             } else {
-                $image_path = $gallery['image'];
+                $image_path = explode("https://fabiana.objects.frb.io",$gallery['image'])[1];
             }
 
-            Storage::disk($this->env)->delete($image_path);
+            $delte = Storage::disk($this->env)->delete($image_path);
+            dd($image_path, $delte);
         }
 
         return Gallery::deleteGallery($id);
