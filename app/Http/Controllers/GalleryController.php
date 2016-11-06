@@ -43,8 +43,7 @@ class GalleryController extends Controller
     public function store(Request $request)
     {
         //
-
-        $path = $this->material->createStoragePath('', '', $request->get('name'));
+        $path = $this->material->createStoragePath($request->all(), '');
 
         if ($request->hasFile('image-0')) {
              $imageObject = $this->material->moveMaterial();

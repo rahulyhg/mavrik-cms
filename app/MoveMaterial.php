@@ -120,21 +120,20 @@ class MoveMaterial
     public function createStoragePath($material, $fileName){
         
         $gallery = $this->fetchGallery($material);
-
-        if($gallery){
-            $folder = $gallery['name'];
+        if($this->env == 'local'){
+            $root= '/storage/';
         } else {
-            if($material['type'] == 'gallery'){
-                $folder = $material['name'];
-            } else {
-                $folder = 'gallery';
-            }
+            $root = 'https://fabiana.objects.frb.io/';
         }
 
-        $path = 'https://fabiana.objects.frb.io/' . $folder . '/' . $fileName;
-
-        if(App::isLocal()){
-            $path= '/storage/'. $folder .'/'. $fileName;
+        if($gallery){
+            $path = $root . $gallery['name'] . '/' . $fileName;
+        } else {
+            if($material['type'] == 'gallery' && $fileName){
+                $path = $root . 'gallery/' .$fileName;
+            } else {
+                $path = $root . $material['name'];
+            }
         }
 
         return $path;
