@@ -244,8 +244,7 @@ class MoveMaterial
                 $image_path = explode("https://fabiana.objects.frb.io",$gallery['image'])[1];
             }
 
-            $delte = Storage::disk($this->env)->delete($image_path);
-            dd($image_path, $delte);
+            Storage::disk($this->env)->delete($image_path);
         }
 
         return Gallery::deleteGallery($id);
