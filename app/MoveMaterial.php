@@ -232,7 +232,7 @@ class MoveMaterial
         if($this->env == 'local'){
             $path = explode("/storage",$gallery['path'])[1];
         } else {
-            $path = explode("https://fabiana.objects.frb.io",$gallery['path'])[1];
+            $path = explode("https://fabiana.objects.frb.io/",$gallery['path'])[1];
         }
         Storage::disk($this->env)->delete($path);
 
@@ -241,7 +241,7 @@ class MoveMaterial
             if($this->env == 'local'){
                 $image_path = explode("/storage",$gallery['image'])[1];
             } else {
-                $image_path = explode("https://fabiana.objects.frb.io/gallery",$gallery['image'])[1];
+                $image_path = explode("https://fabiana.objects.frb.io/gallery/",$gallery['image'])[1];
             }
 
             Storage::disk($this->env)->delete($image_path);
