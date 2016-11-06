@@ -235,7 +235,7 @@ class MoveMaterial
         if($this->env == 'local'){
             $path = explode("/storage",$gallery['path'])[1];
         } else {
-            $image_path = explode("https://fabiana.objects.frb.io",$gallery['path'])[1];
+            $path = explode("https://fabiana.objects.frb.io",$gallery['path'])[1];
         }
         Storage::disk($this->env)->deleteDirectory($path);
 
