@@ -10,7 +10,7 @@
                 </div>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li><a href="#" @click="moveToUpload">Add Gallery</a></li>
-                    <li v-show="isOpenGallery" @click="verifyDeleteGallery(this.filteredActiveGallery.id)"><a href="#">Delete Gallery</a></li>
+                    <li v-show="isOpenGallery" @click="verifyDeleteGallery()"><a href="#">Delete Gallery</a></li>
                 </ul>
             </div>
         </nav>
@@ -47,7 +47,7 @@
                                     <img id="previewFile" src="#">
                                 </template>
                                 <template v-else>
-                                    <file-upload type="image" :feedback="isUpload" transition="fadeIn"></file-upload>
+                                    <file-upload type="image" :feedback="isUpload" transition="fadeIn" upload="single"></file-upload>
                                 </template>
                             </div>
                             <div class="upload--footer">
@@ -105,8 +105,11 @@
                                                 <div class="upload--header">
                                                     <div class="row">
                                                         <form class="col s12">
-                                                            <div class="row">
-                                                                <div class="input-field col s6">
+                                                            <div class="row relative">
+                                                                <ol class="carousel-indicators" v-show="supportMultiFile && fileStage.length > 1">
+                                                                    <li data-target="#myCarousel" v-for="file in fileStage" :data-slide-to="$index" :class="{'active': $index == 0}"></li>
+                                                                </ol>
+                                                                <div class="input-field col s6" v-else>
                                                                     <i class="material-icons prefix">account_circle</i>
                                                                     <input id="icon_prefix" type="text" class="validate" v-model="newImageName">
                                                                     <label for="icon_prefix">New Name</label>
@@ -117,10 +120,47 @@
                                                 </div>
                                                 <div class="upload--content">
                                                     <template v-if="isPreviewFile && !isImageUploaded">
-                                                        <img id="previewFile" src="#">
+                                                        <template v-if="supportMultiFile">
+                                                            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                                                <!-- Wrapper for slides -->
+                                                                <div class="carousel-inner" role="listbox">
+                                                                    <div v-for="file in fileStage" class="item" :class="{'active': $index == 0}">
+                                                                        <div class="col s12 m7">
+                                                                            <div class="card horizontal">
+                                                                                <div class="card-image">
+                                                                                    <img :id="'previewFile-' + $index" src="#">
+                                                                                </div>
+                                                                                <div class="card-stacked">
+                                                                                    <div class="card-content">
+                                                                                        <div class="row">
+                                                                                            <div class="input-field col s6">
+                                                                                                <input id="last_name" type="text" class="validate" v-model="file.name">
+                                                                                                <label for="last_name">Name</label>
+                                                                                            </div>
+                                                                                            <div class="input-field col s6">
+                                                                                                <input id="last_name" type="text" class="validate" v-model="file.credit">
+                                                                                                <label for="last_name">Credit: </label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <template v-else>
+                                                            <img id="previewFile" src="#">
+                                                        </template>
                                                     </template>
                                                     <template v-else>
-                                                        <file-upload type="image" :feedback="isUpload" transition="fadeIn" v-show="!isImageUploaded"></file-upload>
+                                                        <template v-if="supportMultiFile">
+                                                            <file-upload type="image" :feedback="isUpload" transition="fadeIn" v-show="!isImageUploaded" upload="multiple"></file-upload>
+                                                        </template>
+                                                        <template v-else>
+                                                            <file-upload type="image" :feedback="isUpload" transition="fadeIn" v-show="!isImageUploaded" upload="single"></file-upload>
+                                                        </template>
                                                         <div class="upload--data" v-else>
                                                             <div class="upload--instructions">
                                                                 <h3>Additional Info</h3>
@@ -142,12 +182,25 @@
                                                     </template>
                                                 </div>
                                                 <div class="upload--footer">
-                                                    <button class="btn waves-effect waves-light" type="submit" name="action" @click="moveToDataUpload" v-show="!isImageUploaded">
-                                                        Next
-                                                    </button>
-                                                    <button class="btn waves-effect waves-light" type="submit" name="action" @click="submitNewImage(filteredActiveGallery.id)" v-else>Submit
-                                                        <i class="material-icons right">send</i>
-                                                    </button>
+                                                    <p class="check-box left-aligned">
+                                                        <input type="checkbox" class="filled-in" id="filled-in-box" @click="supportMultiFile = !supportMultiFile" />
+                                                        <label for="filled-in-box">Multiple File Upload</label>
+                                                    </p>
+                                                    <template v-if="!isSubmitReady">
+                                                        <button v-show="!supportMultiFile" class="btn waves-effect waves-light" type="submit" name="action" @click="moveToDataUpload" v-show="!isImageUploaded">
+                                                            Next
+                                                        </button>
+
+                                                        <button v-else class="btn waves-effect waves-light" @click="toggleImageCard()">Next Image</button>
+                                                    </template>
+
+                                                    <template v-else>
+
+                                                        <button class="btn waves-effect waves-light" type="submit" name="action" @click="submitNewImage(filteredActiveGallery.id)">Submit
+                                                            <i class="material-icons right">send</i>
+                                                        </button>
+
+                                                    </template>
                                                     <a class="waves-effect waves-teal btn-flat" @click="returnToGallery">cancel</a>
                                                 </div>
                                             </div>
@@ -188,13 +241,18 @@
         <!-- Modal Structure -->
         <div class="modal--container" v-show="isInitModal">
             <div v-el:upload class="modal" :class="{'modal--show': isModalShown}">
+                <div class="modal-header" :class="{'salmon': isModalError}">
+                    <h4>{{modal.title}}</h4>
+                </div>
+                <div class="callouts" v-show="modal.callouts.length > 0">
+                    <span v-for="callout in modal.callouts">{{callout}}</span>
+                </div>
                 <div class="modal-content">
-                    <h4>Delete Gallery</h4>
-                    <p>Are you sure you want to remove this gallery from your archive? <br> All images stored in this gallery will be lost as well.</p>
+                    <p>{{modal.message}}</p>
                 </div>
                 <div class="modal-footer">
                     <a class="waves-effect waves-light btn salmon" @click="closeModal">button</a>
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" @click="deleteGallery(filteredActiveGallery.id)">Agree</a>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" @click="deleteGallery(filteredActiveGallery.id)" v-show="!isModalError">Agree</a>
                 </div>
             </div>
             <div id="materialize-overlay" class="lean--overlay" :class="{'hide--overlay': !isOverlay}" transition="fadeOverlay"></div>
@@ -208,15 +266,12 @@
             fileUpload
         },
         ready(){
-            var string = 'lolol';
-            var subset = 'l';
-
-            console.log(string.indexOf(subset));
           this.fetchGalleryRepository();
         },
         data(){
             return{
                 timeOut: 0,
+                activeStageCard: 0,
                 repository: [],
                 isShowMain: true,
                 isModalShown: false,
@@ -231,14 +286,28 @@
                 isPreviewFile: false,
                 isInitModal: false,
                 isOverlay: false,
+                isModalError: false,
+                modal: {
+                  title: null,
+                    callouts: [],
+                    message: null
+                },
+                modalErrors: {
+                    'duplicate_image': {
+                        'title': 'Duplicate Image',
+                        'message': 'Opps...We found another image with the same name already saved in the database. If you are sure you want this image please delete the previous image or change the name of your new image.'
+                    }
+                },
                 // form data
+                supportMultiFile: false,
                 repositorySearch: '',
                 newImageCardText: '',
                 newImageCredit: '',
                 activeGallery: '',
                 newGalleryName: '',
                 newImageName: '',
-                fileStage: ''
+                fileStage: '',
+                imageCardStage: []
             }
         },
         computed: {
@@ -253,6 +322,27 @@
             },
             firstUpload: function () {
                 if(this.repository.length <= 0){
+                    return true;
+                }
+                return false;
+            },
+            isSubmitReady: function () {
+                if(this.supportMultiFile){
+                        var failed = [];
+                        for(var i = 0; i < this.fileStage.length; i++){
+                            if(!this.fileStage[i].name || !this.fileStage[i].credit){
+                                failed.push(this.fileStage[i]);
+                            }
+                        }
+
+                        if(failed.length > 0 || this.fileStage.length <=  0){
+                            return false;
+                        }
+
+                        return true;
+                }
+
+                if(this.newImageName && this.newImageCredit){
                     return true;
                 }
                 return false;
@@ -277,11 +367,11 @@
             showDock: function () {
                 this.isUploading = true;
             },
-            initFileReader: function (file) {
+            initFileReader: function (file, location) {
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#previewFile').attr('src', e.target.result);
+                    $(location).attr('src', e.target.result);
                 };
                 reader.readAsDataURL(file);
             },
@@ -289,9 +379,7 @@
                 if(this.newGalleryName){
                     if(this.fileStage){
                         var formData = new FormData();
-                        for(var i = 0; i < this.fileStage.length; i++){
-                            formData.append('image-' + i, this.fileStage[i]);
-                        }
+                        formData.append('image-0', this.fileStage[0]);
                         formData.append('name', this.newGalleryName);
                         formData.append('type', 'gallery');
                         formData.append('gallery_id', null);
@@ -300,6 +388,9 @@
                     }
                     var data = {
                         'name': this.newGalleryName,
+                        'type': 'gallery',
+                        'gallery_id': null,
+                        'credit': null,
                         'path': null
                     };
 
@@ -307,40 +398,76 @@
                 }
 
             },
+            toggleImageCard: function () {
+                this.activeStageCard ++;
+                var $element = $("#myCarousel");
+              if(this.activeStageCard > this.fileStage.length){
+                  this.activeStageCard = 0;
+                  return $element.carousel(0);
+              }
+               $element.carousel(this.activeStageCard);
+            },
             successGalleryUpload: function (results) {
                 this.repository.push(results.data[0]);
                 this.openGallery(results.data[0].id);
                 this.resetInputs();
             },
             submitNewImage: function ($galleryId) {
-                if(this.newImageName){
-                    var formData = new FormData();
-                    formData.append('image', this.fileStage[0]);
-                    formData.append('name', this.newImageName);
-                    formData.append('type', 'image');
-                    formData.append('gallery_id', $galleryId);
-                    formData.append('credit', this.newImageCredit);
-                    formData.append('notes', this.newImageCardText);
-                    return this.sendHttp('materials', formData, this.successCardUpload);
-                }
+                var self = this;
+                var formData = new FormData();
+                if(this.supportMultiFile){
+                    for(var i = 0; i < this.fileStage.length; i++){
+                        formData.append('image', this.fileStage[i].image);
+                        formData.append('name', this.fileStage[i].name);
+                        formData.append('type', 'image');
+                        formData.append('gallery_id', $galleryId);
+                        formData.append('credit', this.fileStage[i].credit);
+                        formData.append('notes', '');
+                        this.sendHttp('materials', formData, this.successCardUpload);
+                    }
 
-                console.log('nope');
+                    clearTimeout(this.timeOut);
+                    this.timeOut = setTimeout(function () {
+                        self.returnToGallery();
+                    }, 2000);
+
+                } else {
+                    if(this.newImageName){
+                        formData.append('image', this.fileStage[0]);
+                        formData.append('name', this.newImageName);
+                        formData.append('type', 'image');
+                        formData.append('gallery_id', $galleryId);
+                        formData.append('credit', this.newImageCredit);
+                        formData.append('notes', this.newImageCardText);
+                        return this.sendHttp('materials', formData, this.successCardUpload);
+                    }
+                }
             },
             successCardUpload: function (results) {
-                var gallery_index = this.findGalleryByID(results.data.gallery_id);
-                if(!this.repository[gallery_index].materials){
-                    console.log('make the material');
-                     this.repository[gallery_index].materials = [
-                            results.data
-                    ];
-                    this.filteredActiveGallery.materials = [
-                        results.data
-                    ]
-                } else {
-                    this.repository[gallery_index].materials.push(results.data);
-                }
+                if(results.data.error){
+                    this.isModalError = true;
+                    this.modal.title = this.modalErrors.duplicate_image.title;
+                    this.modal.callouts.push(results.data.image);
+                    this.modal.message = this.modalErrors.duplicate_image.message;
 
-                this.returnToGallery();
+                    return this.toggleModal();
+                } else {
+                    var gallery_index = this.findGalleryByID(results.data.gallery_id);
+                    if(!this.repository[gallery_index].materials){
+                        this.repository[gallery_index].materials = [
+                            results.data
+                        ];
+                        this.filteredActiveGallery.materials = [
+                            results.data
+                        ]
+                    } else {
+                        this.repository[gallery_index].materials.push(results.data);
+                    }
+
+                    if(!this.supportMultiFile){
+                        return this.returnToGallery();
+                    }
+                }
             },
             returnToMain: function () {
                 this.isOpenGallery = false;
@@ -359,6 +486,7 @@
                 this.newGalleryName = '';
                 this.newImageCredit = '';
                 this.fileStage = '';
+                this.supportMultiFile = false;
                 this.isPreviewFile = false;
                 this.isImageUploaded = false;
             },
@@ -409,7 +537,9 @@
                 this.repository[gallery_index].materials.splice($index, 1);
             },
 
-            verifyDeleteGallery: function (gallery_id) {
+            verifyDeleteGallery: function () {
+                this.modal.title = 'Delete Gallery';
+                this.modal.message = 'Deleting this gallery will remove all of the contents stored inside. Are you sure you want to delete this gallery?';
                 this.toggleModal();
             },
 
@@ -433,6 +563,10 @@
                 this.isModalShown = false;
                 this.isOverlay = false;
                 this.isInitModal = false;
+                this.isModalError = false;
+                this.modal.title = null;
+                this.modal.callouts = [];
+                this.modal.message = null;
             },
             successCardActivityUpdate: function (results) {
                 var $index = this.findMaterialById(results.data.id);
@@ -509,10 +643,34 @@
                 clearTimeout(this.timeOut);
                 this.timeOut = setTimeout(function () {
                     this.isPreviewFile = true;
-                    this.fileStage = files;
-                    this.initFileReader(files[0]);
+                    if(this.supportMultiFile){
+                        this.fileStage = [];
+                        $('.carousel.carousel-slider').carousel({full_width: true});
+                        for(var i = 0; i < files.length; i++){
+                            var card = {
+                                'image': files[i],
+                                'name': '',
+                                'type': 'image',
+                                'gallery_id': this.activeGallery,
+                                'credit': '',
+                                'notes': ''
+                            };
+                            this.fileStage.push(card);
+                            this.initFileReader(files[i], '#previewFile-' + i);
+                        }
+                    } else {
+                        this.fileStage = files;
+                        this.initFileReader(files[0], '#previewFile');
+                    }
                     this.isUpload = false;
                 }.bind(this), 1000);
+            },
+            'upload-error': function (error) {
+                this.isModalError = true;
+                this.modal.title = error.title;
+                this.modal.message = error.message;
+
+                this.toggleModal();
             }
         },
         filters: {

@@ -209,7 +209,11 @@ class MoveMaterial
             $check = $this->createMaterialObject($material, $image, $type)->checkMaterial();
 
             if($check){
-                dd('nope');
+                $name = $image->getClientOriginalName();
+                return response()->json([
+                    'error' => 'duplicate',
+                    'image' => $name,
+                ]);
             }
         //store material to gallery folder and save it into the model
         return $savedImage = $this->storeMaterial($image)
@@ -222,8 +226,12 @@ class MoveMaterial
         $check = $this->checkMaterial();
 
         if($check){
-            $clean_storage = explode("/storage",$this->material_object['path']);
-            Storage::disk($this->env)->delete($clean_storage[1]);
+            if($this->env == 'local'){
+                $clean_storage = explode("/storage",$this->material_object['path'])[1];
+            } else {
+                $clean_storage = explode("https://fabiana.objects.frb.io/",$this->material_object['path'])[1];
+            }
+            Storage::disk($this->env)->delete($clean_storage);
             return Materials::deleteMaterial($id);
         } else {
             return Materials::deleteMaterial($id);

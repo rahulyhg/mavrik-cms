@@ -19,7 +19,7 @@
                         <div class="upload--options">
                             <a class="btn-floating btn-large waves-effect waves-light red" @click="isOptionOpen = !isOptionOpen"><i class="material-icons">add</i></a>
                         </div>
-                        <file-upload type="video" :feedback="isUpload" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
+                        <file-upload type="video" :feedback="isUpload" upload="single" v-show="isOptionOpen || isVideoReady || videoRepository.length <= 0" transition="fadeIn" :class="{'upload--processing': isVideoReady}"></file-upload>
                         <div class="video-overlay gutters--xs" v-show="activeVideo" transition="fade">
                             <div class="overlay--content">
                                 <video id="vReel" v-el:video class="video-js vjs-default-skin">

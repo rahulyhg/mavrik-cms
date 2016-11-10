@@ -69,7 +69,7 @@
 
 <script>
     export default{
-        props: ['feedback', 'type'],
+        props: ['feedback', 'type', 'upload'],
         ready(){
             this.createId(this.type);
         },
@@ -86,7 +86,6 @@
         },
         computed: {
             state: function () {
-                console.log(this.feedback);
                 if(this.feedback){
                     clearTimeout(this.myTimeOut);
                     this.myTimeOut = setTimeout(function(){
@@ -135,6 +134,14 @@
 
                 var files = evt.dataTransfer.files; // FileList object.
 
+                if(this.upload == 'single' && files.length > 1){
+                    return this.$dispatch('upload-error', {
+                        type: 'upload-amount-error',
+                        title: 'Upload Error!',
+                        message: 'Multiple file upload is not supported in this location'
+                    });
+                }
+
                 this.uploadFiles(files);
 
             },
@@ -153,13 +160,16 @@
                             this.fileModified = f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
                         }
                     }
-                this.isFileStaged = true;
 
-                if(notSupported.length <= 0){
-                    return this.$dispatch('ready-material', files);
+                if(notSupported.length > 0){
+                    return this.$dispatch('upload-error', {
+                        type: 'upload-type-error',
+                        title: 'Upload Error!',
+                        message: 'This file type is not supported in this location. Please try to upload the correct file type.'
+                    });
                 }
-
-                alert('this file type is not supported here yepad');
+                this.isFileStaged = true;
+                return this.$dispatch('ready-material', files);
             },
             findFileType: function (type) {
               var split = type.split('/');
