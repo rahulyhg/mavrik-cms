@@ -681,3 +681,17 @@ margin-left: -100px;
 .relative{
   position: relative;
 }
+
+.dropzone label{
+  @include cover();
+  @include flex();
+  @include flex-center();
+}
+
+.input--hidden{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  opacity: 0;
+}

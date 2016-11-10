@@ -131,6 +131,8 @@ class MoveMaterial
         } else {
             if($material['type'] == 'gallery' && $fileName){
                 $path = $root . 'gallery/' .$fileName;
+            } elseif($material['type'] == 'reel'){
+                $path = $root . 'reel/' . $material['name'];
             } else {
                 $path = $root . $material['name'];
             }

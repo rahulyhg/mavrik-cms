@@ -3,11 +3,19 @@
         <div class="content no-show">
             <div v-el:upload :class="{'file-opacity': isFileHover}" class="dropzone">
                 <template v-if="!isFileStaged">
+                    <div class="input--hidden">
+                        <input :id="'touchFile-' + id" v-el:touch type="file" v-if="upload == 'single'" @change="stageFile">
+                        <input :id="'touchFile-' + id" v-el:touch type="file" v-else multiple @change="stageFile">
+                    </div>
                     <template v-if="type == 'image'">
-                        <img class="icon" src="/image/svg/camera.svg">
+                        <label :for="'touchFile-' + id">
+                            <img class="icon" src="/image/svg/camera.svg">
+                        </label>
                     </template>
                     <template v-else>
-                        <img class="icon" src="/image/svg/clapboard.svg">
+                        <label :for="'touchFile-' + id">
+                            <img class="icon" src="/image/svg/clapboard.svg">
+                        </label>
                     </template>
                     <p><strong>Click</strong> or <strong>Drag and Drop</strong> <br> to upload video files here... </p>
                 </template>
@@ -80,6 +88,7 @@
                 fileName: '',
                 fileSize: '',
                 fileModified: '',
+                clickFile: '',
                 isFileHover: false,
                 isFileStaged: false
             }
@@ -107,6 +116,9 @@
                     this.id = type + '-' + text;
 
                 return this.checkStat();
+            },
+            stageFile: function () {
+                return this.uploadFiles(this.$els.touch.files);
             },
             checkStat: function () {
                 // Check for the various File API support.
@@ -146,6 +158,7 @@
 
             },
             uploadFiles: function (files) {
+                console.log(files);
                 var notSupported = [];
                     this.fileName = [];
                     this.fileSize = 0;
