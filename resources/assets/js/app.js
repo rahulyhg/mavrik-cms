@@ -40,6 +40,7 @@ new Vue({
         linkBoxWidth: '',
         spanWidth: '',
         materials: '',
+        msnryObj: '',
         views: [
             'Showreel', 'Bio', 'Photos', 'Videos', 'Contact'
         ],
@@ -48,7 +49,7 @@ new Vue({
         isTag: false,
         isLinks: false,
         isCountDown: false,
-        activeReel: false,
+        activeReel: false
 
     },
     computed: {
@@ -91,22 +92,18 @@ new Vue({
                     break;
             }
 
-            this.$nextTick(function () {
-                if(this.view = 'Photos'){
-                    this.activeReel = false;
-                }
-                // DOM is now updated
-                // `this` is bound to the current instance
-                this.masonry();
-            });
-
-            // msnry.layout();
             this.activeLink = $index;
             this.$broadcast('change-view', view);
+            this.$nextTick(function () {
+                // DOM is now updated
+                this.masonry();
+                this.activeReel = false;
+            });
         },
         masonry: function () {
             var elem = document.querySelector('.grid');
-            var msnry = new Masonry( elem, {
+            var self = this;
+            this.msnryObj = new Masonry( elem, {
                 // options
                 itemSelector: '.grid-item',
                 columnWidth: '.grid-sizer',
@@ -114,7 +111,7 @@ new Vue({
             });
             var posts = document.querySelectorAll('.grid-item');
             imagesLoaded( posts, function() {
-                msnry.layout();
+                self.msnryObj.layout();
             });
         },
         setHome: function () {

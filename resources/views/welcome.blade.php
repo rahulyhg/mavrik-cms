@@ -11,7 +11,7 @@
                 <div class="content--component basis--100 tran-05" :class="{'content--active': activeReel}">
                     <showreel v-show="view == 'Showreel'" :active-view="view" :reel="filteredReelMaterials"></showreel>
                     <bio v-show="view == 'Bio'" :active-view="view"></bio>
-                    <photos v-show="view == 'Photos'" :active-view="view"></photos>
+                    <photos v-show="view == 'Photos'" :masonry="msnryObj" :active-view="view"></photos>
                     <videos v-show="view == 'Videos'" :active-view="view"></videos>
                     <contact v-show="view == 'Contact'" :active-view="view"></contact>
                 </div>

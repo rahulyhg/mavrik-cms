@@ -45320,6 +45320,7 @@ new Vue({
         linkBoxWidth: '',
         spanWidth: '',
         materials: '',
+        msnryObj: '',
         views: ['Showreel', 'Bio', 'Photos', 'Videos', 'Contact'],
         items: ['poop', 'shoot', 'mcgee', 'fuckface'],
         isTitle: false,
@@ -45369,22 +45370,18 @@ new Vue({
                     break;
             }
 
-            this.$nextTick(function () {
-                if (this.view = 'Photos') {
-                    this.activeReel = false;
-                }
-                // DOM is now updated
-                // `this` is bound to the current instance
-                this.masonry();
-            });
-
-            // msnry.layout();
             this.activeLink = $index;
             this.$broadcast('change-view', view);
+            this.$nextTick(function () {
+                // DOM is now updated
+                this.masonry();
+                this.activeReel = false;
+            });
         },
         masonry: function masonry() {
             var elem = document.querySelector('.grid');
-            var msnry = new Masonry(elem, {
+            var self = this;
+            this.msnryObj = new Masonry(elem, {
                 // options
                 itemSelector: '.grid-item',
                 columnWidth: '.grid-sizer',
@@ -45392,7 +45389,7 @@ new Vue({
             });
             var posts = document.querySelectorAll('.grid-item');
             imagesLoaded(posts, function () {
-                msnry.layout();
+                self.msnryObj.layout();
             });
         },
         setHome: function setHome() {
@@ -45686,16 +45683,27 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
-    props: ['active-view'],
+    props: ['active-view', 'masonry'],
     ready: function ready() {
         this.fetchWork();
     },
 
     data: function data() {
         return {
-            repository: '',
-            masonryObject: ''
+            timeOut: 0,
+            repository: ''
         };
+    },
+    watch: {
+        'masonry': function masonry(val) {
+            var self = this;
+            if (this.masonry) {
+                clearTimeout(this.timeOut);
+                this.timeOut = setTimeout(function () {
+                    self.masonry.layout();
+                }, 500);
+            }
+        }
     },
     methods: {
         fetchWork: function fetchWork() {
@@ -45703,6 +45711,9 @@ exports.default = {
         },
         setWork: function setWork(results) {
             this.repository = results.data;
+        },
+        showItem: function showItem($index) {
+            this.masonry.layout();
         },
         getHttp: function getHttp(url, callback) {
             var params = {
@@ -45717,7 +45728,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\">\n                <template v-if=\"material.type == 'image'\">\n                    <img :src=\"material.path\">\n                </template>\n                <template v-else=\"\">\n                    <img :src=\"material.credit\">\n                </template>\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @click=\"showItem($index)\">\n                <template v-if=\"material.type == 'image'\">\n                    <img :src=\"material.path\">\n                </template>\n                <template v-else=\"\">\n                    <img :src=\"material.credit\">\n                </template>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
