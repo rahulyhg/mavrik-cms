@@ -86,16 +86,15 @@ new Vue({
                         this.$broadcast('show-reel', true);
                     }
                     break;
-                case 'Photos':
-                    this.view = view;
-                    this.activeReel = false;
-                    break;
                 default:
                     this.view = view;
                     break;
             }
 
             this.$nextTick(function () {
+                if(this.view = 'Photos'){
+                    this.activeReel = false;
+                }
                 // DOM is now updated
                 // `this` is bound to the current instance
                 this.masonry();
