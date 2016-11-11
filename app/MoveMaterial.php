@@ -57,7 +57,7 @@ class MoveMaterial
 
             $path = Gallery::find($gallery['gallery_id'])['name'];
 
-            Storage::disk($this->env)->put($path . '/' . $material->getClientOriginalName(), file_get_contents($material));
+            Storage::disk($this->env)->put($path . '/' . $this->sanitizeName($material->getClientOriginalName()), file_get_contents($material));
         } else {
             if($this->env == 'local'){
                 $image_path = explode("/storage",$gallery['path'])[1];
@@ -103,7 +103,8 @@ class MoveMaterial
     }
 
     public function createMaterialObject($material, $image, $type){
-        $name = $image->getClientOriginalName();
+        $name = $this->sanitizeName($image->getClientOriginalName());
+
         $newMaterial = [
             'name' => $material['name'],
             'type' => $type,
@@ -115,6 +116,10 @@ class MoveMaterial
         $this->material_object = $newMaterial;
 
         return $this;
+    }
+
+    public function sanitizeName($fileName){
+            return urlencode($fileName);
     }
 
     public function createStoragePath($material, $fileName){
