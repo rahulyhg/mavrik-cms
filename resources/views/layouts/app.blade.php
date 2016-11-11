@@ -27,7 +27,12 @@
     @yield('content')
 
     <!-- Scripts -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/imagesloaded.pkgd.min.js"></script>
+    <script type="text/javascript" src="/js/masonry.pkgd.js"></script>
     <script type="text/javascript" src="/js/materialize.min.js"></script>
     <script type="text/javascript" src="/js/video.js"></script>
     <script src="/js/app.js"></script>

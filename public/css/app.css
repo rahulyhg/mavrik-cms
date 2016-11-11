@@ -88,6 +88,13 @@ ul {
   position: relative;
   text-align: center; }
 
+.content--scroll {
+  overflow: scroll;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  text-align: center; }
+
 .title {
   font-size: 35px; }
   @media only screen and (min-width: 992px) and (max-width: 1280px) {
@@ -153,8 +160,22 @@ ul {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%); }
 
+.repository {
+  height: 100%;
+  width: 100%;
+  position: relative; }
+
 .video--options {
   z-index: 99; }
+
+#grid {
+  width: 1200px; }
+
+.grid-sizer, .grid-item {
+  width: 33.3333333%; }
+
+.grid-item img {
+  width: 100%; }
 
 h1 {
   margin: 0 !important; }

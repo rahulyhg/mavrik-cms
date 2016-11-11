@@ -74,6 +74,12 @@ ul{
   text-align: center;
 }
 
+.content--scroll{
+  overflow: scroll;
+  @include cover();
+  text-align: center;
+}
+
 .title {
   font-size: 35px;
   @media #{$desktop}{
@@ -146,6 +152,16 @@ ul{
   transform: translate(-50%, -50%);
 }
 
+.repository{
+  @include cover();
+}
+
 .video--options{
   z-index: 99;
 }
+
+#grid { width:1200px }
+.grid-sizer, .grid-item {
+  width: 33.3333333%;
+}
+.grid-item img { width:100%; }

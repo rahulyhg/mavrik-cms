@@ -45295,7 +45295,6 @@ var Vue = require('vue');
 var moment = require('moment');
 moment().format();
 Vue.config.debug = true;
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the body of the page. From here, you may begin adding components to
@@ -45322,6 +45321,7 @@ new Vue({
         spanWidth: '',
         materials: '',
         views: ['Showreel', 'Bio', 'Photos', 'Videos', 'Contact'],
+        items: ['poop', 'shoot', 'mcgee', 'fuckface'],
         isTitle: false,
         isTag: false,
         isLinks: false,
@@ -45363,12 +45363,38 @@ new Vue({
                         this.activeReel = false;
                         this.$broadcast('show-reel', true);
                     }
+                    break;
+                case 'Photos':
+                    this.view = view;
+                    this.activeReel = false;
+                    break;
                 default:
                     this.view = view;
                     break;
             }
+
+            this.$nextTick(function () {
+                // DOM is now updated
+                // `this` is bound to the current instance
+                this.masonry();
+            });
+
+            // msnry.layout();
             this.activeLink = $index;
             this.$broadcast('change-view', view);
+        },
+        masonry: function masonry() {
+            var elem = document.querySelector('.grid');
+            var msnry = new Masonry(elem, {
+                // options
+                itemSelector: '.grid-item',
+                columnWidth: '.grid-sizer',
+                percentagePosition: true
+            });
+            var posts = document.querySelectorAll('.grid-item');
+            imagesLoaded(posts, function () {
+                msnry.layout();
+            });
         },
         setHome: function setHome() {
             this.view = 'Showreel';
@@ -45668,7 +45694,8 @@ exports.default = {
 
     data: function data() {
         return {
-            repository: ''
+            repository: '',
+            masonryObject: ''
         };
     },
     methods: {
@@ -45691,7 +45718,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"repository--material\" v-for=\"material in repository\">\n            <template v-if=\"material.type == 'image'\">\n                <img :src=\"material.path\">\n            </template>\n            <template v-else=\"\">\n                <img :src=\"material.credit\">\n            </template>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\">\n                <template v-if=\"material.type == 'image'\">\n                    <img :src=\"material.path\">\n                </template>\n                <template v-else=\"\">\n                    <img :src=\"material.credit\">\n                </template>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

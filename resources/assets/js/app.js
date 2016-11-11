@@ -10,7 +10,6 @@ var Vue = require('vue');
 var moment = require('moment');
 moment().format();
 Vue.config.debug = true;
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the body of the page. From here, you may begin adding components to
@@ -22,7 +21,6 @@ import bio from './components/about.vue';
 import photos from './components/work.vue';
 import contact from './components/contacts.vue';
 import videos from './components/writing.vue';
-
 
 new Vue({
     el: 'body',
@@ -45,6 +43,7 @@ new Vue({
         views: [
             'Showreel', 'Bio', 'Photos', 'Videos', 'Contact'
         ],
+        items: ['poop','shoot','mcgee','fuckface'],
         isTitle: false,
         isTag: false,
         isLinks: false,
@@ -86,12 +85,38 @@ new Vue({
                         this.activeReel = false;
                         this.$broadcast('show-reel', true);
                     }
+                    break;
+                case 'Photos':
+                    this.view = view;
+                    this.activeReel = false;
+                    break;
                 default:
                     this.view = view;
                     break;
             }
+
+            this.$nextTick(function () {
+                // DOM is now updated
+                // `this` is bound to the current instance
+                this.masonry();
+            });
+
+            // msnry.layout();
             this.activeLink = $index;
             this.$broadcast('change-view', view);
+        },
+        masonry: function () {
+            var elem = document.querySelector('.grid');
+            var msnry = new Masonry( elem, {
+                // options
+                itemSelector: '.grid-item',
+                columnWidth: '.grid-sizer',
+                percentagePosition: true
+            });
+            var posts = document.querySelectorAll('.grid-item');
+            imagesLoaded( posts, function() {
+                msnry.layout();
+            });
         },
         setHome: function () {
             this.view = 'Showreel';
@@ -116,6 +141,7 @@ new Vue({
             this.spanWidth = this.linkBoxWidth / views;
 
             this.$els.spanLink.style.width = this.spanWidth + 'px';
+
         },
         moveSpan: function (index) {
             clearTimeout(this.myTimeOut);

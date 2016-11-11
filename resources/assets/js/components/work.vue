@@ -1,13 +1,16 @@
 <template>
-    <div class="content full flex-column-center">
+    <div class="content--scroll full flex-column-center">
         <div class="repository">
-            <div class="repository--material" v-for="material in repository">
-                <template v-if="material.type == 'image'">
-                    <img :src="material.path">
-                </template>
-                <template v-else>
-                    <img :src="material.credit">
-                </template>
+            <div class="grid">
+                <div class="grid-sizer"></div>
+                <div class="repository--material grid-item" v-for="material in repository">
+                    <template v-if="material.type == 'image'">
+                        <img :src="material.path">
+                    </template>
+                    <template v-else>
+                        <img :src="material.credit">
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -21,7 +24,8 @@
         },
         data: function () {
             return {
-                repository: ''
+                repository: '',
+                masonryObject: ''
             }
         },
         methods: {
