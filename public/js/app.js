@@ -45392,6 +45392,9 @@ new Vue({
                 self.msnryObj.layout();
             });
         },
+        toggleMenu: function toggleMenu() {
+            this.activeReel = !this.activeReel;
+        },
         setHome: function setHome() {
             this.view = 'Showreel';
             // this.setLinkSpan();
@@ -45683,7 +45686,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
-    props: ['active-view', 'masonry'],
+    props: ['active-view', 'masonry', 'side-menu'],
     ready: function ready() {
         this.fetchWork();
     },
@@ -45691,11 +45694,15 @@ exports.default = {
     data: function data() {
         return {
             timeOut: 0,
+            msTimeout: 0,
+            activeHoverEnter: 'none',
+            activeHoverExit: 'none',
+            activeLine: 'none',
             repository: ''
         };
     },
     watch: {
-        'masonry': function masonry(val) {
+        'sideMenu': function sideMenu(val) {
             var self = this;
             if (this.masonry) {
                 clearTimeout(this.timeOut);
@@ -45715,6 +45722,23 @@ exports.default = {
         showItem: function showItem($index) {
             this.masonry.layout();
         },
+        delayEnter: function delayEnter($index) {
+            var self = this;
+            this.activeHoverEnter = $index;
+            this.msTimeout = setTimeout(function () {
+                self.activeLine = $index;
+            }, 1000);
+        },
+        delayExit: function delayExit($index) {
+            var self = this;
+            this.activeHoverExit = $index;
+            clearTimeout(this.timeOut);
+            clearTimeout(this.msTimeout);
+            this.timeOut = setTimeout(function () {
+                self.activeHoverExit = 'none';
+                self.activeLine = 'none';
+            }, 500);
+        },
         getHttp: function getHttp(url, callback) {
             var params = {
                 headers: {
@@ -45728,7 +45752,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @click=\"showItem($index)\">\n                <template v-if=\"material.type == 'image'\">\n                    <img :src=\"material.path\">\n                </template>\n                <template v-else=\"\">\n                    <img :src=\"material.credit\">\n                </template>\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index || activeHoverExit != $index\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.credit}}</span>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div v-show=\"activeLine == $index\" class=\"callout--line\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

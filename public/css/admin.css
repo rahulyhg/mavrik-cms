@@ -1107,6 +1107,21 @@ textarea:focus {
 .fade-enter, .fade-leave {
   opacity: 0; }
 
+.callout-transition {
+  display: block;
+  opacity: 1;
+  -webkit-transition: -webkit-transform 1s ease;
+  transition: -webkit-transform 1s ease;
+  transition: transform 1s ease;
+  transition: transform 1s ease, -webkit-transform 1s ease;
+  -webkit-transform: translateY(0);
+  transform: translateY(0); }
+
+.callout-enter, .callout-leave {
+  opacity: 0;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%); }
+
 .slideUp-transition {
   -webkit-transition: all .5s ease;
   transition: all .5s ease;
@@ -1114,8 +1129,8 @@ textarea:focus {
   transform: translateY(0); }
 
 .slideUp-enter, .slideUp-leave {
-  -webkit-transform: translateY(100%);
-  transform: translateY(100%); }
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%); }
 
 .slideUpHalf-transition {
   -webkit-transition: all .5s ease;

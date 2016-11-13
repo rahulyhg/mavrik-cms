@@ -114,6 +114,9 @@ new Vue({
                 self.msnryObj.layout();
             });
         },
+        toggleMenu: function () {
+            this.activeReel = !this.activeReel;
+        },
         setHome: function () {
             this.view = 'Showreel';
             // this.setLinkSpan();

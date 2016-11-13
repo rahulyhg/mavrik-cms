@@ -63,6 +63,20 @@
   opacity: 0;
 }
 
+// callout transitions
+
+.callout-transition{
+  display: block;
+  opacity: 1;
+  transition: transform 1s ease;
+  transform: translateY(0);
+}
+
+.callout-enter, .callout-leave{
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
 
 // slide up full transition
 
@@ -72,8 +86,9 @@
 }
 
 .slideUp-enter, .slideUp-leave{
-  transform: translateY(100%);
+  transform: translateY(-100%);
 }
+
 
 // slide up half transition
 

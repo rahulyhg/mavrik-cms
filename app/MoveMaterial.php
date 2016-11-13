@@ -75,13 +75,12 @@ class MoveMaterial
         $type = $this->request['media'];
         if($type == 'vimeo'){
             // find image and set as the credit
-            $res = unserialize(file_get_contents("http://vimeo.com/api/v2/video/186154747.php"));
-            $this->request['credit'] = $res[0]['thumbnail_large'];
+            $videoId = explode('https://vimeo.com/', $this->request['path'])[1];
+            $res = unserialize(file_get_contents("http://vimeo.com/api/v2/video/". $videoId . ".php"))[0];
+            $this->request['credit'] = $res['thumbnail_large'];
 
             // break and reform path
-
-            $videoId = explode('https://vimeo.com/', $this->request['path']);
-            $this->request['path'] = 'https://player.vimeo.com/video/' . $videoId[1];
+            $this->request['path'] = 'https://player.vimeo.com/video/' . $videoId;
 
         }
         return $this;
