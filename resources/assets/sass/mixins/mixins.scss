@@ -19,6 +19,13 @@
   left: 0;
   position: absolute;
 }
+@mixin fixscreen(){
+  position: fixed;
+  top:0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
 
 @mixin flex-center(){
   flex-direction: column;

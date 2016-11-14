@@ -1157,6 +1157,17 @@ textarea:focus {
   -webkit-transition: all 1s ease;
   transition: all 1s ease; }
 
+.lineReveal-transition {
+  height: 100%;
+  -webkit-transition: all 0.3s cubic-bezier(0.07, 0.72, 0.78, 0.41);
+  transition: all 0.3s cubic-bezier(0.07, 0.72, 0.78, 0.41);
+  width: 100%; }
+
+/* .expand-enter defines the starting state for entering */
+/* .expand-leave defines the ending state for leaving */
+.lineReveal-enter, .lineReveal-leave {
+  width: 0; }
+
 .dropzone {
   height: 100%;
   width: 100%;
