@@ -3,19 +3,19 @@
         <div class="repository">
             <div class="grid">
                 <div class="grid-sizer"></div>
-                <div class="repository--material grid-item" v-for="material in repository" @mouseenter="delayEnter($index)" @mouseleave="delayExit($index)" @click="showItem(material.id, material.gallery_id)">
+                <div class="repository--material grid-item" v-for="material in repository" @mouseenter="delayEnter($index)" @mouseleave="delayExit($index)" @click="showItem($index, material.id, material.gallery_id)">
                     <div class="item-image-group">
                         <div class="item-overlay tran-05" :class="{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}"></div>
                         <template v-if="material.type == 'image'">
                             <img :src="material.path">
                         </template>
                         <template v-else>
-                            <img class="video-item--indicator" v-show="activeHoverEnter != $index || activeHoverExit != $index" src="/image/svg/ic_play_circle_outline_white_24px.svg">
+                            <img class="video-item--indicator" v-show="activeHoverEnter != $index && material.type =='video' && activeHoverExit != $index && material.type =='video'" src="/image/svg/ic_play_circle_outline_white_24px.svg">
                             <img :src="material.credit">
                         </template>
                     </div>
                     <div class="item--callout">
-                        <img v-show="activeHoverEnter == $index && material.type =='video' || activeHoverExit == $index && material.type =='video'" class="icon-50p" src="/image/svg/ic_play_circle_outline_white_24px.svg">
+                        <img v-show="activeHoverEnter == $index && material.type =='video' || activeHoverExit == $index && material.type =='video'" class="icon50p" transition="callout" src="/image/svg/ic_play_circle_outline_white_24px.svg">
                         <div class="callout-box callout-group">
                             <div class="line-group">
                                 <span class="group" v-show="activeHoverEnter == $index || activeHoverExit == $index" transition="callout">
@@ -35,26 +35,46 @@
                     </div>
                 </div>
             </div>
-            <div v-if="activeGallery" id="myCarousel" class="carousel slide" data-ride="carousel">
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner" role="listbox">
-                    <div v-for="material in filteredMaterials" class="item" :class="{'active': material.id == carouselStart}">
+            <div v-if="isGalleryActive" id="myCarousel" class="carousel slide" data-interval="false">
+                <div v-if="isItemSelected" class="item-side">
+                    <div class="side side-credit">
+                        <template v-if="galleryType == 'image'">
+                            <span>{{filteredActiveItem.credit}}</span>
+                        </template>
+                        <template v-else>
+                            <span>Video Clip</span>
+                        </template>
+                    </div>
+                    <div class="side side-name">
+                        <span>{{filteredActiveItem.name}}</span>
+                    </div>
+                </div>
+                <div class="close-gallery">
+                    <img class="icon25p" @click="closeGallery" src="/image/svg/ic_highlight_off_white_18px.svg">
+                </div>
+                <div class="carousel-content" role="listbox">
+                    <div v-for="material in filteredMaterials" class="item" :class="{'active': $index == startItem}">
                         <div class="item--card">
-                            <img :src="material.path">
+                            <template v-if="galleryType == 'video'">
+                                <iframe height="100%" width="100%" :src="material.path" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                            </template>
+                            <template v-else>
+                                <img :src="material.path">
+                            </template>
                         </div>
                     </div>
-                    <!-- Left and right controls -->
-                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
                 </div>
+                <!-- Left and right controls -->
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" @click="incrementSlider('down')">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next" @click="incrementSlider('up')">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <div v-if="activeGallery" class="carousel-backdrop"></div>
+            <div v-if="isGalleryActive" class="carousel-backdrop"></div>
         </div>
     </div>
 </template>
@@ -70,18 +90,32 @@
                 timeOut: 0,
                 msTimeout: 0,
                 inactiveTimer: 0,
-                activeGallery: '',
-                carouselStart: '',
+                filterBy: '',
+                startItem: '',
+                activeItem: '',
+                repository: '',
+                filterThrough: '',
+                galleryType: '',
                 activeHoverEnter: 'none',
                 activeHoverExit: 'none',
                 activeLine: 'none',
-                repository: ''
+                isItemSelected: false,
+                isGalleryActive: false
             }
         },
         computed: {
           filteredMaterials: function () {
-              return this.$options.filters.filterFor(this.repository, this.activeGallery, 'gallery_id');
-          }
+              return this.$options.filters.filterFor(this.repository, this.filterBy, this.filterThrough);
+          },
+            filteredActiveItem: function () {
+                if(this.activeItem){
+                    return this.filteredMaterials[this.activeItem];
+                }
+
+                if(this.activeItem == 0){
+                    return this.filteredMaterials[0];
+                }
+            }
         },
         watch: {
             'sideMenu': function (val) {
@@ -101,10 +135,47 @@
             setWork: function (results) {
               this.repository = results.data;
             },
-            showItem: function ($id, $gallery_id) {
+            showItem: function ($index, $material_id, $gallery_id) {
               this.masonry.layout();
-                this.carouselStart = $id;
-                this.activeGallery = $gallery_id;
+                if(!$gallery_id){
+                    if(this.repository[$index].type == 'video'){
+                        this.galleryType = 'video';
+                        this.filterBy = 'video';
+                        this.filterThrough = 'type';
+                    }
+                } else {
+                    this.galleryType = 'image';
+                    this.filterBy = $gallery_id;
+                    this.filterThrough = 'gallery_id';
+                }
+                var filteredIndex = this.$options.filters.filterForIndex(this.filteredMaterials, $material_id, 'id');
+                this.startItem = filteredIndex;
+                this.activeItem = filteredIndex;
+                this.isItemSelected = true;
+                this.isGalleryActive = true;
+            },
+            closeGallery: function () {
+                this.isGalleryActive = false;
+                this.isItemSelected = false;
+                this.activeItem = '';
+                this.startItem = '';
+                this.filterBy = '';
+                this.filterThrough = '';
+                this.galleryType = '';
+            },
+            incrementSlider: function (direction) {
+                if(direction == 'up'){
+                    var nextItem = this.activeItem + 1;
+                    if(nextItem > this.filteredMaterials.length - 1){
+                        return this.activeItem = 0;
+                    }
+                    return this.activeItem++;
+                }
+                var prevItem = this.activeItem - 1;
+                if(prevItem < 0){
+                    return this.activeItem = this.filteredMaterials.length - 1;
+                }
+                return this.activeItem = this.activeItem - 1;
             },
             delayEnter: function ($index) {
                 var self = this;
@@ -132,7 +203,7 @@
                     headers: {
                         'X-CSRF-TOKEN': this.token
                     }
-                }
+                };
                 this.$http.get(url, params).then(callback).catch(err => console.error(err));
             }
         },
@@ -147,6 +218,15 @@
                     }
                 }
                 return filtered;
+            },
+            filterForIndex: function ($array, filterBy, filterIn) {
+                var filterlist = $array;
+                var arrayLength = $array.length;
+                for(var i = 0; i < arrayLength; i++){
+                    if(filterlist[i][filterIn] == filterBy){
+                        return i;
+                    }
+                }
             }
         }
     }

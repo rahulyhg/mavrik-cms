@@ -45696,17 +45696,31 @@ exports.default = {
             timeOut: 0,
             msTimeout: 0,
             inactiveTimer: 0,
-            activeGallery: '',
-            carouselStart: '',
+            filterBy: '',
+            startItem: '',
+            activeItem: '',
+            repository: '',
+            filterThrough: '',
+            galleryType: '',
             activeHoverEnter: 'none',
             activeHoverExit: 'none',
             activeLine: 'none',
-            repository: ''
+            isItemSelected: false,
+            isGalleryActive: false
         };
     },
     computed: {
         filteredMaterials: function filteredMaterials() {
-            return this.$options.filters.filterFor(this.repository, this.activeGallery, 'gallery_id');
+            return this.$options.filters.filterFor(this.repository, this.filterBy, this.filterThrough);
+        },
+        filteredActiveItem: function filteredActiveItem() {
+            if (this.activeItem) {
+                return this.filteredMaterials[this.activeItem];
+            }
+
+            if (this.activeItem == 0) {
+                return this.filteredMaterials[0];
+            }
         }
     },
     watch: {
@@ -45727,10 +45741,47 @@ exports.default = {
         setWork: function setWork(results) {
             this.repository = results.data;
         },
-        showItem: function showItem($id, $gallery_id) {
+        showItem: function showItem($index, $material_id, $gallery_id) {
             this.masonry.layout();
-            this.carouselStart = $id;
-            this.activeGallery = $gallery_id;
+            if (!$gallery_id) {
+                if (this.repository[$index].type == 'video') {
+                    this.galleryType = 'video';
+                    this.filterBy = 'video';
+                    this.filterThrough = 'type';
+                }
+            } else {
+                this.galleryType = 'image';
+                this.filterBy = $gallery_id;
+                this.filterThrough = 'gallery_id';
+            }
+            var filteredIndex = this.$options.filters.filterForIndex(this.filteredMaterials, $material_id, 'id');
+            this.startItem = filteredIndex;
+            this.activeItem = filteredIndex;
+            this.isItemSelected = true;
+            this.isGalleryActive = true;
+        },
+        closeGallery: function closeGallery() {
+            this.isGalleryActive = false;
+            this.isItemSelected = false;
+            this.activeItem = '';
+            this.startItem = '';
+            this.filterBy = '';
+            this.filterThrough = '';
+            this.galleryType = '';
+        },
+        incrementSlider: function incrementSlider(direction) {
+            if (direction == 'up') {
+                var nextItem = this.activeItem + 1;
+                if (nextItem > this.filteredMaterials.length - 1) {
+                    return this.activeItem = 0;
+                }
+                return this.activeItem++;
+            }
+            var prevItem = this.activeItem - 1;
+            if (prevItem < 0) {
+                return this.activeItem = this.filteredMaterials.length - 1;
+            }
+            return this.activeItem = this.activeItem - 1;
         },
         delayEnter: function delayEnter($index) {
             var self = this;
@@ -45775,11 +45826,20 @@ exports.default = {
                 }
             }
             return filtered;
+        },
+        filterForIndex: function filterForIndex($array, filterBy, filterIn) {
+            var filterlist = $array;
+            var arrayLength = $array.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i][filterIn] == filterBy) {
+                    return i;
+                }
+            }
         }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem(material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index || activeHoverExit != $index\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon-50p\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"activeGallery\" id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n            <!-- Wrapper for slides -->\n            <div class=\"carousel-inner\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': material.id == carouselStart}\">\n                    <div class=\"item--card\">\n                        <img :src=\"material.path\">\n                    </div>\n                </div>\n                <!-- Left and right controls -->\n                <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\">\n                    <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n                    <span class=\"sr-only\">Previous</span>\n                </a>\n                <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\">\n                    <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n                    <span class=\"sr-only\">Next</span>\n                </a>\n            </div>\n        </div>\n        <div v-if=\"activeGallery\" class=\"carousel-backdrop\"></div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index, material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon50p\" transition=\"callout\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"isGalleryActive\" id=\"myCarousel\" class=\"carousel slide\" data-interval=\"false\">\n            <div v-if=\"isItemSelected\" class=\"item-side\">\n                <div class=\"side side-credit\">\n                    <template v-if=\"galleryType == 'image'\">\n                        <span>{{filteredActiveItem.credit}}</span>\n                    </template>\n                    <template v-else=\"\">\n                        <span>Video Clip</span>\n                    </template>\n                </div>\n                <div class=\"side side-name\">\n                    <span>{{filteredActiveItem.name}}</span>\n                </div>\n            </div>\n            <div class=\"close-gallery\">\n                <img class=\"icon25p\" @click=\"closeGallery\" src=\"/image/svg/ic_highlight_off_white_18px.svg\">\n            </div>\n            <div class=\"carousel-content\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': $index == startItem}\">\n                    <div class=\"item--card\">\n                        <template v-if=\"galleryType == 'video'\">\n                            <iframe height=\"100%\" width=\"100%\" :src=\"material.path\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n                        </template>\n                        <template v-else=\"\">\n                            <img :src=\"material.path\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n            <!-- Left and right controls -->\n            <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\" @click=\"incrementSlider('down')\">\n                <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n                <span class=\"sr-only\">Previous</span>\n            </a>\n            <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\" @click=\"incrementSlider('up')\">\n                <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n                <span class=\"sr-only\">Next</span>\n            </a>\n        </div>\n        <div v-if=\"isGalleryActive\" class=\"carousel-backdrop\"></div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
