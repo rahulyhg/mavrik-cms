@@ -154,6 +154,22 @@ ul{
   border-radius: 50%;
 }
 
+.gallery--options{
+  @include flex();
+  @include flex-row(nowrap);
+  align-items: center;
+  padding: 0 1%;
+  .option{
+    margin: 0 1%;
+  }
+}
+
+.option--search{
+  width: 200px;
+  @include flex();
+  @include flex-row(nowrap);
+}
+
 .repository--search{
   @include flex();
   @include flex-row(nowrap);
@@ -171,9 +187,18 @@ ul{
     width: 300px;
   }
 }
+.no_result_input{
+  border-bottom: 2px solid red!important;
+}
+.positive_result_input{
+  border-bottom: 2px solid green!important;
+}
 .repository--search-icon{
   height: 50px;
   width: 50px;
+}
+.search-icon{
+  margin: 0 5px;
 }
 .search--box span{
   color: white;

@@ -188,6 +188,36 @@ ul {
 .repository--icon {
   border-radius: 50%; }
 
+.gallery--options {
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0 1%; }
+  .gallery--options .option {
+    margin: 0 1%; }
+
+.option--search {
+  width: 200px;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: nowrap; }
+
 .repository--search {
   display: -webkit-box;
   /* OLD - iOS 6-, Safari 3.1-6 */
@@ -212,9 +242,18 @@ ul {
     border-bottom: 7px solid white !important;
     width: 300px; }
 
+.no_result_input {
+  border-bottom: 2px solid red !important; }
+
+.positive_result_input {
+  border-bottom: 2px solid green !important; }
+
 .repository--search-icon {
   height: 50px;
   width: 50px; }
+
+.search-icon {
+  margin: 0 5px; }
 
 .search--box span {
   color: white;

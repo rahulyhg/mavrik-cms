@@ -67,10 +67,18 @@
                                     <span class="card--headline">{{filteredActiveGallery.updated_at}}</span>
                                     <a class="add--gallery btn-floating btn-large waves-effect waves-light red" @click="isAddImageCard = true, isShowMain = false"><i class="material-icons">add</i></a>
                                 </div>
-                                <h3 class="gallery--callout">Photos</h3>
+                                <div class="gallery--options">
+                                    <div class="option option--settings">
+                                        <img src="/image/svg/ic_settings_grey_24px.svg">
+                                    </div>
+                                    <div class="option option--search">
+                                        <img class="search-icon" src="/image/svg/search_icon_grey.svg">
+                                        <input type="text" :class="{'no_result_input': gallerySearch.length > 0 && galleryResults.length === 0, 'positive_result_input': gallerySearch.length > 0 && galleryResults.length > 0}" v-model="gallerySearch" placeholder="Photos">
+                                    </div>
+                                </div>
                                 <div class="gallery--main">
                                     <template v-if="filteredActiveGallery.materials && filteredActiveGallery.materials.length > 0 && isShowMain">
-                                        <div class="gallery--image-card card" v-for="material in filteredActiveGallery.materials">
+                                        <div class="gallery--image-card card" v-for="material in galleryResults">
                                             <div class="card-image waves-effect waves-block waves-light">
                                                 <img class="activator" :src="material.path">
                                             </div>
@@ -301,6 +309,7 @@
                 // form data
                 supportMultiFile: false,
                 repositorySearch: '',
+                gallerySearch: '',
                 newImageCardText: '',
                 newImageCredit: '',
                 activeGallery: '',
@@ -319,6 +328,9 @@
             },
             searchResults: function () {
               return this.$options.filters.filterInclude(this.repository, this.repositorySearch, 'name');
+            },
+            galleryResults: function () {
+                return this.$options.filters.filterInclude(this.filteredActiveGallery.materials, this.gallerySearch, 'name');
             },
             firstUpload: function () {
                 if(this.repository.length <= 0){
