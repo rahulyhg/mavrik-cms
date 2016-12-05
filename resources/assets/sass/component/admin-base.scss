@@ -45,6 +45,28 @@ nav{
   display: block!important;
 }
 
+.upload-contact, .contact-input{
+  width: 100%;
+}
+.contact-info{
+  @include flex();
+  @include flex-row(nowarp);
+  justify-content: space-around;
+}
+
+.collection .collection-item.active {
+  background-color: #EEEEEE;
+}
+
+.collapsible{
+  box-shadow: none;
+  border: none;
+  margin: 0;
+}
+.collapsible-body {
+  border-bottom: none;
+}
+
 .lean--overlay{
   position: fixed;
   z-index: 1002;
@@ -212,6 +234,11 @@ ul{
 .delete-icon{
   width: 25px;
 }
+.delete-contact{
+  position: absolute;
+  right: 2%;
+  top: 4%;
+}
 
 #previewFile{
   width: 100%;
@@ -227,13 +254,20 @@ ul{
   @include flex-center();
 }
 
-.video-upload{
+.video-upload, .contact-upload{
   display: block;
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
   position: relative;
   z-index: 99;
+}
+.upload--footer{
+  padding: 0 2%;
+}
+
+.contact-upload{
+  margin-bottom: 2%;
 }
 
 .full--center{

@@ -1,6 +1,6 @@
 
 // Fonts
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400|Open+Sans:400,800');
 
 // Variables
 @import "./utilities/variables";
@@ -15,5 +15,6 @@
 @import "./elements/material-video-upload";
 @import "./component/photo-gallery";
 @import "./component/gallery-grid";
+@import "./component/quil";
 // Bootstrap
 //@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";

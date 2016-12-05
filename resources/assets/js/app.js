@@ -6,10 +6,8 @@
  */
 
 require('./bootstrap');
-var Vue = require('vue');
 var moment = require('moment');
 moment().format();
-Vue.config.debug = true;
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the body of the page. From here, you may begin adding components to
@@ -28,7 +26,6 @@ new Vue({
     ready() {
         this.setHome();
         this.fetchMaterials();
-        // this.incrementDate();
     },
     data: {
         now: Date.now(),
@@ -42,7 +39,7 @@ new Vue({
         materials: '',
         msnryObj: '',
         views: [
-            'Showreel', 'Bio', 'Photos', 'Videos', 'Contact'
+            'Showreel', 'Biography', 'Media', 'Contact'
         ],
         items: ['poop','shoot','mcgee','fuckface'],
         isTitle: false,
@@ -72,10 +69,10 @@ new Vue({
     },
     methods:{
         seeView: function (view, $index) {
+            this.view = view;
             switch (view){
                 case 'Showreel':
                     if(this.view != 'Showreel'){
-                        this.view = 'Showreel';
                         clearTimeout(this.myTimeOut);
                         this.myTimeOut = setTimeout(function(){
                             this.activeReel = false;
@@ -87,18 +84,19 @@ new Vue({
                         this.$broadcast('show-reel', true);
                     }
                     break;
+                case 'Media':
+                    this.$nextTick(function () {
+                        // DOM is now updated
+                        this.masonry();
+                        this.activeReel = false;
+                    });
+                    break;
                 default:
-                    this.view = view;
                     break;
             }
 
             this.activeLink = $index;
             this.$broadcast('change-view', view);
-            this.$nextTick(function () {
-                // DOM is now updated
-                this.masonry();
-                this.activeReel = false;
-            });
         },
         masonry: function () {
             var elem = document.querySelector('.grid');

@@ -13,9 +13,8 @@
                         <img src="/image/svg/ic_menu_white_24px.svg" alt="" @click="toggleMenu">
                     </div>
                     <showreel v-show="view == 'Showreel'" :active-view="view" :reel="filteredReelMaterials"></showreel>
-                    <bio v-show="view == 'Bio'" :active-view="view"></bio>
-                    <photos v-show="view == 'Photos'" :masonry="msnryObj" :active-view="view" :side-menu="activeReel"></photos>
-                    <videos v-show="view == 'Videos'" :active-view="view"></videos>
+                    <bio v-show="view == 'Biography'" :active-view="view"></bio>
+                    <photos v-show="view == 'Media'" :masonry="msnryObj" :active-view="view" :side-menu="activeReel"></photos>
                     <contact v-show="view == 'Contact'" :active-view="view"></contact>
                 </div>
             </div>

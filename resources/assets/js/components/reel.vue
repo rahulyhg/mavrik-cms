@@ -2,12 +2,7 @@
     <div class="content">
         <div class="video--reel full flex-column-center" v-show="isInitReel" transition="fade" :class="{'no-show': !isFadeIn}">
             <video id="reel" v-el:video class="video-js vjs-default-skin">
-                <template v-if="reel && reel.length > 0">
-                    <source :src="reel[0].path" type="video/mp4" />
-                </template>
-                <template v-else>
-                    <source src="/video/promo01.mp4" type="video/mp4" />
-                </template>
+                <source src="/video/Showreel Fabiana Formica 2016-HD.mp4" type="video/mp4" />
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <template v-if="isPlay">
@@ -15,6 +10,10 @@
             </template>
             <template v-else>
                 <span @click="controlReel('play')" class="video--options">
+                    <div class="callout">
+                        <h1>FABIANA FORMICA</h1>
+                    <span>Actress</span>
+                    </div>
                     <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_black_24px.svg">
                 </span>
             </template>
@@ -36,6 +35,7 @@
         props: ['reel'],
         data:function(){
             return{
+                isLoop: true,
                 myTimeOut: 0,
                 vjsPlayer: '',
                 isFadeIn: false,
@@ -52,6 +52,8 @@
                         this.$dispatch('control-reel', false);
                         break;
                     case 'skip':
+                        var path = this.reel[0].path;
+                        this.switchSource(path);
                         this.isPlay = false;
                         this.$dispatch('control-reel', true);
                         break;
@@ -60,6 +62,18 @@
                     default:
                         return;
                 }
+            },
+            switchSource: function (source) {
+                console.log('skip');
+                var self = this;
+                this.vjsPlayer.currentTime(0); // 2 minutes into the video
+                this.vjsPlayer.pause();
+
+                clearTimeout(this.myTimeOut);
+                this.myTimeOut = setTimeout(function(){
+                    self.vjsPlayer.src({type: 'video/mp4', src: source});
+                    self.vjsPlayer.play();
+                }, 500);
             },
             initReel: function () {
 
@@ -103,13 +117,7 @@
             'show-reel': function (control) {
                 if(control){
                     this.isPlay = true;
-                    this.vjsPlayer.currentTime(0); // 2 minutes into the video
-                    this.vjsPlayer.pause();
-
-                    clearTimeout(this.myTimeOut);
-                    this.myTimeOut = setTimeout(function(){
-                        this.vjsPlayer.play();
-                    }.bind(this), 1000);
+                   this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                 }
             }
         }

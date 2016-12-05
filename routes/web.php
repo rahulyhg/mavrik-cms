@@ -12,7 +12,16 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $language = 'en';
+        return view('welcome', ['lang' => $language]);
+});
+
+Route::get('/{language}', function ($language) {
+    if($language == 'es' || $language == 'en'){
+        return view('welcome', ['lang' => $language]);
+    }
+
+    return view('errors.503');
 });
 
 Route::get('/local/{type}/{filename}', function ($type, $filename)
@@ -56,7 +65,10 @@ Route::group(['prefix' => 'auth'], function(){
     
     Route::put('/materials/reel/{id}', 'MaterialController@updateReel');
 
+    Route::get('/contents/{type}/{id}', 'ContentController@showContentType');
     Route::resource('/materials', 'MaterialController');
+    Route::resource('/contacts', 'ContactController');
+    Route::resource('/contents', 'ContentController');
     Route::resource('/gallery', 'GalleryController');
 });
 

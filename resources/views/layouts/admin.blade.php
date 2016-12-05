@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.1.5/quill.snow.css" rel="stylesheet">
     <link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
     <link href="/css/video-js.css" rel="stylesheet" type="text/css">
     <link href="/css/admin.css" rel="stylesheet">
@@ -27,7 +28,7 @@
 @yield('content')
 
         <!-- Scripts -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/video.js"></script>

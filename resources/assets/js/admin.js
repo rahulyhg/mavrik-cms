@@ -23,14 +23,15 @@ import backgroundVideo from './components/admin/background.vue';
 import photoGallery from './components/admin/photo-galleries.vue';
 import statistics from './components/admin/statistics.vue';
 import social from './components/admin/social_videos.vue';
+import contact from './components/admin/contact.vue';
+import journal from './components/admin/journal.vue';
 
 
 new Vue({
     el: 'body',
-    components: {dashboard,'background-video':backgroundVideo,statistics, 'photo-gallery': photoGallery,social},
+    components: {dashboard,'background-video':backgroundVideo,statistics, 'photo-gallery': photoGallery,social, contact, journal},
     ready() {
         // this.incrementDate();
-        console.log('fuck');
     },
     data: {
         now: Date.now(),
@@ -38,7 +39,7 @@ new Vue({
         activeView: 'dashboard',
         launch: '2016-10-06T20:03:55',
         views: [
-            'dashboard', 'statistics', 'background', 'photo galleries', 'video gallery'
+            'dashboard', 'statistics', 'background', 'photo galleries', 'video gallery', 'contact'
         ]
     },
     methods:{
@@ -72,7 +73,7 @@ new Vue({
         days: function (now) {
             var a = moment(now);//now
             return (a.diff(this.launch, 'days')) * -1;
-        },
+        }
     }
 
 });

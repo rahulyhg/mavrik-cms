@@ -60,170 +60,7 @@
                     </template>
                     <template v-else>
                         <template v-if="isOpenGallery">
-                            <div class="gallery--contents">
-                                <div class="gallery--header" v-bind:style="{ 'background-image': 'url(' + filteredActiveGallery.image + ')' }">
-                                    <div class="card--overlay"></div>
-                                    <span class="card--headline">{{filteredActiveGallery.name}}</span>
-                                    <span class="card--headline">{{filteredActiveGallery.updated_at}}</span>
-                                    <a class="add--gallery btn-floating btn-large waves-effect waves-light red" @click="isAddImageCard = true, isShowMain = false"><i class="material-icons">add</i></a>
-                                </div>
-                                <div class="gallery--options">
-                                    <div class="option option--settings">
-                                        <img src="/image/svg/ic_settings_grey_24px.svg">
-                                    </div>
-                                    <div class="option option--search">
-                                        <img class="search-icon" src="/image/svg/search_icon_grey.svg">
-                                        <input type="text" :class="{'no_result_input': gallerySearch.length > 0 && galleryResults.length === 0, 'positive_result_input': gallerySearch.length > 0 && galleryResults.length > 0}" v-model="gallerySearch" placeholder="Photos">
-                                    </div>
-                                </div>
-                                <div class="gallery--main">
-                                    <template v-if="filteredActiveGallery.materials && filteredActiveGallery.materials.length > 0 && isShowMain">
-                                        <div class="gallery--image-card card" v-for="material in galleryResults">
-                                            <div class="card-image waves-effect waves-block waves-light">
-                                                <img class="activator" :src="material.path">
-                                            </div>
-                                            <div class="card-content">
-                                                <span class="card-title activator grey-text text-darken-4">{{material.name}}<i class="material-icons right">more_vert</i></span>
-                                            </div>
-                                            <div class="card-reveal">
-                                                <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-                                                <div class="row">
-                                                    <div class="input-field col s6">
-                                                        <input :value="material.name" :id="'cardName' + material.id" type="text" class="validate" v-model="material.name" @keydown="revealSave(material.id)">
-                                                        <label class="active" :for="'cardName' + material.id">Name</label>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="input-field col s6">
-                                                        <input :value="material.credit" :id="'cardCredit' + material.id" type="text" class="validate" v-model="material.credit" @keydown="revealSave(material.id)">
-                                                        <label class="active" :for="'cardCredit' + material.id">Credits</label>
-                                                    </div>
-                                                </div>
-                                                <a :id="'cardSave' + material.id" class="waves-effect waves-light btn-flat red hidden" @click="saveCardEdit($index)">Save Edit</a>
-                                            </div>
-                                            <div class="card-action">
-                                                <a class="waves-effect waves-red btn-flat" :class="{'red': material.status == 'active'}" @click="saveCardStatus($index)">{{material.status}}</a>
-                                                <a class="waves-effect waves-red btn-flat" @click="removeCard(material.id)">Remove</a>
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <div class="gallery--add-image" v-show="isAddImageCard">
-                                            <div class="upload-box image--upload">
-                                                <div class="upload--header">
-                                                    <div class="row">
-                                                        <form class="col s12">
-                                                            <div class="row relative">
-                                                                <ol class="carousel-indicators" v-show="supportMultiFile && fileStage.length > 1">
-                                                                    <li data-target="#myCarousel" v-for="file in fileStage" :data-slide-to="$index" :class="{'active': $index == 0}"></li>
-                                                                </ol>
-                                                                <div class="input-field col s6" v-else>
-                                                                    <i class="material-icons prefix">account_circle</i>
-                                                                    <input id="icon_prefix" type="text" class="validate" v-model="newImageName">
-                                                                    <label for="icon_prefix">New Name</label>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="upload--content">
-                                                    <template v-if="isPreviewFile && !isImageUploaded">
-                                                        <template v-if="supportMultiFile">
-                                                            <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                                                                <!-- Wrapper for slides -->
-                                                                <div class="carousel-inner" role="listbox">
-                                                                    <div v-for="file in fileStage" class="item" :class="{'active': $index == 0}">
-                                                                        <div class="col s12 m7">
-                                                                            <div class="card horizontal">
-                                                                                <div class="card-image">
-                                                                                    <img :id="'previewFile-' + $index" src="#">
-                                                                                </div>
-                                                                                <div class="card-stacked">
-                                                                                    <div class="card-content">
-                                                                                        <div class="row">
-                                                                                            <div class="input-field col s6">
-                                                                                                <input id="last_name" type="text" class="validate" v-model="file.name">
-                                                                                                <label for="last_name">Name</label>
-                                                                                            </div>
-                                                                                            <div class="input-field col s6">
-                                                                                                <input id="last_name" type="text" class="validate" v-model="file.credit">
-                                                                                                <label for="last_name">Credit: </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </template>
-                                                        <template v-else>
-                                                            <img id="previewFile" src="#">
-                                                        </template>
-                                                    </template>
-                                                    <template v-else>
-                                                        <template v-if="supportMultiFile">
-                                                            <file-upload type="image" :feedback="isUpload" transition="fadeIn" v-show="!isImageUploaded" upload="multiple"></file-upload>
-                                                        </template>
-                                                        <template v-else>
-                                                            <file-upload type="image" :feedback="isUpload" transition="fadeIn" v-show="!isImageUploaded" upload="single"></file-upload>
-                                                        </template>
-                                                        <div class="upload--data" v-else>
-                                                            <div class="upload--instructions">
-                                                                <h3>Additional Info</h3>
-                                                                <p>We require some additional information about your new upload. Please fill in the below form fields before submitting your new material.</p>
-                                                            </div>
-                                                            <div class="upload--credit-input">
-                                                                <div class="row">
-                                                                    <form class="col s12">
-                                                                        <div class="row">
-                                                                            <div class="input-field col s12">
-                                                                                <input id="credit" type="text" class="validate" v-model="newImageCredit">
-                                                                                <label for="credit" data-error="wrong" data-success="right">Credits: </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                                <div class="upload--footer">
-                                                    <p class="check-box left-aligned">
-                                                        <input type="checkbox" class="filled-in" id="filled-in-box" @click="supportMultiFile = !supportMultiFile" />
-                                                        <label for="filled-in-box">Multiple File Upload</label>
-                                                    </p>
-                                                    <template v-if="!isSubmitReady">
-                                                        <button v-show="!supportMultiFile" class="btn waves-effect waves-light" type="submit" name="action" @click="moveToDataUpload" v-show="!isImageUploaded">
-                                                            Next
-                                                        </button>
-
-                                                        <button v-else class="btn waves-effect waves-light" @click="toggleImageCard()">Next Image</button>
-                                                    </template>
-
-                                                    <template v-else>
-
-                                                        <button class="btn waves-effect waves-light" type="submit" name="action" @click="submitNewImage(filteredActiveGallery.id)">Submit
-                                                            <i class="material-icons right">send</i>
-                                                        </button>
-
-                                                    </template>
-                                                    <a class="waves-effect waves-teal btn-flat" @click="returnToGallery">cancel</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="empty--state" transition="fade" v-else>
-                                            <div class="empty">
-                                                <img src="/image/svg/folder.svg">
-                                                <h1>Welcome to the art show!</h1>
-                                                <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>
-                                                <a class="waves-effect waves-light btn red" @click="isAddImageCard = true"><i class="material-icons left">cloud</i>Add Photo</a>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
+                            <open-gallery :gallery="filteredActiveGallery"></open-gallery>
                         </template>
                         <template v-else>
                             <div class="gallery--grid">
@@ -269,9 +106,10 @@
 </template>
 <script>
     import fileUpload from '../elements/material-file-upload.vue'
+    import openGallery from '../elements/gallery-component.vue'
     export default{
         components:{
-            fileUpload
+            fileUpload, openGallery
         },
         ready(){
           this.fetchGalleryRepository();
@@ -279,16 +117,13 @@
         data(){
             return{
                 timeOut: 0,
-                activeStageCard: 0,
                 repository: [],
-                isShowMain: true,
                 isModalShown: false,
                 firstUpload: false,
                 isUploading: false,
                 isUpload: false,
                 isImageUploaded: false,
                 isOpenGallery: false,
-                isAddImageCard: false,
                 isSearching: false,
                 // modal data
                 isPreviewFile: false,
@@ -307,9 +142,8 @@
                     }
                 },
                 // form data
-                supportMultiFile: false,
                 repositorySearch: '',
-                gallerySearch: '',
+
                 newImageCardText: '',
                 newImageCredit: '',
                 activeGallery: '',
@@ -329,32 +163,8 @@
             searchResults: function () {
               return this.$options.filters.filterInclude(this.repository, this.repositorySearch, 'name');
             },
-            galleryResults: function () {
-                return this.$options.filters.filterInclude(this.filteredActiveGallery.materials, this.gallerySearch, 'name');
-            },
             firstUpload: function () {
                 if(this.repository.length <= 0){
-                    return true;
-                }
-                return false;
-            },
-            isSubmitReady: function () {
-                if(this.supportMultiFile){
-                        var failed = [];
-                        for(var i = 0; i < this.fileStage.length; i++){
-                            if(!this.fileStage[i].name || !this.fileStage[i].credit){
-                                failed.push(this.fileStage[i]);
-                            }
-                        }
-
-                        if(failed.length > 0 || this.fileStage.length <=  0){
-                            return false;
-                        }
-
-                        return true;
-                }
-
-                if(this.newImageName && this.newImageCredit){
                     return true;
                 }
                 return false;
@@ -410,76 +220,10 @@
                 }
 
             },
-            toggleImageCard: function () {
-                this.activeStageCard ++;
-                var $element = $("#myCarousel");
-              if(this.activeStageCard > this.fileStage.length){
-                  this.activeStageCard = 0;
-                  return $element.carousel(0);
-              }
-               $element.carousel(this.activeStageCard);
-            },
             successGalleryUpload: function (results) {
                 this.repository.push(results.data[0]);
                 this.openGallery(results.data[0].id);
                 this.resetInputs();
-            },
-            submitNewImage: function ($galleryId) {
-                var self = this;
-                var formData = new FormData();
-                if(this.supportMultiFile){
-                    for(var i = 0; i < this.fileStage.length; i++){
-                        formData.append('image', this.fileStage[i].image);
-                        formData.append('name', this.fileStage[i].name);
-                        formData.append('type', 'image');
-                        formData.append('gallery_id', $galleryId);
-                        formData.append('credit', this.fileStage[i].credit);
-                        formData.append('notes', '');
-                        this.sendHttp('materials', formData, this.successCardUpload);
-                    }
-
-                    clearTimeout(this.timeOut);
-                    this.timeOut = setTimeout(function () {
-                        self.returnToGallery();
-                    }, 2000);
-
-                } else {
-                    if(this.newImageName){
-                        formData.append('image', this.fileStage[0]);
-                        formData.append('name', this.newImageName);
-                        formData.append('type', 'image');
-                        formData.append('gallery_id', $galleryId);
-                        formData.append('credit', this.newImageCredit);
-                        formData.append('notes', this.newImageCardText);
-                        return this.sendHttp('materials', formData, this.successCardUpload);
-                    }
-                }
-            },
-            successCardUpload: function (results) {
-                if(results.data.error){
-                    this.isModalError = true;
-                    this.modal.title = this.modalErrors.duplicate_image.title;
-                    this.modal.callouts.push(results.data.image);
-                    this.modal.message = this.modalErrors.duplicate_image.message;
-
-                    return this.toggleModal();
-                } else {
-                    var gallery_index = this.findGalleryByID(results.data.gallery_id);
-                    if(!this.repository[gallery_index].materials){
-                        this.repository[gallery_index].materials = [
-                            results.data
-                        ];
-                        this.filteredActiveGallery.materials = [
-                            results.data
-                        ]
-                    } else {
-                        this.repository[gallery_index].materials.push(results.data);
-                    }
-
-                    if(!this.supportMultiFile){
-                        return this.returnToGallery();
-                    }
-                }
             },
             returnToMain: function () {
                 this.isOpenGallery = false;
@@ -508,47 +252,6 @@
                 this.isUploading = false;
                 this.isShowMain = true;
             },
-            moveToDataUpload: function () {
-              if(this.fileStage){
-                  this.isImageUploaded = true;
-              }
-            },
-
-            revealSave: function ($id) {
-              var element = document.getElementById('cardSave' + $id);
-
-                element.style.display = 'inline-block';
-            },
-
-            saveCardStatus: function ($index) {
-                var card = this.filteredActiveGallery.materials[$index];
-                var toggle = this.filteredActiveGallery.materials[$index].status;
-                    var status;
-
-                if(toggle == 'active'){
-                    status = 'inactive'
-                } else {
-                    status = 'active'
-                }
-
-                var data = {
-                    'status': status
-                }
-
-                this.updateHttp('materials/' + card.id, data, this.successCardActivityUpdate);
-            },
-
-            removeCard: function ($id) {
-                this.deleteHttp('materials/' + $id, this.successCardDelete);
-            },
-            successCardDelete: function (results) {
-
-                var $index = this.findMaterialById(results.data.material_id);
-                    var gallery_index = this.findGalleryByID(this.filteredActiveGallery.id);
-
-                this.repository[gallery_index].materials.splice($index, 1);
-            },
-
             verifyDeleteGallery: function () {
                 this.modal.title = 'Delete Gallery';
                 this.modal.message = 'Deleting this gallery will remove all of the contents stored inside. Are you sure you want to delete this gallery?';
@@ -580,13 +283,6 @@
                 this.modal.callouts = [];
                 this.modal.message = null;
             },
-            successCardActivityUpdate: function (results) {
-                var $index = this.findMaterialById(results.data.id);
-                this.filteredActiveGallery.materials[$index].status = results.data.status;
-
-                var $toastContent = $('<span>I am toast content</span>');
-                Materialize.toast($toastContent, 5000);
-            },
             findMaterialById: function ($id) {
                 for(var i = 0; i < this.filteredActiveGallery.materials.length; i++){
                     if($id == this.filteredActiveGallery.materials[i].id){
@@ -600,15 +296,6 @@
                         return i;
                     }
                 }
-            },
-
-            saveCardEdit: function ($index) {
-                var data = this.filteredActiveGallery.materials[$index];
-                this.updateHttp('materials/' + data.id, data, this.successUpdate);
-            },
-
-            successUpdate: function (results) {
-              console.log(results);
             },
 
             //vue resource methods

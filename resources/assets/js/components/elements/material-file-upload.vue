@@ -158,7 +158,6 @@
 
             },
             uploadFiles: function (files) {
-                console.log(files);
                 var notSupported = [];
                     this.fileName = [];
                     this.fileSize = 0;
