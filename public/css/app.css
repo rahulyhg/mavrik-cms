@@ -34,12 +34,24 @@ html, body {
   padding-top: 50px;
 }
 
+.full-fab {
+  background-image: url("/image/backgrounds/biobackground.jpg");
+  background-size: cover;
+  background-position: top right;
+}
+
 #fabiana {
   background-color: #3A3A3A;
 }
 
+#editor {
+  height: 100%;
+  max-width: 60%;
+  margin-left: 5%;
+}
+
 #editor p {
-  font-size: 22px;
+  font-size: 16px;
 }
 
 #editor p span {
@@ -51,6 +63,33 @@ ul {
   padding: 0;
   margin: 0;
   list-style: none;
+}
+
+ul li {
+  font-size: 22px;
+}
+
+.lang_options {
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin-left: 5%;
+}
+
+.lang_options .active {
+  border-bottom: 1px solid white;
+}
+
+.lang_options li {
+  cursor: pointer;
+  padding: 0 5px;
 }
 
 [v-cloak] {

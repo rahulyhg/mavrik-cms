@@ -8,7 +8,7 @@ class Contact extends Model
 {
     //
     protected $table = 'contacts';
-    protected $fillable = ['name', 'title', 'email', 'telephone', 'address'];
+    protected $fillable = ['name', 'title', 'email', 'telephone', 'address', 'language'];
 
 
 
@@ -18,7 +18,8 @@ class Contact extends Model
             'title' => $data['title'],
             'email' => $data['email'],
             'telephone' => $data['telephone'],
-            'address' => $data['address']
+            'address' => $data['address'],
+            'language' => $data['language']
         ));
 
         $contact->user()->associate(User::find($data['id']));

@@ -22,12 +22,17 @@
     z-index: 999;
     right: 5%;
     top: 7%;
+    @include flex();
+    @include flex-row(nowrap);
+    justify-content: flex-end;
+    width: 50%;
   }
 }
 
 #editor{
-  padding-top: 10%;
+  padding-top: 15%;
   border: none;
+  min-height: 500px;
   h1,h2,h3,h4{font-family: 'Lato', sans-serif;font-weight: 300;}
   h1{
     font-size: 45px;
@@ -50,5 +55,8 @@
     strong{
       font-weight: 800!important;
     }
+  }
+  .ql-editor{
+    min-height: 500px;
   }
 }

@@ -130,6 +130,7 @@
         },
         methods: {
             fetchWork: function () {
+                console.log('here');
                 this.getHttp('/auth/materials/active', this.setWork);
             },
             setWork: function (results) {

@@ -58785,8 +58785,7 @@ new Vue({
         spanWidth: '',
         materials: '',
         msnryObj: '',
-        views: ['Showreel', 'Biography', 'Media', 'Contact'],
-        items: ['poop', 'shoot', 'mcgee', 'fuckface'],
+        views: ['showreel', 'bio', 'media', 'contact'],
         isTitle: false,
         isTag: false,
         isLinks: false,
@@ -58816,8 +58815,9 @@ new Vue({
         seeView: function seeView(view, $index) {
             this.view = view;
             switch (view) {
-                case 'Showreel':
-                    if (this.view != 'Showreel') {
+                case 'showreel':
+                    console.log('yehehe');
+                    if (this.view != 'showreel') {
                         clearTimeout(this.myTimeOut);
                         this.myTimeOut = setTimeout(function () {
                             this.activeReel = false;
@@ -58829,7 +58829,7 @@ new Vue({
                         this.$broadcast('show-reel', true);
                     }
                     break;
-                case 'Media':
+                case 'media':
                     this.$nextTick(function () {
                         // DOM is now updated
                         this.masonry();
@@ -58861,7 +58861,7 @@ new Vue({
             this.activeReel = !this.activeReel;
         },
         setHome: function setHome() {
-            this.view = 'Showreel';
+            this.view = 'showreel';
             // this.setLinkSpan();
         },
         incrementDate: function incrementDate() {
@@ -59010,6 +59010,9 @@ exports.default = {
     props: ['active-view'],
     data: function data() {
         return {
+            activeIndex: '',
+            active: '',
+            entries: '',
             biography: ''
         };
     },
@@ -59021,12 +59024,29 @@ exports.default = {
         this.fetchWork();
     },
 
+    computed: {
+        activeBio: function activeBio() {
+            if (this.active) {
+                return this.$options.filters.filterFor(this.entries, this.active, 'id')[0];
+            }
+            return null;
+        }
+    },
     methods: {
         fetchWork: function fetchWork() {
             this.getHttp('/auth/contents/biography/1', this.setBio);
         },
         setBio: function setBio(results) {
-            var bio_data = JSON.parse(results.data[0].text);
+            this.entries = results.data;
+            this.active = this.entries[0].id;
+            this.setText(this.activeBio.text);
+        },
+        switchText: function switchText($index) {
+            this.activeIndex = $index;
+            this.setText(this.entries[$index].text);
+        },
+        setText: function setText(text) {
+            var bio_data = JSON.parse(text);
             this.biography.setContents(bio_data);
         },
         getHttp: function getHttp(url, callback) {
@@ -59039,10 +59059,32 @@ exports.default = {
                 return console.error(err);
             });
         }
+    },
+    filters: {
+        filterFor: function filterFor($array, filterBy, filterIn) {
+            var filtered = [];
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i][filterIn] == filterBy) {
+                    filtered.push(filterlist[i]);
+                }
+            }
+            return filtered;
+        },
+        returnIndex: function returnIndex($array, filterBy, filterIn) {
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i][filterIn] == filterBy) {
+                    return i;
+                }
+            }
+        }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"about--fab\">\n        <div id=\"editor\"></div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full full-fab flex-column-center\">\n    <div class=\"about--fab\">\n        <ul class=\"lang_options\">\n            <li v-for=\"entry in entries\" @click=\"switchText($index)\" :class=\"{'active': activeIndex == $index}\">\n                {{entry.language}}\n            </li>\n        </ul>\n        <div id=\"editor\"></div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -59175,7 +59217,6 @@ exports.default = {
             }
         },
         switchSource: function switchSource(source) {
-            console.log('skip');
             var self = this;
             this.vjsPlayer.currentTime(0); // 2 minutes into the video
             this.vjsPlayer.pause();
@@ -59301,6 +59342,7 @@ exports.default = {
     },
     methods: {
         fetchWork: function fetchWork() {
+            console.log('here');
             this.getHttp('/auth/materials/active', this.setWork);
         },
         setWork: function setWork(results) {

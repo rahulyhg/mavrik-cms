@@ -18,17 +18,26 @@ html, body {
   padding-top: 50px;
 }
 
+.full-fab{
+  background-image: url("/image/backgrounds/biobackground.jpg");
+  background-size: cover;
+  background-position: top right;
+}
+
 #fabiana{
   background-color: #3A3A3A;
 }
 
 #editor{
+  height: 100%;
+  max-width: 60%;
+  margin-left: 5%;
   p{
     span{
       font-family: "Fashion Fetish", sans-serif!important;
       color: white!important;
     }
-    font-size: 22px;
+    font-size: 16px;
   }
 }
 
@@ -36,6 +45,22 @@ ul{
   padding: 0;
   margin: 0;
   list-style: none;
+  li{
+    font-size: 22px;
+  }
+}
+
+.lang_options{
+  @include flex();
+  @include flex-row(nowrap);
+  margin-left: 5%;
+  .active{
+    border-bottom: 1px solid white;
+  }
+  li{
+    cursor: pointer;
+    padding: 0 5px;
+  }
 }
 
 [v-cloak] {

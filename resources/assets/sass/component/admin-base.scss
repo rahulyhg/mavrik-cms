@@ -16,6 +16,21 @@ nav{
   height: 10%!important;
 }
 
+.modal-language{
+  overflow-y: visible!important;
+}
+
+.language--container{
+  width: 130px;
+  position: relative;
+}
+
+.dropdown-modal{
+  top: 50px!important;
+  max-height: 200px;
+  overflow: scroll;
+}
+
 .media-icon{
   width: 25px;
   cursor: pointer;
@@ -753,4 +768,21 @@ margin-left: -100px;
   left: 0;
   width: 0;
   opacity: 0;
+}
+.modal-row{
+  @include flex();
+  @include flex-center();
+  .input-field{
+    width: 50%;
+    margin-left: 0!important;
+  }
+}
+
+.dropdown-content{
+  top: 0;
+  width: 100%;
+}
+.drop-active{
+  opacity: 1!important;
+  display: block!important;
 }

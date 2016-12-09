@@ -28,6 +28,21 @@ nav {
   height: 10% !important;
 }
 
+.modal-language {
+  overflow-y: visible !important;
+}
+
+.language--container {
+  width: 130px;
+  position: relative;
+}
+
+.dropdown-modal {
+  top: 50px !important;
+  max-height: 200px;
+  overflow: scroll;
+}
+
 .media-icon {
   width: 25px;
   cursor: pointer;
@@ -1024,6 +1039,37 @@ ul {
   opacity: 0;
 }
 
+.modal-row {
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+}
+
+.modal-row .input-field {
+  width: 50%;
+  margin-left: 0 !important;
+}
+
+.dropdown-content {
+  top: 0;
+  width: 100%;
+}
+
+.drop-active {
+  opacity: 1 !important;
+  display: block !important;
+}
+
 .collection {
   width: 100%;
   border: none;
@@ -1855,11 +1901,25 @@ strong {
   z-index: 999;
   right: 5%;
   top: 7%;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  -webkit-box-pack: end;
+  justify-content: flex-end;
+  width: 50%;
 }
 
 #editor {
-  padding-top: 10%;
+  padding-top: 15%;
   border: none;
+  min-height: 500px;
 }
 
 #editor h1, #editor h2, #editor h3, #editor h4 {
@@ -1893,6 +1953,10 @@ strong {
 
 #editor p strong {
   font-weight: 800 !important;
+}
+
+#editor .ql-editor {
+  min-height: 500px;
 }
 
 /*# sourceMappingURL=admin.css.map */

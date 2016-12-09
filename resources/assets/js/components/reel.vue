@@ -2,7 +2,7 @@
     <div class="content">
         <div class="video--reel full flex-column-center" v-show="isInitReel" transition="fade" :class="{'no-show': !isFadeIn}">
             <video id="reel" v-el:video class="video-js vjs-default-skin">
-                <source src="/video/Showreel Fabiana Formica 2016-HD.mp4" type="video/mp4" />
+                <source src="/video/Showreel Fabiana Formica 2016-HD.mp4" type="video/mp4"/>
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <template v-if="isPlay">
@@ -64,7 +64,6 @@
                 }
             },
             switchSource: function (source) {
-                console.log('skip');
                 var self = this;
                 this.vjsPlayer.currentTime(0); // 2 minutes into the video
                 this.vjsPlayer.pause();

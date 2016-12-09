@@ -8,7 +8,7 @@ class Content extends Model
 {
     //
     protected $table = 'contents';
-    protected $fillable = ['name', 'user_id', 'type', 'text', 'release_date', 'status'];
+    protected $fillable = ['name', 'user_id', 'type', 'text', 'release_date', 'status', 'language'];
 
 
     public static function createContent($data){
@@ -17,6 +17,7 @@ class Content extends Model
             'text' => $data['text'],
             'type' => $data['type'],
             'release_date' => $data['release_date'],
+            'language' => $data['language'],
             'status' => 'disabled'
         ));
 

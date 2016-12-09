@@ -75,6 +75,15 @@ class ContentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(Content::deleteContent($id)){
+            return response([
+                'status' => 'success',
+                'content_id' => $id
+            ], 200);
+        }
+
+        return response([
+            'status' => 'failure'
+        ]);
     }
 }

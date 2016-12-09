@@ -39,9 +39,8 @@ new Vue({
         materials: '',
         msnryObj: '',
         views: [
-            'Showreel', 'Biography', 'Media', 'Contact'
+            'showreel', 'bio', 'media', 'contact'
         ],
-        items: ['poop','shoot','mcgee','fuckface'],
         isTitle: false,
         isTag: false,
         isLinks: false,
@@ -71,8 +70,9 @@ new Vue({
         seeView: function (view, $index) {
             this.view = view;
             switch (view){
-                case 'Showreel':
-                    if(this.view != 'Showreel'){
+                case 'showreel':
+                    console.log('yehehe');
+                    if(this.view != 'showreel'){
                         clearTimeout(this.myTimeOut);
                         this.myTimeOut = setTimeout(function(){
                             this.activeReel = false;
@@ -84,7 +84,7 @@ new Vue({
                         this.$broadcast('show-reel', true);
                     }
                     break;
-                case 'Media':
+                case 'media':
                     this.$nextTick(function () {
                         // DOM is now updated
                         this.masonry();
@@ -116,7 +116,7 @@ new Vue({
             this.activeReel = !this.activeReel;
         },
         setHome: function () {
-            this.view = 'Showreel';
+            this.view = 'showreel';
             // this.setLinkSpan();
         },
         incrementDate: function () {
