@@ -58752,6 +58752,10 @@ var _photoGalleries = require('./components/admin/photo-galleries.vue');
 
 var _photoGalleries2 = _interopRequireDefault(_photoGalleries);
 
+var _socials = require('./components/admin/socials.vue');
+
+var _socials2 = _interopRequireDefault(_socials);
+
 var _statistics = require('./components/admin/statistics.vue');
 
 var _statistics2 = _interopRequireDefault(_statistics);
@@ -58791,7 +58795,7 @@ Vue.config.debug = true;
 
 new Vue({
     el: 'body',
-    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default, 'photo-gallery': _photoGalleries2.default, social: _social_videos2.default, contact: _contact2.default, journal: _journal2.default },
+    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default, 'photo-gallery': _photoGalleries2.default, social: _social_videos2.default, contact: _contact2.default, journal: _journal2.default, 'social-media': _socials2.default },
     ready: function ready() {
         // this.incrementDate();
     },
@@ -58801,7 +58805,7 @@ new Vue({
         myTimeOut: 0,
         activeView: 'dashboard',
         launch: '2016-10-06T20:03:55',
-        views: ['dashboard', 'statistics', 'background', 'photo galleries', 'video gallery', 'contact']
+        views: ['dashboard', 'statistics', 'background', 'photo galleries', 'video gallery']
     },
     methods: {
         incrementDate: function incrementDate() {
@@ -58839,7 +58843,7 @@ new Vue({
 
 });
 
-},{"./bootstrap":18,"./components/admin/background.vue":19,"./components/admin/contact.vue":20,"./components/admin/dashboard.vue":21,"./components/admin/journal.vue":22,"./components/admin/photo-galleries.vue":23,"./components/admin/social_videos.vue":24,"./components/admin/statistics.vue":25,"moment":11,"vue":16,"vue-resource":15}],18:[function(require,module,exports){
+},{"./bootstrap":18,"./components/admin/background.vue":19,"./components/admin/contact.vue":20,"./components/admin/dashboard.vue":21,"./components/admin/journal.vue":22,"./components/admin/photo-galleries.vue":23,"./components/admin/social_videos.vue":24,"./components/admin/socials.vue":25,"./components/admin/statistics.vue":26,"moment":11,"vue":16,"vue-resource":15}],18:[function(require,module,exports){
 'use strict';
 
 window._ = require('lodash');
@@ -59145,7 +59149,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2cdf09af", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-file-upload.vue":27,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60451,7 +60455,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-01910664", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/gallery-component.vue":26,"../elements/material-file-upload.vue":27,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
+},{"../elements/gallery-component.vue":27,"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60607,6 +60611,345 @@ if (module.hot) {(function () {  module.hot.accept()
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _materialFileUpload = require('../elements/material-file-upload.vue');
+
+var _materialFileUpload2 = _interopRequireDefault(_materialFileUpload);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    components: {
+        fileUpload: _materialFileUpload2.default
+    },
+    ready: function ready() {
+        this.getHttp('/auth/social_media', this.setMedia);
+    },
+    data: function data() {
+        return {
+            timeOut: 0,
+            activeStageCard: 0,
+            newImageCard: {},
+            icons: '',
+            fileStage: '',
+            newIconName: '',
+            newIconPath: '',
+            isSubmitReady: '',
+            isUpload: false,
+            isPreviewFile: false,
+            supportMultiFile: false,
+            isShowMain: true,
+            isShowSettings: false,
+            isAddImageCard: false,
+            isImageUploaded: false
+        };
+    },
+    computed: {
+        isSubmitReady: function isSubmitReady() {
+            if (this.supportMultiFile) {
+                var failed = [];
+                for (var i = 0; i < this.fileStage.length; i++) {
+                    if (!this.fileStage[i].name || !this.fileStage[i].credit) {
+                        failed.push(this.fileStage[i]);
+                    }
+                }
+
+                if (failed.length > 0 || this.fileStage.length <= 0) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            if (this.newIconName && this.newIconPath) {
+                return true;
+            }
+            return false;
+        }
+    },
+    methods: {
+        setMedia: function setMedia(results) {
+            this.icons = results.data;
+        },
+        //action route functions
+        revealSave: function revealSave($id) {
+            var element = document.getElementById('cardSave' + $id);
+
+            element.style.display = 'inline-block';
+        },
+        moveToDataUpload: function moveToDataUpload() {
+            if (this.fileStage) {
+                this.isImageUploaded = true;
+            }
+        },
+        toggleImageCard: function toggleImageCard() {
+            this.activeStageCard++;
+            var $element = $("#myCarousel");
+            if (this.activeStageCard > this.fileStage.length) {
+                this.activeStageCard = 0;
+                return $element.carousel(0);
+            }
+            $element.carousel(this.activeStageCard);
+        },
+
+        //preview file upload file reader
+        initFileReader: function initFileReader(file, location) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $(location).attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        },
+
+        //all of the new card submits and updates
+        removeCard: function removeCard($id) {
+            this.deleteHttp('/auth/social_media/' + $id, this.successCardDelete);
+        },
+        successCardDelete: function successCardDelete(results) {
+            var $index = this.findMaterialById(results.data.material_id);
+            this.icons.splice($index, 1);
+        },
+        saveCardEdit: function saveCardEdit($index) {
+            var data = this.icons[$index];
+            this.updateHttp('/auth/social_media/' + data.id, data, this.successUpdate);
+        },
+        saveCardStatus: function saveCardStatus($index) {
+            var card = this.icons[$index];
+            var toggle = this.icons[$index].status;
+            var status;
+
+            if (toggle == 'active') {
+                status = 'inactive';
+            } else {
+                status = 'active';
+            }
+
+            var data = {
+                'status': status
+            };
+
+            this.updateHttp('/auth/social_media/' + card.id, data, this.successCardActivityUpdate);
+        },
+        submitNewImage: function submitNewImage() {
+            var self = this;
+            var formData = new FormData();
+            if (this.supportMultiFile) {
+                for (var i = 0; i < this.fileStage.length; i++) {
+                    formData.append('image', this.fileStage[i].image);
+                    formData.append('name', this.fileStage[i].name);
+                    formData.append('path', this.fileStage[i].credit);
+                    this.sendHttp('/auth/social_media', formData, this.successCardUpload);
+                }
+
+                clearTimeout(this.timeOut);
+                this.timeOut = setTimeout(function () {
+                    self.returnToGallery();
+                }, 2000);
+            } else {
+                if (this.newIconName) {
+                    formData.append('image', this.fileStage[0]);
+                    formData.append('name', this.newIconName);
+                    formData.append('path', this.newIconPath);
+                    return this.sendHttp('/auth/social_media', formData, this.successCardUpload);
+                }
+            }
+        },
+
+        //all of the gallery success functions
+        successCardActivityUpdate: function successCardActivityUpdate(results) {
+            var $index = this.findMaterialById(results.data.id);
+            this.icons[$index].status = results.data.status;
+
+            var $toastContent = $('<span>I am toast content</span>');
+            Materialize.toast($toastContent, 5000);
+        },
+        successCardUpload: function successCardUpload(results) {
+            if (results.data.error) {
+                this.isModalError = true;
+                this.modal.title = this.modalErrors.duplicate_image.title;
+                this.modal.callouts.push(results.data.image);
+                this.modal.message = this.modalErrors.duplicate_image.message;
+
+                return this.toggleModal();
+            } else {
+                if (!this.icons) {
+                    this.icons = [results.data];
+                } else {
+                    this.icons.push(results.data);
+                }
+
+                if (!this.supportMultiFile) {
+                    return this.returnToGallery();
+                }
+            }
+        },
+        successUpdate: function successUpdate(results) {
+            this.returnCardReveal(results.data.id);
+        },
+
+        //resets and return statements
+        resetInputs: function resetInputs() {
+            this.newIconName = '';
+            this.newIconPath = '';
+            this.fileStage = '';
+            this.supportMultiFile = false;
+            this.isPreviewFile = false;
+            this.isImageUploaded = false;
+        },
+        returnToGallery: function returnToGallery() {
+            this.isShowMain = true;
+            this.isAddImageCard = false;
+            this.resetInputs();
+        },
+        returnCardReveal: function returnCardReveal($id) {
+            var cardIndex = this.$options.filters.filterForIndex(this.icons, $id, 'id');
+            document.getElementsByClassName('card-reveal')[cardIndex].getElementsByClassName("material-icons")[0].click();
+        },
+        //find methods
+        findMaterialById: function findMaterialById($id) {
+            for (var i = 0; i < this.icons.length; i++) {
+                if ($id == this.icons[i].id) {
+                    return i;
+                }
+            }
+        },
+
+        //vue resource methods
+        getHttp: function getHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.get(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        sendHttp: function sendHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.post(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        deleteHttp: function deleteHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.delete(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        updateHttp: function updateHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.put(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        }
+    },
+    events: {
+        'ready-material': function readyMaterial(files) {
+            //initiate fileReader
+            clearTimeout(this.timeOut);
+            this.timeOut = setTimeout(function () {
+                this.isPreviewFile = true;
+                if (this.supportMultiFile) {
+                    this.fileStage = [];
+                    $('.carousel.carousel-slider').carousel({ full_width: true });
+                    for (var i = 0; i < files.length; i++) {
+                        var card = {
+                            'image': files[i],
+                            'name': '',
+                            'type': 'image',
+                            'gallery_id': this.activeGallery,
+                            'credit': '',
+                            'notes': ''
+                        };
+                        this.fileStage.push(card);
+                        this.initFileReader(files[i], '#previewFile-' + i);
+                    }
+                } else {
+                    this.fileStage = files;
+                    this.initFileReader(files[0], '#previewFile');
+                }
+                this.isUpload = false;
+            }.bind(this), 1000);
+        },
+        'upload-error': function uploadError(error) {
+            this.isModalError = true;
+            this.modal.title = error.title;
+            this.modal.message = error.message;
+
+            this.toggleModal();
+        }
+    },
+    filters: {
+        filterFor: function filterFor($array, filterBy, filterIn) {
+            var filtered = [];
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i][filterIn] == filterBy) {
+                    filtered.push(filterlist[i]);
+                }
+            }
+            return filtered;
+        },
+        filterInclude: function filterInclude($array, filterBy, filterIn) {
+            var filtered = [];
+            var filterlist = $array;
+            var arrayLength = filterlist.length;
+            for (var i = 0; i < arrayLength; i++) {
+                var string = filterlist[i][filterIn];
+                if (string.indexOf(filterBy) !== -1) {
+                    filtered.push(filterlist[i]);
+                }
+            }
+            return filtered;
+        },
+        filterForIndex: function filterForIndex($array, filterBy, filterIn) {
+            var filterlist = $array;
+            var arrayLength = $array.length;
+            for (var i = 0; i < arrayLength; i++) {
+                if (filterlist[i][filterIn] == filterBy) {
+                    return i;
+                }
+            }
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <nav>\n        <div class=\"nav-wrapper\">\n            <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                <li><a href=\"#\" @click=\"isAddImageCard = true, isShowMain = false;\">Add Media</a></li>\n                <li v-show=\"isOpenGallery\" @click=\"verifyDeleteGallery()\"><a href=\"#\">Delete Gallery</a></li>\n            </ul>\n        </div>\n    </nav>\n    <div class=\"component--state\">\n        <div class=\"repository--jumbo passive--jumbo\"></div>\n        <div class=\"gallery--main\">\n            <template v-if=\"icons.length > 0 &amp;&amp; isShowMain\">\n                <div class=\"gallery--image-card card\" v-for=\"material in icons\">\n                    <div class=\"card-image waves-effect waves-block waves-light\">\n                        <img class=\"activator\" :src=\"material.image\">\n                    </div>\n                    <div class=\"card-content\">\n                        <span class=\"card-title activator grey-text text-darken-4\">{{material.name}}<i class=\"material-icons right\">more_vert</i></span>\n                    </div>\n                    <div class=\"card-reveal\">\n                        <span class=\"card-title grey-text text-darken-4\">Card Title<i class=\"material-icons right\">close</i></span>\n                        <div class=\"row row-close\">\n                            <div class=\"input-field col s6\">\n                                <input :value=\"material.name\" :id=\"'cardName' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.name\" @keydown=\"revealSave(material.id)\">\n                                <label class=\"active\" :for=\"'cardName' + material.id\">Name</label>\n                            </div>\n                        </div>\n                        <div class=\"row row-close\">\n                            <div class=\"input-field col s6\">\n                                <input :value=\"material.path\" :id=\"'cardCredit' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.path\" @keydown=\"revealSave(material.id)\">\n                                <label class=\"active\" :for=\"'cardCredit' + material.id\">Url: </label>\n                            </div>\n                        </div>\n                        <div class=\"row row-close\">\n                            <div class=\"input-field col s6\">\n                                <input :value=\"material.position\" :id=\"'cardCredit' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.position\" @keydown=\"revealSave(material.id)\">\n                                <label class=\"active\" :for=\"'cardCredit' + material.id\">Position: </label>\n                            </div>\n                        </div>\n                        <a :id=\"'cardSave' + material.id\" class=\"waves-effect waves-light btn-flat salmon hidden\" @click=\"saveCardEdit($index)\">Save Edit</a>\n                    </div>\n                    <div class=\"card-action\">\n                        <a class=\"waves-effect waves-red btn-flat\" :class=\"{'red': material.status == 'active'}\" @click=\"saveCardStatus($index)\">{{material.status}}</a>\n                        <a class=\"waves-effect waves-red btn-flat\" @click=\"removeCard(material.id)\">Remove</a>\n                    </div>\n                </div>\n            </template>\n            <template v-else=\"\">\n                <div class=\"gallery--add-image\" v-show=\"isAddImageCard\">\n                    <div class=\"upload-box image--upload\">\n                        <div class=\"upload--header\">\n                            <div class=\"row\">\n                                <form class=\"col s12\">\n                                    <div class=\"row relative\">\n                                        <ol class=\"carousel-indicators\" v-show=\"supportMultiFile &amp;&amp; fileStage.length > 1\">\n                                            <li data-target=\"#myCarousel\" v-for=\"file in fileStage\" :data-slide-to=\"$index\" :class=\"{'active': $index == 0}\"></li>\n                                        </ol>\n                                        <div class=\"input-field col s6\" v-else=\"\">\n                                            <i class=\"material-icons prefix\">account_circle</i>\n                                            <input id=\"icon_prefix\" type=\"text\" class=\"validate\" v-model=\"newIconName\">\n                                            <label for=\"icon_prefix\">New Social Media</label>\n                                        </div>\n                                    </div>\n                                </form>\n                            </div>\n                        </div>\n                        <div class=\"upload--content\">\n                            <template v-if=\"isPreviewFile &amp;&amp; !isImageUploaded\">\n                                <template v-if=\"supportMultiFile\">\n                                    <div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n                                        <!-- Wrapper for slides -->\n                                        <div class=\"carousel-inner\" role=\"listbox\">\n                                            <div v-for=\"file in fileStage\" class=\"item\" :class=\"{'active': $index == 0}\">\n                                                <div class=\"col s12 m7\">\n                                                    <div class=\"card horizontal\">\n                                                        <div class=\"card-image\">\n                                                            <img :id=\"'previewFile-' + $index\" src=\"#\">\n                                                        </div>\n                                                        <div class=\"card-stacked\">\n                                                            <div class=\"card-content\">\n                                                                <div class=\"row\">\n                                                                    <div class=\"input-field col s6\">\n                                                                        <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.name\">\n                                                                        <label for=\"last_name\">Name</label>\n                                                                    </div>\n                                                                    <div class=\"input-field col s6\">\n                                                                        <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.credit\">\n                                                                        <label for=\"last_name\">Credit: </label>\n                                                                    </div>\n                                                                </div>\n                                                            </div>\n                                                        </div>\n                                                    </div>\n                                                </div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </template>\n                                <template v-else=\"\">\n                                    <img id=\"previewFile\" src=\"#\">\n                                </template>\n                            </template>\n                            <template v-else=\"\">\n                                <template v-if=\"supportMultiFile\">\n                                    <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"multiple\"></file-upload>\n                                </template>\n                                <template v-else=\"\">\n                                    <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"single\"></file-upload>\n                                </template>\n                                <div class=\"upload--data\" v-else=\"\">\n                                    <div class=\"upload--instructions\">\n                                        <h3>Additional Info</h3>\n                                        <p>We require some additional information about your new upload. Please fill in the below form fields before submitting your new material.</p>\n                                    </div>\n                                    <div class=\"upload--credit-input\">\n                                        <div class=\"row\">\n                                            <form class=\"col s12\">\n                                                <div class=\"row\">\n                                                    <div class=\"input-field col s12\">\n                                                        <input id=\"credit\" type=\"text\" class=\"validate\" v-model=\"newIconPath\">\n                                                        <label for=\"credit\" data-error=\"wrong\" data-success=\"right\">Media_Url: </label>\n                                                    </div>\n                                                </div>\n                                            </form>\n                                        </div>\n                                    </div>\n                                </div>\n                            </template>\n                        </div>\n                        <div class=\"upload--footer\">\n                            <p class=\"check-box left-aligned\">\n                                <input type=\"checkbox\" class=\"filled-in\" id=\"filled-in-box\" @click=\"supportMultiFile = !supportMultiFile\">\n                                <label for=\"filled-in-box\">Multiple File Upload</label>\n                            </p>\n                            <template v-if=\"!isSubmitReady\">\n                                <button v-show=\"!supportMultiFile\" class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"moveToDataUpload\">\n                                    Next\n                                </button>\n\n                                <button v-else=\"\" class=\"btn waves-effect waves-light\" @click=\"toggleImageCard()\">Next Image</button>\n                            </template>\n\n                            <template v-else=\"\">\n\n                                <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"submitNewImage()\">Submit\n                                    <i class=\"material-icons right\">send</i>\n                                </button>\n\n                            </template>\n                            <a class=\"waves-effect waves-teal btn-flat\" @click=\"returnToGallery\">cancel</a>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"empty--state\" transition=\"fade\" v-else=\"\">\n                    <div class=\"empty\">\n                        <img src=\"/image/svg/folder.svg\">\n                        <h1>Welcome to the art show!</h1>\n                        <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>\n                        <a class=\"waves-effect waves-light btn red\" @click=\"isAddImageCard = true\"><i class=\"material-icons left\">cloud</i>Add Photo</a>\n                    </div>\n                </div>\n            </template>\n        </div>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-48d14df5", module.exports)
+  } else {
+    hotAPI.update("_v-48d14df5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.default = {
     data: function data() {
         return {
@@ -60626,7 +60969,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-047a6324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
+},{"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60977,7 +61320,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3fd124aa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-file-upload.vue":27,"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

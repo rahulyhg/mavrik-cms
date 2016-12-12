@@ -34,7 +34,22 @@
                                 </ul>
                             </a>
                         </li>
-                    </ul>
+                <li>
+                    <a href="#!" class="no-padding">
+                        <ul class="collapsible" data-collapsible="accordion">
+                            <li>
+                                <a href="#!" class="collapsible-header collection-item caps">Contact Info</a>
+                                <div class="collapsible-body">
+                                    <ul>
+                                        <li><a href="#!" class="collection-item caps" @click="changeView('contact')">Contact</a></li>
+                                        <li><a href="#!" class="collection-item caps" @click="changeView('social media')">Social Media</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </a>
+                </li>
+            </ul>
                 </div>
             </div>
         </div>
@@ -44,6 +59,7 @@
             <background-video token='{{csrf_token()}}' v-show="activeView=='background'"></background-video>
             <photo-gallery token='{{csrf_token()}}' v-show="activeView=='photo galleries'"></photo-gallery>
             <social token='{{csrf_token()}}' v-show="activeView=='video gallery'"></social>
+            <social-media token='{{csrf_token()}}' v-show="activeView=='social media'"></social-media>
             <contact token='{{csrf_token()}}' user="{{Auth::user()->id}}" v-show="activeView=='contact'"></contact>
             <journal token='{{csrf_token()}}' user="{{Auth::user()->id}}" v-show="activeView=='journal'"></journal>
         </div>

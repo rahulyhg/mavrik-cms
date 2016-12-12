@@ -70,5 +70,6 @@ Route::group(['prefix' => 'auth'], function(){
     Route::resource('/contacts', 'ContactController');
     Route::resource('/contents', 'ContentController');
     Route::resource('/gallery', 'GalleryController');
+    Route::resource('/social_media', 'MediaController');
 });
 

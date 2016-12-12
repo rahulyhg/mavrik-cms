@@ -130,6 +130,10 @@ nav {
   border-bottom: none;
 }
 
+.collapsible-body a {
+  padding-left: 40px !important;
+}
+
 .lean--overlay {
   position: fixed;
   z-index: 1002;

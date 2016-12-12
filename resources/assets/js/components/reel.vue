@@ -6,20 +6,20 @@
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <template v-if="isPlay">
-                <span @click="controlReel('skip')" class="video--options">Skip</span>
+                <span @click="controlReel('skip')" class="video--options skip">Skip</span>
             </template>
             <template v-else>
                 <span @click="controlReel('play')" class="video--options">
-                    <div class="callout">
-                        <h1>FABIANA FORMICA</h1>
-                    <span>Actress</span>
-                    </div>
-                    <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_black_24px.svg">
+                    <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
                 </span>
             </template>
         </div>
         <div class="content--load-screen" v-show="isLoadScreen">
-            <h1>FABIANA</h1>
+            <h1>
+                <span>FABIANA FORMICA</span>
+                <span class="title-underline underline_white"></span>
+            </h1>
+            <span>Actress</span>
             <p>Loading...</p>
             <div class="progress-container">
                 <div class="progress">
@@ -48,6 +48,7 @@
             controlReel: function (control) {
                 switch (control){
                     case 'play':
+                        this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                         this.isPlay = true;
                         this.$dispatch('control-reel', false);
                         break;
@@ -115,8 +116,8 @@
             },
             'show-reel': function (control) {
                 if(control){
-                    this.isPlay = true;
                    this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
+                    this.isPlay = true;
                 }
             }
         }

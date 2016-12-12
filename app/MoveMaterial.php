@@ -49,6 +49,45 @@ class MoveMaterial
         return false;
     }
 
+    public function checkPath($path){
+
+        //trigger exception in a "try" block
+        try {
+            $isExist = Storage::disk($this->env)->exists($path);
+
+            if(!$isExist){
+                return true;
+            }
+        }
+
+            //catch exception
+        catch(\Exception $e) {
+            return false;
+        }
+        return false;
+    }
+
+    public function storeIcon(){
+        $image = $this->request['image'];
+        $path = '/icons/' . $image->getClientOriginalName();
+        if($this->checkPath($path)){
+            return $this->moveIcon($path, $image);
+        }
+
+        return 'fuck me';
+    }
+    public function moveIcon($image_path, $material){
+        if(Storage::disk($this->env)->put($image_path, file_get_contents($material))){
+            if($this->env != 'local'){
+                $env = 'https://fabiana.objects.frb.io';
+            } else {
+                $env = '/storage';
+            }
+            return $env . $image_path;
+        }
+        return 'failed';
+    }
+
     public function storeMaterial($material){
 
         $gallery = $this->material_object;
@@ -226,6 +265,18 @@ class MoveMaterial
             ->saveMaterial();
     }
 
+    public function deleteIconMaterial($id){
+        $icon = SocialMedia::findIcon($id);
+        if($this->env == 'local'){
+            $path = explode("/storage",$icon['image'])[1];
+        } else {
+            $path = explode("https://fabiana.objects.frb.io",$icon['image'])[1];
+        }
+
+        if(Storage::disk($this->env)->delete($path)){
+            return SocialMedia::delete_icon($id);
+        }
+    }
     public function deleteMaterial($id){
         $this->material_object = Materials::showMaterial($id);
         

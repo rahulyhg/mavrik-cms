@@ -21,6 +21,7 @@ Vue.config.debug = true;
 import dashboard from './components/admin/dashboard.vue';
 import backgroundVideo from './components/admin/background.vue';
 import photoGallery from './components/admin/photo-galleries.vue';
+import socialMedia from './components/admin/socials.vue';
 import statistics from './components/admin/statistics.vue';
 import social from './components/admin/social_videos.vue';
 import contact from './components/admin/contact.vue';
@@ -29,7 +30,7 @@ import journal from './components/admin/journal.vue';
 
 new Vue({
     el: 'body',
-    components: {dashboard,'background-video':backgroundVideo,statistics, 'photo-gallery': photoGallery,social, contact, journal},
+    components: {dashboard,'background-video':backgroundVideo,statistics, 'photo-gallery': photoGallery,social, contact, journal, 'social-media': socialMedia},
     ready() {
         // this.incrementDate();
     },
@@ -39,7 +40,7 @@ new Vue({
         activeView: 'dashboard',
         launch: '2016-10-06T20:03:55',
         views: [
-            'dashboard', 'statistics', 'background', 'photo galleries', 'video gallery', 'contact'
+            'dashboard', 'statistics', 'background', 'photo galleries', 'video gallery'
         ]
     },
     methods:{

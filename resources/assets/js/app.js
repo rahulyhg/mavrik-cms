@@ -71,7 +71,6 @@ new Vue({
             this.view = view;
             switch (view){
                 case 'showreel':
-                    console.log('yehehe');
                     if(this.view != 'showreel'){
                         clearTimeout(this.myTimeOut);
                         this.myTimeOut = setTimeout(function(){

@@ -35,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="isGalleryActive" id="myCarousel" class="carousel slide" data-interval="false">
+            <div v-if="isGalleryActive" id="myCarousel" class="carousel slide" data-interval="false" transition="fade">
                 <div v-if="isItemSelected" class="item-side">
                     <div class="side side-credit">
                         <template v-if="galleryType == 'image'">
@@ -66,15 +66,13 @@
                 </div>
                 <!-- Left and right controls -->
                 <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" @click="incrementSlider('down')">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
+                    <img class="icon-50p" src="/image/svg/ic_keyboard_arrow_left_white_24px.svg" alt="previous">
                 </a>
                 <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next" @click="incrementSlider('up')">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
+                    <img class="icon-50p" src="/image/svg/ic_keyboard_arrow_right_white_24px.svg" alt="next">
                 </a>
             </div>
-            <div v-if="isGalleryActive" class="carousel-backdrop"></div>
+            <div v-if="isGalleryActive" class="carousel-backdrop" transition="fade"></div>
         </div>
     </div>
 </template>

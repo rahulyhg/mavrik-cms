@@ -3,18 +3,32 @@
         <div class="title m-b-md">
             <h1>
                 <span>FABIANA FORMICA</span>
-                <span class="title-underline"></span>
+                <span class="title-underline underline_white"></span>
             </h1>
-            <span>CONTACT</span>
+            <span class="small-title">CONTACT</span>
         </div>
         <div class="about--fab">
             <div class="contact-cards">
+                <div class="outline contact-divider"></div>
                 <div class="contact" v-for="contact in contacts">
                     <span>{{contact.title}}</span>
                     <span>{{contact.address}}</span>
                     <span>{{contact.telephone}}</span>
                     <span>{{contact.name}}</span>
                     <span>{{contact.email}}</span>
+                </div>
+                <div class="outline contact-liner"></div>
+            </div>
+            <div class="social_media">
+                <div class="shelf top_shelf">
+                    <a v-for="media in socials | orderBy 'position' | limitBy 3" class="social" :href="media.path">
+                        <img class="social_icons" :src="media.image" :alt="media.name">
+                    </a>
+                </div>
+                <div class="shelf bottom_shelf">
+                    <a v-for="media in socials | orderBy 'position' | limitBy 6 3" class="social" :href="media.path">
+                        <img class="social_icons" :src="media.image" :alt="media.name">
+                    </a>
                 </div>
             </div>
         </div>
@@ -24,7 +38,8 @@
     export default{
         data(){
             return{
-                contacts:''
+                contacts:'',
+                socials: ''
             }
         },
         ready (){
@@ -34,9 +49,13 @@
             //vue resource methods
             fetchContacts: function () {
                 this.getHttp('/auth/contacts/1', this.setContacts);
+                this.getHttp('/auth/social_media', this.setMedia);
             },
             setContacts: function (results) {
                 return this.contacts = results.data;
+            },
+            setMedia: function (results) {
+              this.socials = results.data;
             },
             getHttp: function (url,callback) {
                 const params = {

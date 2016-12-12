@@ -24,6 +24,23 @@ html, body {
   background-position: top right;
 }
 
+.video-sprite--icon{
+  width: 75px;
+  cursor: pointer;
+}
+.video-sprite--icon:hover{
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
+  -webkit-transform: scale(.8);
+  -moz-transform: scale(.8);
+  -ms-transform: scale(.8);
+  -o-transform: scale(.8);
+  transform: scale(.8);
+}
+
 #fabiana{
   background-color: #3A3A3A;
 }
@@ -78,22 +95,42 @@ ul{
 }
 
 .contact-cards{
-  width: 500px;
   @include flex();
   @include flex-row(nowrap);
+  position: relative;
   justify-content: center;
+  padding-bottom: 25px;
+  .outline{
+    background: white;
+    position: absolute;
+    margin: auto;
+  }
+  .contact-divider{
+    width: 2px;
+    height: 90%;
+    top:0;
+  }
+  .contact-liner{
+    bottom: 0;
+    width: 60%;
+    height: 2px;
+  }
   .contact{
     @include flex();
     @include flex-column();
   }
-  .contact:nth-child(1){
-    padding-right: 5%;
+  .contact:nth-child(2){
+    padding-right: 25px;
     text-align: right;
   }
-  .contact:nth-child(2){
-    padding-left: 5%;
+  .contact:nth-child(3){
+    padding-left: 25px;
     text-align: left;
   }
+}
+
+.small-title{
+  font-size: 25px;
 }
 
 .content--load-screen{
@@ -124,6 +161,21 @@ ul{
 
 .item-image-group, .item-card{
   @include cover ();
+}
+
+.shelf{
+  margin: 25px 0;
+  .social{
+    margin: 0 25px;
+  }
+
+  .social_icons{
+    height: 50px;
+  }
+}
+
+.row-close{
+  margin-bottom: 0!important;
 }
 
 .video-item--indicator{
@@ -242,6 +294,13 @@ ul{
   }
 }
 
+.nav-list{
+  width: 50%;
+  @include flex();
+  @include flex-column();
+  align-items: flex-start;
+}
+
 .links--nav{
   width: 100%;
   @media #{$tabletUp}{
@@ -254,8 +313,13 @@ ul{
   width: 60%;
   height: 2px;
   display: block;
-  background: white;
   margin: auto;
+}
+.underline_grey{
+  background: #636b6f;
+}
+.underline_white{
+  background: white;
 }
 
 .links > a {
@@ -294,6 +358,11 @@ ul{
 .nav--active{
   margin-left: 0!important;
 }
+.nav-callout{
+  position: absolute;
+  top: 5%;
+  margin: auto;
+}
 
 .content--component{
   height: 100%;
@@ -316,8 +385,15 @@ ul{
   @include cover();
 }
 
+.skip{
+  font-size: 22px;
+  position: absolute;
+  bottom: 5%;
+  margin: auto;
+}
 .video--options{
   z-index: 99;
+
 }
 
 .icon-50p{
@@ -466,6 +542,8 @@ ul{
   background-color: rgba(0, 0, 0, 0);
   filter: alpha(opacity=50);
   opacity: .5;
+  @include flex();
+  @include flex-center();
 }
 .carousel-control.left {
   background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .0001) 100%);
