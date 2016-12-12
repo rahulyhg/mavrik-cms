@@ -3,6 +3,67 @@
 @import "../component/fonts";
 @import "../utilities/variables";
 
+#grid { width:1200px }
+.grid-sizer, .grid-item {
+  width: 33.3333333%;
+}
+.grid-item{
+  position: relative;
+  overflow: hidden;
+  .callout-box{
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    .name{
+      font-size: 32px;
+    }
+    .group{
+      font-size: 13px;
+    }
+  }
+  .callout-name{
+    height: 64px;
+  }
+  .callout-group{
+    height: 25px;
+    @include flex();
+    @include flex-center();
+  }
+  .item--callout{
+    @include fullscreen();
+    @include flex();
+    @include flex-center();
+    z-index: 88;
+    .line-thick{
+      height: 10px;
+      width: 10%;
+    }
+    .line-thin{
+      display: block;
+      height: 1px;
+      width: 100%;
+    }
+    .callout--line{
+      position: relative;
+      .line{
+        background-color: white;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+      }
+      .lw{
+        width: 100%;
+      }
+    }
+  }
+}
+.grid-item img { width:100%; }
+
+.item-image-group, .item-card{
+  @include cover ();
+}
+
 .gallery--grid{
   @include cover();
   @include flex();

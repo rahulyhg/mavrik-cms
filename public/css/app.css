@@ -311,12 +311,6 @@ ul li {
   right: 5%;
 }
 
-.item-image-group, .item-card {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
-
 .shelf {
   margin: 25px 0;
 }
@@ -353,107 +347,6 @@ ul li {
   background-color: black;
   opacity: 0;
   z-index: 77;
-}
-
-#grid {
-  width: 1200px;
-}
-
-.grid-sizer, .grid-item {
-  width: 33.3333333%;
-}
-
-.grid-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.grid-item .callout-box {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.grid-item .callout-box .name {
-  font-size: 32px;
-}
-
-.grid-item .callout-box .group {
-  font-size: 13px;
-}
-
-.grid-item .callout-name {
-  height: 64px;
-}
-
-.grid-item .callout-group {
-  height: 25px;
-  display: -webkit-box;
-  /* OLD - iOS 6-, Safari 3.1-6 */
-  /* OLD - Firefox 19- (buggy but mostly works) */
-  /* TWEENER - IE 10 */
-  /* NEW - Chrome */
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-}
-
-.grid-item .item--callout {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  position: absolute;
-  display: -webkit-box;
-  /* OLD - iOS 6-, Safari 3.1-6 */
-  /* OLD - Firefox 19- (buggy but mostly works) */
-  /* TWEENER - IE 10 */
-  /* NEW - Chrome */
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-  z-index: 88;
-}
-
-.grid-item .item--callout .line-thick {
-  height: 10px;
-  width: 10%;
-}
-
-.grid-item .item--callout .line-thin {
-  display: block;
-  height: 1px;
-  width: 100%;
-}
-
-.grid-item .item--callout .callout--line {
-  position: relative;
-}
-
-.grid-item .item--callout .callout--line .line {
-  background-color: white;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-}
-
-.grid-item .item--callout .callout--line .lw {
-  width: 100%;
-}
-
-.grid-item img {
-  width: 100%;
 }
 
 .flex-center {
@@ -1185,6 +1078,231 @@ strong {
 /* .expand-leave defines the ending state for leaving */
 .lineReveal-enter, .lineReveal-leave {
   width: 0;
+}
+
+@font-face {
+  font-family: 'Fashion Fetish';
+  src: url("/fonts/fashion/FashionFetishLight.eot");
+  src: url("/fonts/fashion/FashionFetishLight.eot?#iefix") format("embedded-opentype"), url("/fonts/fashion/FashionFetishLight.woff2") format("woff2"), url("/fonts/fashion/FashionFetishLight.woff") format("woff"), url("/fonts/fashion/FashionFetishLight.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+h1 {
+  margin: 0 !important;
+}
+
+strong {
+  font-weight: 900 !important;
+}
+
+#grid {
+  width: 1200px;
+}
+
+.grid-sizer, .grid-item {
+  width: 33.3333333%;
+}
+
+.grid-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-item .callout-box {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-item .callout-box .name {
+  font-size: 32px;
+}
+
+.grid-item .callout-box .group {
+  font-size: 13px;
+}
+
+.grid-item .callout-name {
+  height: 64px;
+}
+
+.grid-item .callout-group {
+  height: 25px;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+}
+
+.grid-item .item--callout {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  z-index: 88;
+}
+
+.grid-item .item--callout .line-thick {
+  height: 10px;
+  width: 10%;
+}
+
+.grid-item .item--callout .line-thin {
+  display: block;
+  height: 1px;
+  width: 100%;
+}
+
+.grid-item .item--callout .callout--line {
+  position: relative;
+}
+
+.grid-item .item--callout .callout--line .line {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.grid-item .item--callout .callout--line .lw {
+  width: 100%;
+}
+
+.grid-item img {
+  width: 100%;
+}
+
+.item-image-group, .item-card {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.gallery--grid {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: scroll;
+}
+
+.gallery--grid .gallery--card {
+  -webkit-box-flex: 1;
+  flex: 1 0 40%;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.gallery--grid .video--card {
+  -webkit-box-flex: 0;
+  flex: 0 0 32%;
+  height: 400px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.gallery--card {
+  height: 300px;
+  max-width: 500px;
+  background: white;
+  position: relative;
+  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+  display: -webkit-box;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - Firefox 19- (buggy but mostly works) */
+  /* TWEENER - IE 10 */
+  /* NEW - Chrome */
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.card-video {
+  height: 80%;
+}
+
+@media (min-width: 410px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(98% - 10px);
+  }
+}
+
+@media (min-width: 620px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(49.33333% - 10px);
+  }
+}
+
+@media (min-width: 830px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(25% - 10px);
+  }
+}
+
+@media (min-width: 1040px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(20% - 10px);
+  }
+}
+
+@media (min-width: 1250px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(24.8% - 10px);
+  }
+}
+
+@media (min-width: 1460px) {
+  .gallery--grid .gallery--card {
+    max-width: calc(24.7% - 10px);
+  }
+}
+
+@media (min-width: 1670px) {
+  .gallery--grid .gallery--card {
+    min-width: calc(12.5% - 10px);
+  }
 }
 
 /*!

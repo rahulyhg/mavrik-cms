@@ -16,7 +16,7 @@
   @include flex-row(no-wrap);
 }
 .component--nav{
-  flex-basis: 20%;
+  flex-basis: 18%;
   background-color: #FFFFFF;
   @include flex();
   @include flex-column();

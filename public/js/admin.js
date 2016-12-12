@@ -58748,6 +58748,10 @@ var _background = require('./components/admin/background.vue');
 
 var _background2 = _interopRequireDefault(_background);
 
+var _grid = require('./components/admin/grid.vue');
+
+var _grid2 = _interopRequireDefault(_grid);
+
 var _photoGalleries = require('./components/admin/photo-galleries.vue');
 
 var _photoGalleries2 = _interopRequireDefault(_photoGalleries);
@@ -58795,7 +58799,7 @@ Vue.config.debug = true;
 
 new Vue({
     el: 'body',
-    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default, 'photo-gallery': _photoGalleries2.default, social: _social_videos2.default, contact: _contact2.default, journal: _journal2.default, 'social-media': _socials2.default },
+    components: { dashboard: _dashboard2.default, 'background-video': _background2.default, statistics: _statistics2.default, 'photo-gallery': _photoGalleries2.default, social: _social_videos2.default, contact: _contact2.default, grid: _grid2.default, journal: _journal2.default, 'social-media': _socials2.default },
     ready: function ready() {
         // this.incrementDate();
     },
@@ -58805,10 +58809,11 @@ new Vue({
         myTimeOut: 0,
         activeView: 'dashboard',
         launch: '2016-10-06T20:03:55',
-        views: ['dashboard', 'statistics', 'background', 'photo galleries', 'video gallery']
+        views: ['statistics']
     },
     methods: {
         incrementDate: function incrementDate() {
+
             clearTimeout(this.countDown);
             this.countDown = setTimeout(function () {
                 this.now = this.now + 1000;
@@ -58843,7 +58848,7 @@ new Vue({
 
 });
 
-},{"./bootstrap":18,"./components/admin/background.vue":19,"./components/admin/contact.vue":20,"./components/admin/dashboard.vue":21,"./components/admin/journal.vue":22,"./components/admin/photo-galleries.vue":23,"./components/admin/social_videos.vue":24,"./components/admin/socials.vue":25,"./components/admin/statistics.vue":26,"moment":11,"vue":16,"vue-resource":15}],18:[function(require,module,exports){
+},{"./bootstrap":18,"./components/admin/background.vue":19,"./components/admin/contact.vue":20,"./components/admin/dashboard.vue":21,"./components/admin/grid.vue":22,"./components/admin/journal.vue":23,"./components/admin/photo-galleries.vue":24,"./components/admin/social_videos.vue":25,"./components/admin/socials.vue":26,"./components/admin/statistics.vue":27,"moment":11,"vue":16,"vue-resource":15}],18:[function(require,module,exports){
 'use strict';
 
 window._ = require('lodash');
@@ -59149,7 +59154,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2cdf09af", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59321,6 +59326,88 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: ['view'],
+    ready: function ready() {
+        this.fetchWork();
+    },
+
+    data: function data() {
+        return {
+            timeOut: 0,
+            msnryObj: '',
+            items: ['w', 'l', 'r', 'f', 'd', 's', 'a']
+        };
+    },
+    watch: {
+        'view': function view(val) {
+            var self = this;
+            this.$nextTick(function () {
+                // DOM is now updated
+                self.masonry();
+                if (val == 'grid') {
+                    clearTimeout(this.timeOut);
+                    this.timeOut = setTimeout(function () {
+                        self.msnryObj.layout();
+                    }, 800);
+                }
+            });
+        }
+    },
+    methods: {
+        masonry: function masonry() {
+            var elem = document.querySelector('.grid');
+            var self = this;
+            this.msnryObj = new Masonry(elem, {
+                // options
+                itemSelector: '.grid-item',
+                columnWidth: '.grid-sizer',
+                percentagePosition: true
+            });
+            var posts = document.querySelectorAll('.grid-item');
+            if (this.items) {
+                return imagesLoaded(posts, function () {
+                    self.msnryObj.layout();
+                });
+            }
+            this.msnryObj.layout();
+        },
+        fetchWork: function fetchWork() {
+            this.getHttp('/auth/materials/active', this.setWork);
+        },
+        setWork: function setWork(results) {
+            this.items = results.data;
+        },
+        getHttp: function getHttp(url, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                }
+            };
+            this.$http.get(url, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <nav>\n        <div class=\"nav-wrapper\">\n            <div class=\"col s12\">\n                <a href=\"#!\" class=\"breadcrumb\">Content</a>\n                <a href=\"#!\" class=\"breadcrumb\">Grid</a>\n            </div>\n        </div>\n    </nav>\n    <div class=\"component--state\">\n        <div class=\"repository-grid\">\n            <div class=\"grid\">\n                <div class=\"grid-sizer\"></div>\n                <div class=\"repository--material grid-item\" v-for=\"material in items\">\n                    <div class=\"item-image-group\">\n                        <template v-if=\"material.type == 'image'\">\n                            <img :src=\"material.path\">\n                        </template>\n                        <template v-else=\"\">\n                            <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                            <img :src=\"material.credit\">\n                        </template>\n                    </div>\n                    <div class=\"item--callout\">\n                    </div>\n                </div>\n                <!--<div class=\"grid-sizer\"></div>-->\n                <!--<div class=\"repository&#45;&#45;material grid-item\" v-for=\"item in items\">-->\n                    <!--<div class=\"item-image-group\">-->\n                        <!--<img :src=\"item.path\">-->\n                    <!--</div>-->\n                <!--</div>-->\n            </div>\n        </div>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-6a84d2f2", module.exports)
+  } else {
+    hotAPI.update("_v-6a84d2f2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":16,"vue-hot-reload-api":14}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60127,7 +60214,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-85eb13f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"quill":13,"vue":16,"vue-hot-reload-api":14}],23:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"quill":13,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60455,7 +60542,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-01910664", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/gallery-component.vue":27,"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
+},{"../elements/gallery-component.vue":28,"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60605,7 +60692,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-1d28a70e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":16,"vue-hot-reload-api":14}],25:[function(require,module,exports){
+},{"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60944,7 +61031,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-48d14df5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60969,7 +61056,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-047a6324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
+},{"vue":16,"vue-hot-reload-api":14}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61320,7 +61407,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3fd124aa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../elements/material-file-upload.vue":28,"vue":16,"vue-hot-reload-api":14}],28:[function(require,module,exports){
+},{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

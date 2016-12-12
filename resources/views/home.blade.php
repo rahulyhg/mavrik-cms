@@ -18,7 +18,7 @@
                 <div class="nav--selects--container m-t-sm">
                     <ul class="collection">
                         <li v-for="view in views">
-                            <a href="#!" class="collection-item caps" @click="changeView(view)">@{{view}}</a>
+                            <a href="#!" class="collection-item caps" @click="changeView(view)" v-cloak>@{{view}}</a>
                         </li>
                         <li>
                             <a href="#!" class="no-padding">
@@ -27,6 +27,10 @@
                                         <a href="#!" class="collapsible-header collection-item caps">Content</a>
                                         <div class="collapsible-body">
                                             <ul>
+                                                <li><a href="#!" class="collection-item caps" @click="changeView('background')">Background Video</a></li>
+                                                <li><a href="#!" class="collection-item caps" @click="changeView('grid')">Gallery Grid</a></li>
+                                                <li><a href="#!" class="collection-item caps" @click="changeView('photo galleries')">Photo Gallery</a></li>
+                                                <li><a href="#!" class="collection-item caps" @click="changeView('video gallery')">Video Gallery</a></li>
                                                 <li><a href="#!" class="collection-item caps" @click="changeView('journal')">Biography</a></li>
                                             </ul>
                                         </div>
@@ -57,6 +61,7 @@
             <dashboard v-show="activeView=='dashboard'"></dashboard>
             <statistics v-show="activeView=='statistics'"></statistics>
             <background-video token='{{csrf_token()}}' v-show="activeView=='background'"></background-video>
+            <grid token='{{csrf_token()}}' v-show="activeView=='grid'" :view="activeView"></grid>
             <photo-gallery token='{{csrf_token()}}' v-show="activeView=='photo galleries'"></photo-gallery>
             <social token='{{csrf_token()}}' v-show="activeView=='video gallery'"></social>
             <social-media token='{{csrf_token()}}' v-show="activeView=='social media'"></social-media>

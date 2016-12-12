@@ -270,6 +270,10 @@ ul{
   position: relative;
   @include flex();
 }
+
+.repository-grid{
+  @include cover();
+}
 .background--content{
   @include cover();
   @include flex();
@@ -392,6 +396,10 @@ margin-left: -100px;
   width: 100%;
   position: relative;
   overflow: scroll;
+}
+
+.img-lg{
+  width: 103%!important;
 }
 
 .upload--header, .upload--content, .upload--footer{
