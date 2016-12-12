@@ -14,7 +14,6 @@
     <!-- Styles -->
     <link href="/css/video-js.css" rel="stylesheet" type="text/css">
     <link href="https://cdn.quilljs.com/1.1.5/quill.snow.css" rel="stylesheet">
-    <link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
     <link href="/css/app.css" rel="stylesheet">
 
     <!-- Scripts -->
@@ -32,7 +31,6 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/imagesloaded.pkgd.min.js"></script>
     <script type="text/javascript" src="/js/masonry.pkgd.js"></script>
-    <script type="text/javascript" src="/js/materialize.min.js"></script>
     <script type="text/javascript" src="/js/video.js"></script>
     <script src="/js/app.js"></script>
 </body>

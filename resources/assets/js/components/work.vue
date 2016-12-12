@@ -1,7 +1,7 @@
 <template>
     <div class="content--scroll full flex-column-center">
         <div class="repository">
-            <div class="grid">
+            <div class="grid" :class="{'transition': isFrozen}">
                 <div class="grid-sizer"></div>
                 <div class="repository--material grid-item" v-for="material in repository" @mouseenter="delayEnter($index)" @mouseleave="delayExit($index)" @click="showItem($index, material.id, material.gallery_id)">
                     <div class="item-image-group">
@@ -98,7 +98,8 @@
                 activeHoverExit: 'none',
                 activeLine: 'none',
                 isItemSelected: false,
-                isGalleryActive: false
+                isGalleryActive: false,
+                isFrozen: false
             }
         },
         computed: {
@@ -128,7 +129,6 @@
         },
         methods: {
             fetchWork: function () {
-                console.log('here');
                 this.getHttp('/auth/materials/active', this.setWork);
             },
             setWork: function (results) {
@@ -177,12 +177,14 @@
                 return this.activeItem = this.activeItem - 1;
             },
             delayEnter: function ($index) {
-                var self = this;
-                clearTimeout(this.inactiveTimer);
-                this.activeHoverEnter = $index;
-                this.msTimeout = setTimeout(function () {
-                    self.activeLine = $index;
-                }, 1000);
+                if(!this.isFrozen){
+                    var self = this;
+                    clearTimeout(this.inactiveTimer);
+                    this.activeHoverEnter = $index;
+                    this.msTimeout = setTimeout(function () {
+                        self.activeLine = $index;
+                    }, 1000);
+                }
             },
             delayExit: function ($index) {
                 var self = this;
@@ -226,6 +228,20 @@
                         return i;
                     }
                 }
+            }
+        },
+        events: {
+            'transition-grid': function (action) {
+                var self = this;
+                if(action){
+                    console.log('yep');
+                    return this.isFrozen = true;
+                }
+                clearTimeout(this.msTimeout);
+                this.msTimeout = setTimeout(function () {
+                    console.log('fuck you');
+                    self.isFrozen = false;
+                }, 1200);
             }
         }
     }

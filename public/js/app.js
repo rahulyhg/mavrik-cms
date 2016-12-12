@@ -58741,6 +58741,10 @@ var _work = require('./components/work.vue');
 
 var _work2 = _interopRequireDefault(_work);
 
+var _message = require('./components/message.vue');
+
+var _message2 = _interopRequireDefault(_message);
+
 var _contacts = require('./components/contacts.vue');
 
 var _contacts2 = _interopRequireDefault(_contacts);
@@ -58768,7 +58772,7 @@ moment().format();
 
 new Vue({
     el: 'body',
-    components: { showreel: _reel2.default, bio: _about2.default, photos: _work2.default, contact: _contacts2.default, videos: _writing2.default },
+    components: { showreel: _reel2.default, bio: _about2.default, photos: _work2.default, contact: _message2.default, videos: _writing2.default, social: _contacts2.default },
     ready: function ready() {
         this.setHome();
         this.fetchMaterials();
@@ -58785,13 +58789,12 @@ new Vue({
         spanWidth: '',
         materials: '',
         msnryObj: '',
-        views: ['showreel', 'bio', 'media', 'contact'],
+        views: ['showreel', 'bio', 'media', 'contact', 'social'],
         isTitle: false,
         isTag: false,
         isLinks: false,
         isCountDown: false,
         activeReel: false
-
     },
     computed: {
         filteredReelMaterials: function filteredReelMaterials() {
@@ -58813,6 +58816,7 @@ new Vue({
     },
     methods: {
         seeView: function seeView(view, $index) {
+            var self = this;
             this.view = view;
             switch (view) {
                 case 'showreel':
@@ -58829,10 +58833,12 @@ new Vue({
                     }
                     break;
                 case 'media':
+                    this.$broadcast('transition-grid', true);
                     this.$nextTick(function () {
                         // DOM is now updated
-                        this.masonry();
-                        this.activeReel = false;
+                        self.activeReel = false;
+                        self.masonry();
+                        self.$broadcast('transition-grid', false);
                     });
                     break;
                 default:
@@ -58857,6 +58863,17 @@ new Vue({
             });
         },
         toggleMenu: function toggleMenu() {
+            var self = this;
+            if (this.view == 'media') {
+                console.log('media');
+                this.$broadcast('transition-grid', true);
+                clearTimeout(this.myTimeOut);
+                return this.myTimeOut = setTimeout(function () {
+                    self.activeReel = !self.activeReel;
+                    self.$broadcast('transition-grid', false);
+                }, 500);
+            }
+
             this.activeReel = !this.activeReel;
         },
         setHome: function setHome() {
@@ -58947,7 +58964,7 @@ new Vue({
 
 });
 
-},{"./bootstrap":15,"./components/about.vue":16,"./components/contacts.vue":17,"./components/reel.vue":18,"./components/work.vue":19,"./components/writing.vue":20,"moment":8}],15:[function(require,module,exports){
+},{"./bootstrap":15,"./components/about.vue":16,"./components/contacts.vue":17,"./components/message.vue":18,"./components/reel.vue":19,"./components/work.vue":20,"./components/writing.vue":21,"moment":8}],15:[function(require,module,exports){
 'use strict';
 
 window._ = require('lodash');
@@ -59189,6 +59206,89 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
+    data: function data() {
+        return {
+            timer: 0,
+            message: {
+                'name': '',
+                'email': '',
+                'text': ''
+            },
+            uploadFile: '',
+            fileLabel: 'Your Object',
+            isNewMessage: true,
+            successMessage: false
+        };
+    },
+
+    computed: {
+        isFormReady: function isFormReady() {
+            if (this.message.name && this.message.email && this.message.text) {
+                return true;
+            }
+            return false;
+        }
+    },
+    methods: {
+        sendForm: function sendForm() {
+            if (this.uploadFile) {
+                var formData = new FormData();
+                formData.append('file', this.uploadFile);
+                formData.append('name', this.message.name);
+                formData.append('email', this.message.email);
+                formData.append('text', this.message.text);
+                return this.sendHttp('/auth/notify/email', formData, this.thankYou);
+            }
+
+            this.sendHttp('/auth/notify/email', this.message, this.thankYou);
+        },
+        thankYou: function thankYou(results) {
+            if (results.data.status == 'success') {
+                var self = this;
+                this.isNewMessage = false;
+                clearTimeout(this.timer);
+                this.timer = setTimeout(function () {
+                    self.successMessage = true;
+                }, 1000);
+            }
+        },
+        stageFile: function stageFile() {
+            this.uploadFile = this.$els.touch.files[0];
+            this.fileLabel = this.uploadFile.name;
+        },
+        sendHttp: function sendHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.post(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
+        }
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"message--form\" v-show=\"isNewMessage\" transition=\"fade\">\n        <div class=\"contact-form\">\n            <input type=\"text\" v-model=\"message.name\" placeholder=\"Your Name\">\n            <input type=\"email\" v-model=\"message.email\" placeholder=\"Your Email\">\n            <div class=\"file-upload\">\n                <div class=\"input--hidden\">\n                    <input id=\"messageFile\" type=\"file\" v-el:touch=\"\" @change=\"stageFile\">\n                </div>\n                <label for=\"messageFile\">{{fileLabel}}</label>\n            </div>\n            <textarea name=\"message\" cols=\"30\" rows=\"10\" v-model=\"message.text\" placeholder=\"Write a Message...\"></textarea>\n        </div>\n        <div class=\"send-form\">\n            <span v-show=\"isFormReady\" @click=\"sendForm\" transition=\"fade\">Send</span>\n        </div>\n    </div>\n    <div class=\"message--response\" v-show=\"successMessage\" transition=\"fade\">\n        <h1>Thank you for visiting my site!</h1>\n        <p>I'll get back to you as soon as I can.</p>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-5eb5e2d6", module.exports)
+  } else {
+    hotAPI.update("_v-5eb5e2d6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":13,"vue-hot-reload-api":11}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
     props: ['reel'],
     data: function data() {
         return {
@@ -59279,7 +59379,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\" v-show=\"isInitReel\" transition=\"fade\" :class=\"{'no-show': !isFadeIn}\">\n        <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n            <source src=\"/video/Showreel Fabiana Formica 2016-HD.mp4\" type=\"video/mp4\">\n            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n        </video>\n        <template v-if=\"isPlay\">\n            <span @click=\"controlReel('skip')\" class=\"video--options skip\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <span @click=\"controlReel('play')\" class=\"video--options\">\n                <img class=\"video-sprite--icon\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n            </span>\n        </template>\n    </div>\n    <div class=\"content--load-screen\" v-show=\"isLoadScreen\">\n        <h1>\n            <span>FABIANA FORMICA</span>\n            <span class=\"title-underline underline_white\"></span>\n        </h1>\n        <span>Actress</span>\n        <p>Loading...</p>\n        <div class=\"progress-container\">\n            <div class=\"progress\">\n                <div class=\"indeterminate\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\" v-show=\"isInitReel\" transition=\"fade\" :class=\"{'no-show': !isFadeIn}\">\n        <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n            <source src=\"/video/Showreel Fabiana Formica 2016-HD.mp4\" type=\"video/mp4\">\n            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n        </video>\n        <template v-if=\"isPlay\">\n            <span @click=\"controlReel('skip')\" class=\"video--options skip\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <span @click=\"controlReel('play')\" class=\"video--options\">\n                <img class=\"video-sprite--icon\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n            </span>\n        </template>\n    </div>\n    <div class=\"content--load-screen\" v-show=\"isLoadScreen\">\n        <div class=\"load--callout\">\n            <h1>\n                <span>FABIANA FORMICA</span>\n                <span class=\"title-underline underline_white\"></span>\n            </h1>\n            <span>Actress</span>\n        </div>\n        <p>Loading...</p>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -59290,7 +59390,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5e49514a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":13,"vue-hot-reload-api":11}],19:[function(require,module,exports){
+},{"vue":13,"vue-hot-reload-api":11}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59317,7 +59417,8 @@ exports.default = {
             activeHoverExit: 'none',
             activeLine: 'none',
             isItemSelected: false,
-            isGalleryActive: false
+            isGalleryActive: false,
+            isFrozen: false
         };
     },
     computed: {
@@ -59347,7 +59448,6 @@ exports.default = {
     },
     methods: {
         fetchWork: function fetchWork() {
-            console.log('here');
             this.getHttp('/auth/materials/active', this.setWork);
         },
         setWork: function setWork(results) {
@@ -59396,12 +59496,14 @@ exports.default = {
             return this.activeItem = this.activeItem - 1;
         },
         delayEnter: function delayEnter($index) {
-            var self = this;
-            clearTimeout(this.inactiveTimer);
-            this.activeHoverEnter = $index;
-            this.msTimeout = setTimeout(function () {
-                self.activeLine = $index;
-            }, 1000);
+            if (!this.isFrozen) {
+                var self = this;
+                clearTimeout(this.inactiveTimer);
+                this.activeHoverEnter = $index;
+                this.msTimeout = setTimeout(function () {
+                    self.activeLine = $index;
+                }, 1000);
+            }
         },
         delayExit: function delayExit($index) {
             var self = this;
@@ -59448,10 +59550,24 @@ exports.default = {
                 }
             }
         }
+    },
+    events: {
+        'transition-grid': function transitionGrid(action) {
+            var self = this;
+            if (action) {
+                console.log('yep');
+                return this.isFrozen = true;
+            }
+            clearTimeout(this.msTimeout);
+            this.msTimeout = setTimeout(function () {
+                console.log('fuck you');
+                self.isFrozen = false;
+            }, 1200);
+        }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index, material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon50p\" transition=\"callout\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"isGalleryActive\" id=\"myCarousel\" class=\"carousel slide\" data-interval=\"false\" transition=\"fade\">\n            <div v-if=\"isItemSelected\" class=\"item-side\">\n                <div class=\"side side-credit\">\n                    <template v-if=\"galleryType == 'image'\">\n                        <span>{{filteredActiveItem.credit}}</span>\n                    </template>\n                    <template v-else=\"\">\n                        <span>Video Clip</span>\n                    </template>\n                </div>\n                <div class=\"side side-name\">\n                    <span>{{filteredActiveItem.name}}</span>\n                </div>\n            </div>\n            <div class=\"close-gallery\">\n                <img class=\"icon25p\" @click=\"closeGallery\" src=\"/image/svg/ic_highlight_off_white_18px.svg\">\n            </div>\n            <div class=\"carousel-content\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': $index == startItem}\">\n                    <div class=\"item--card\">\n                        <template v-if=\"galleryType == 'video'\">\n                            <iframe height=\"100%\" width=\"100%\" :src=\"material.path\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n                        </template>\n                        <template v-else=\"\">\n                            <img :src=\"material.path\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n            <!-- Left and right controls -->\n            <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\" @click=\"incrementSlider('down')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_left_white_24px.svg\" alt=\"previous\">\n            </a>\n            <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\" @click=\"incrementSlider('up')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_right_white_24px.svg\" alt=\"next\">\n            </a>\n        </div>\n        <div v-if=\"isGalleryActive\" class=\"carousel-backdrop\" transition=\"fade\"></div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\" :class=\"{'transition': isFrozen}\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index, material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon50p\" transition=\"callout\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"isGalleryActive\" id=\"myCarousel\" class=\"carousel slide\" data-interval=\"false\" transition=\"fade\">\n            <div v-if=\"isItemSelected\" class=\"item-side\">\n                <div class=\"side side-credit\">\n                    <template v-if=\"galleryType == 'image'\">\n                        <span>{{filteredActiveItem.credit}}</span>\n                    </template>\n                    <template v-else=\"\">\n                        <span>Video Clip</span>\n                    </template>\n                </div>\n                <div class=\"side side-name\">\n                    <span>{{filteredActiveItem.name}}</span>\n                </div>\n            </div>\n            <div class=\"close-gallery\">\n                <img class=\"icon25p\" @click=\"closeGallery\" src=\"/image/svg/ic_highlight_off_white_18px.svg\">\n            </div>\n            <div class=\"carousel-content\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': $index == startItem}\">\n                    <div class=\"item--card\">\n                        <template v-if=\"galleryType == 'video'\">\n                            <iframe height=\"100%\" width=\"100%\" :src=\"material.path\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n                        </template>\n                        <template v-else=\"\">\n                            <img :src=\"material.path\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n            <!-- Left and right controls -->\n            <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\" @click=\"incrementSlider('down')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_left_white_24px.svg\" alt=\"previous\">\n            </a>\n            <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\" @click=\"incrementSlider('up')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_right_white_24px.svg\" alt=\"next\">\n            </a>\n        </div>\n        <div v-if=\"isGalleryActive\" class=\"carousel-backdrop\" transition=\"fade\"></div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -59462,7 +59578,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-013f1e5c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":13,"vue-hot-reload-api":11}],20:[function(require,module,exports){
+},{"vue":13,"vue-hot-reload-api":11}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

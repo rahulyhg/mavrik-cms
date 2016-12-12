@@ -15,17 +15,14 @@
             </template>
         </div>
         <div class="content--load-screen" v-show="isLoadScreen">
-            <h1>
-                <span>FABIANA FORMICA</span>
-                <span class="title-underline underline_white"></span>
-            </h1>
-            <span>Actress</span>
-            <p>Loading...</p>
-            <div class="progress-container">
-                <div class="progress">
-                    <div class="indeterminate"></div>
-                </div>
+            <div class="load--callout">
+                <h1>
+                    <span>FABIANA FORMICA</span>
+                    <span class="title-underline underline_white"></span>
+                </h1>
+                <span>Actress</span>
             </div>
+            <p>Loading...</p>
         </div>
     </div>
 </template>

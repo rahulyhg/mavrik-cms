@@ -17,12 +17,13 @@ moment().format();
 import showreel from './components/reel.vue';
 import bio from './components/about.vue';
 import photos from './components/work.vue';
-import contact from './components/contacts.vue';
+import contact from './components/message.vue';
+import social from './components/contacts.vue';
 import videos from './components/writing.vue';
 
 new Vue({
     el: 'body',
-    components: {showreel,bio, photos, contact, videos},
+    components: {showreel,bio, photos, contact, videos, social},
     ready() {
         this.setHome();
         this.fetchMaterials();
@@ -39,14 +40,13 @@ new Vue({
         materials: '',
         msnryObj: '',
         views: [
-            'showreel', 'bio', 'media', 'contact'
+            'showreel', 'bio', 'media', 'contact', 'social'
         ],
         isTitle: false,
         isTag: false,
         isLinks: false,
         isCountDown: false,
         activeReel: false
-
     },
     computed: {
         filteredReelMaterials: function(){
@@ -68,6 +68,7 @@ new Vue({
     },
     methods:{
         seeView: function (view, $index) {
+            var self = this;
             this.view = view;
             switch (view){
                 case 'showreel':
@@ -84,10 +85,12 @@ new Vue({
                     }
                     break;
                 case 'media':
+                    this.$broadcast('transition-grid', true);
                     this.$nextTick(function () {
                         // DOM is now updated
-                        this.masonry();
-                        this.activeReel = false;
+                        self.activeReel = false;
+                        self.masonry();
+                        self.$broadcast('transition-grid', false);
                     });
                     break;
                 default:
@@ -112,6 +115,17 @@ new Vue({
             });
         },
         toggleMenu: function () {
+            var self = this;
+            if(this.view == 'media'){
+                console.log('media');
+                this.$broadcast('transition-grid', true);
+                clearTimeout(this.myTimeOut);
+                return this.myTimeOut = setTimeout(function () {
+                    self.activeReel = !self.activeReel;
+                    self.$broadcast('transition-grid', false);
+                }, 500);
+            }
+
             this.activeReel = !this.activeReel;
         },
         setHome: function () {

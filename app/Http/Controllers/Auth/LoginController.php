@@ -52,6 +52,18 @@ class LoginController extends Controller
         return redirect('https://login.live.com/');
     }
 
+    public function notify(){
+        if($this->email->notify()){
+            return response([
+                'status' => 'success',
+            ], 200);
+        }
+
+        return response([
+            'status' => 'failure'
+        ]);
+    }
+
     public function authenticate(LoginToken $token)
     {
         $this->email->auth($token);

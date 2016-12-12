@@ -28,7 +28,7 @@ class LoginToken extends Model
         Mail::raw(
         "{$url}",
         function ($message){
-            $message->to($this->user->email )
+            $message->to($this->user->email)
                 ->subject('LOGIN AUTHORIZATION');
         }
         );

@@ -54,10 +54,10 @@ Route::get('/storage/{type}/{filename}', function ($type, $filename)
     return $response;
 });
 
-
 Route::group(['prefix' => 'auth'], function(){
     Route::get('login', 'Auth\LoginController@index');
     Route::post('login', 'Auth\LoginController@login');
+    Route::post('/notify/email', 'Auth\LoginController@notify');
     Route::post('pre_launch', 'AdminController@upload_pre_launch');
     Route::get('logout', 'AdminController@logout');
     Route::get('token/{token}', 'Auth\LoginController@authenticate');
