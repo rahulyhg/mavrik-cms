@@ -49,13 +49,13 @@ class EmailAuthUser
 
                 Mail::send('email.notification', ['text' => $text, 'sender' => $sender, 'respond' => $respond], function ($m) use ($pathToFile, $display, $mime) {
 
-                    $m->to('mrricki.m.usmc@gmail.com')->subject('New Message Request!');
+                    $m->to('fabianaformica@hotmail.com')->subject('New Message Request!');
                     $m->attach($pathToFile, ['as' => $display, 'mime' => $mime]);
 
                 });
             }
             Mail::send('email.notification', ['text' => $text, 'sender' => $sender, 'respond' => $respond], function ($m) {
-                $m->to('mrricki.m.usmc@gmail.com')->subject('New Message Request!');
+                $m->to('fabianaformica@hotmail.com')->subject('New Message Request!');
             });
 
         }
