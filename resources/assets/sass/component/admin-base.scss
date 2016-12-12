@@ -44,6 +44,14 @@ nav{
   @include flex();
   @include flex-center();
 }
+.video-item--indicator{
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
+}
 
 .passive-jumbo{
   position: absolute;
