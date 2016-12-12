@@ -245,10 +245,6 @@ ul li {
   height: 50px;
 }
 
-.row-close {
-  margin-bottom: 0 !important;
-}
-
 .video-item--indicator {
   position: absolute;
   top: 50%;

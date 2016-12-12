@@ -49,6 +49,10 @@ nav{
   position: absolute;
 }
 
+.row-close{
+  margin-bottom: 0!important;
+}
+
 .modal--container{
   @include fullscreen();
   @include flex();
