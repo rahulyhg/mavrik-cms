@@ -72,7 +72,7 @@
                     <img class="icon-50p" src="/image/svg/ic_keyboard_arrow_right_white_24px.svg" alt="next">
                 </a>
             </div>
-            <div v-if="isGalleryActive" class="carousel-backdrop" transition="fade"></div>
+            <div v-if="isGalleryActive" class="carousel-backdrop" transition="fadeDrop"></div>
         </div>
     </div>
 </template>

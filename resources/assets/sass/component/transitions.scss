@@ -63,6 +63,17 @@
   opacity: 0;
 }
 
+//fade the back drop
+
+.fadeDrop-transition{
+  transition: all .5s ease;
+  opacity: .85;
+}
+
+.fadeDrop-enter, .fadeDrop-leave{
+  opacity: 0;
+}
+
 // callout transitions
 
 .callout-transition{

@@ -1464,6 +1464,16 @@ textarea:focus {
   opacity: 0;
 }
 
+.fadeDrop-transition {
+  -webkit-transition: all .5s ease;
+  transition: all .5s ease;
+  opacity: .85;
+}
+
+.fadeDrop-enter, .fadeDrop-leave {
+  opacity: 0;
+}
+
 .callout-transition {
   display: block;
   opacity: 1;
