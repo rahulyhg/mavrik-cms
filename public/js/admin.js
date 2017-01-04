@@ -59354,6 +59354,7 @@ exports.default = {
     props: ['view'],
     ready: function ready() {
         this.fetchWork();
+        alert('we have been changed');
     },
 
     data: function data() {

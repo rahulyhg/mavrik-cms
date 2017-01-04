@@ -13,7 +13,6 @@
             <div class="nav--greet f-h">
                 <div class="nav--welcome">
                     <span class="sub-title">Welcome</span>
-                    what the actual fuck
                     <span class="title">{{ Auth::user()->name}}</span>
                 </div>
                 <div class="nav--selects--container m-t-sm">

@@ -76,6 +76,7 @@
         props: ['view'],
         ready(){
             this.fetchWork();
+            alert('we have been changed');
         },
         data: function () {
             return {
