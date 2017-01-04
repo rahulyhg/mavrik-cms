@@ -161,7 +161,11 @@
                     if(this.tick < 1){
                         return this.tick++;
                     }
-                    this.resetGrid()
+                    var self = this;
+                    clearTimeout(this.timeOut);
+                    this.timeOut = setTimeout(function () {
+                        self.resetGrid();
+                    },1500);
             },
             resetGrid: function () {
                 this.msnryObj='';
