@@ -25,5 +25,5 @@ elixir(function(mix){
     mix.sass('app.scss')
         .sass('admin.scss')
        .browserify('app.js')
-        .browserify('admin.js');
+        .browserify('addy.js');
 });
