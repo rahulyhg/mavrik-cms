@@ -59168,9 +59168,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-8a49839e", module.exports)
+    hotAPI.createRecord("_v-2cdf09af", module.exports)
   } else {
-    hotAPI.update("_v-8a49839e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2cdf09af", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
@@ -59314,9 +59314,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-8a1f8da6", module.exports)
+    hotAPI.createRecord("_v-7e536322", module.exports)
   } else {
-    hotAPI.update("_v-8a1f8da6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-7e536322", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],21:[function(require,module,exports){
@@ -59339,9 +59339,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-9f7e473e", module.exports)
+    hotAPI.createRecord("_v-5612adba", module.exports)
   } else {
-    hotAPI.update("_v-9f7e473e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5612adba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],22:[function(require,module,exports){
@@ -59483,9 +59483,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-75d856ee", module.exports)
+    hotAPI.createRecord("_v-6a84d2f2", module.exports)
   } else {
-    hotAPI.update("_v-75d856ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6a84d2f2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],23:[function(require,module,exports){
@@ -60290,9 +60290,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-91b73e78", module.exports)
+    hotAPI.createRecord("_v-85eb13f4", module.exports)
   } else {
-    hotAPI.update("_v-91b73e78", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-85eb13f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"quill":13,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
@@ -60618,9 +60618,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-6aeb5322", module.exports)
+    hotAPI.createRecord("_v-01910664", module.exports)
   } else {
-    hotAPI.update("_v-6aeb5322", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-01910664", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/gallery-component.vue":28,"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],25:[function(require,module,exports){
@@ -60768,9 +60768,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-2c63de92", module.exports)
+    hotAPI.createRecord("_v-1d28a70e", module.exports)
   } else {
-    hotAPI.update("_v-2c63de92", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-1d28a70e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
@@ -61107,9 +61107,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-42eb38b3", module.exports)
+    hotAPI.createRecord("_v-48d14df5", module.exports)
   } else {
-    hotAPI.update("_v-42eb38b3", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-48d14df5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
@@ -61132,9 +61132,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-db12d0b4", module.exports)
+    hotAPI.createRecord("_v-047a6324", module.exports)
   } else {
-    hotAPI.update("_v-db12d0b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-047a6324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],28:[function(require,module,exports){
@@ -61484,9 +61484,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-338567ad", module.exports)
+    hotAPI.createRecord("_v-3fd124aa", module.exports)
   } else {
-    hotAPI.update("_v-338567ad", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-3fd124aa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],29:[function(require,module,exports){
@@ -61626,9 +61626,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-b0e4c49e", module.exports)
+    hotAPI.createRecord("_v-4716221a", module.exports)
   } else {
-    hotAPI.update("_v-b0e4c49e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-4716221a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}]},{},[17]);

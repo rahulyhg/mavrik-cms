@@ -82,6 +82,7 @@
         props: ['active-view', 'masonry', 'side-menu'],
         ready() {
             this.fetchWork();
+
         },
         data: function () {
             return {

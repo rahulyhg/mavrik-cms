@@ -59125,9 +59125,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-39cbddda", module.exports)
+    hotAPI.createRecord("_v-5e74551c", module.exports)
   } else {
-    hotAPI.update("_v-39cbddda", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5e74551c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"quill":10,"vue":13,"vue-hot-reload-api":11}],17:[function(require,module,exports){
@@ -59213,9 +59213,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-23f77316", module.exports)
+    hotAPI.createRecord("_v-14859c94", module.exports)
   } else {
-    hotAPI.update("_v-23f77316", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-14859c94", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":13,"vue-hot-reload-api":11}],18:[function(require,module,exports){
@@ -59296,9 +59296,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-7b6397d8", module.exports)
+    hotAPI.createRecord("_v-5eb5e2d6", module.exports)
   } else {
-    hotAPI.update("_v-7b6397d8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5eb5e2d6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":13,"vue-hot-reload-api":11}],19:[function(require,module,exports){
@@ -59404,9 +59404,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3f9e8246", module.exports)
+    hotAPI.createRecord("_v-5e49514a", module.exports)
   } else {
-    hotAPI.update("_v-3f9e8246", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5e49514a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":13,"vue-hot-reload-api":11}],20:[function(require,module,exports){
@@ -59586,15 +59586,15 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\" :class=\"{'transition': isFrozen}\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index, material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon50p\" transition=\"callout\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"isGalleryActive\" id=\"myCarousel\" class=\"carousel slide\" data-interval=\"false\" transition=\"fade\">\n            <div v-if=\"isItemSelected\" class=\"item-side\">\n                <div class=\"side side-credit\">\n                    <template v-if=\"galleryType == 'image'\">\n                        <span>{{filteredActiveItem.credit}}</span>\n                    </template>\n                    <template v-else=\"\">\n                        <span>Video Clip</span>\n                    </template>\n                </div>\n                <div class=\"side side-name\">\n                    <span>{{filteredActiveItem.name}}</span>\n                </div>\n            </div>\n            <div class=\"close-gallery\">\n                <img class=\"icon25p\" @click=\"closeGallery\" src=\"/image/svg/ic_highlight_off_white_18px.svg\">\n            </div>\n            <div class=\"carousel-content\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': $index == startItem}\">\n                    <div class=\"item--card\">\n                        <template v-if=\"galleryType == 'video'\">\n                            <iframe height=\"100%\" width=\"100%\" :src=\"material.path\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n                        </template>\n                        <template v-else=\"\">\n                            <img :src=\"material.path\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n            <!-- Left and right controls -->\n            <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\" @click=\"incrementSlider('down')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_left_white_24px.svg\" alt=\"previous\">\n            </a>\n            <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\" @click=\"incrementSlider('up')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_right_white_24px.svg\" alt=\"next\">\n            </a>\n        </div>\n        <div v-if=\"isGalleryActive\" class=\"carousel-backdrop\" transition=\"fadeDrop\"></div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content--scroll full flex-column-center\">\n    <div class=\"repository\">\n        <div class=\"grid\" :class=\"{'transition': isFrozen}\">\n            <div class=\"grid-sizer\"></div>\n            <div class=\"repository--material grid-item\" v-for=\"material in repository | orderBy 'position'\" @mouseenter=\"delayEnter($index)\" @mouseleave=\"delayExit($index)\" @click=\"showItem($index, material.id, material.gallery_id)\">\n                <div class=\"item-image-group\">\n                    <div class=\"item-overlay tran-05\" :class=\"{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}\"></div>\n                    <template v-if=\"material.type == 'image'\">\n                        <img :src=\"material.path\">\n                    </template>\n                    <template v-else=\"\">\n                        <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                        <img :src=\"material.credit\">\n                    </template>\n                </div>\n                <div class=\"item--callout\">\n                    <img v-show=\"activeHoverEnter == $index &amp;&amp; material.type =='video' || activeHoverExit == $index &amp;&amp; material.type =='video'\" class=\"icon50p\" transition=\"callout\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                    <div class=\"callout-box callout-group\">\n                        <div class=\"line-group\">\n                            <span class=\"group\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">\n                            {{material.credit}}\n                             </span>\n                            <span class=\"callout--line line-thin\">\n                                    <span v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" class=\"line lw\" transition=\"fadeIn\"></span>\n                            </span>\n                        </div>\n                    </div>\n                    <div class=\"callout-box callout-name\">\n                        <span class=\"name\" v-show=\"activeHoverEnter == $index || activeHoverExit == $index\" transition=\"callout\">{{material.name}}</span>\n                    </div>\n                    <div class=\"callout--line line-thick\">\n                        <div v-show=\"activeLine == $index\" class=\"line\" transition=\"lineReveal\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div v-if=\"isGalleryActive\" id=\"myCarousel\" class=\"carousel slide\" data-interval=\"false\" transition=\"fade\">\n            <div v-if=\"isItemSelected\" class=\"item-side\">\n                <div class=\"side side-credit\">\n                    <template v-if=\"galleryType == 'image'\">\n                        <span>{{filteredActiveItem.credit}}</span>\n                    </template>\n                    <template v-else=\"\">\n                        <span>Video Clip</span>\n                    </template>\n                </div>\n                <div class=\"side side-name\">\n                    <span>{{filteredActiveItem.name}}</span>\n                </div>\n            </div>\n            <div class=\"close-gallery\">\n                <img class=\"icon25p\" @click=\"closeGallery\" src=\"/image/svg/ic_highlight_off_white_18px.svg\">\n            </div>\n            <div class=\"carousel-content\" role=\"listbox\">\n                <div v-for=\"material in filteredMaterials\" class=\"item\" :class=\"{'active': $index == startItem}\">\n                    <div class=\"item--card\">\n                        <template v-if=\"galleryType == 'video'\">\n                            <iframe height=\"100%\" width=\"100%\" :src=\"material.path\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n                        </template>\n                        <template v-else=\"\">\n                            <img :src=\"material.path\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n            <!-- Left and right controls -->\n            <a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\" @click=\"incrementSlider('down')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_left_white_24px.svg\" alt=\"previous\">\n            </a>\n            <a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\" @click=\"incrementSlider('up')\">\n                <img class=\"icon-50p\" src=\"/image/svg/ic_keyboard_arrow_right_white_24px.svg\" alt=\"next\">\n            </a>\n        </div>\n        <div v-if=\"isGalleryActive\" class=\"carousel-backdrop\" transition=\"fadeDrop\"></div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0eb5d854", module.exports)
+    hotAPI.createRecord("_v-013f1e5c", module.exports)
   } else {
-    hotAPI.update("_v-0eb5d854", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-013f1e5c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":13,"vue-hot-reload-api":11}],21:[function(require,module,exports){
@@ -59617,9 +59617,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4b6cba69", module.exports)
+    hotAPI.createRecord("_v-30572daa", module.exports)
   } else {
-    hotAPI.update("_v-4b6cba69", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-30572daa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":13,"vue-hot-reload-api":11}]},{},[14]);
