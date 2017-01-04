@@ -442,7 +442,7 @@ ul{
 .close-gallery{
   position: absolute;
   top: 15%;
-  right: 20%;
+  right: 15%;
 }
 .carousel {
   position: relative;
@@ -450,7 +450,7 @@ ul{
 .carousel-content {
   position: relative;
   width: 60%;
-  height: 60%;
+  max-height: 90%;
   background: white;
   overflow: hidden;
 }

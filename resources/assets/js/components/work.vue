@@ -1,5 +1,6 @@
 <template>
     <div class="content--scroll full flex-column-center">
+        <h1>what the hell</h1>
         <div class="repository">
             <div class="grid" :class="{'transition': isFrozen}">
                 <div class="grid-sizer"></div>
