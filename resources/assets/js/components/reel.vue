@@ -116,6 +116,12 @@
                    this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                     this.isPlay = true;
                 }
+            },
+            'stop-reel': function (action) {
+                if(action){
+                    console.log('is pausing video');
+                    this.vjsPlayer.pause();
+                }
             }
         }
     }

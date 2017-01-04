@@ -86,6 +86,7 @@ new Vue({
                     }
                     break;
                 case 'media':
+                    this.$broadcast('stop-reel', true);
                     this.$broadcast('transition-grid', true);
                     this.$nextTick(function () {
                         // DOM is now updated
@@ -93,6 +94,11 @@ new Vue({
                         self.masonry();
                         self.$broadcast('transition-grid', false);
                     });
+                    break;
+                case 'contact':
+                case 'social':
+                case 'bio':
+                    this.$broadcast('stop-reel', true);
                     break;
                 default:
                     break;

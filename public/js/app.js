@@ -58852,6 +58852,7 @@ new Vue({
                     }
                     break;
                 case 'media':
+                    this.$broadcast('stop-reel', true);
                     this.$broadcast('transition-grid', true);
                     this.$nextTick(function () {
                         // DOM is now updated
@@ -58859,6 +58860,11 @@ new Vue({
                         self.masonry();
                         self.$broadcast('transition-grid', false);
                     });
+                    break;
+                case 'contact':
+                case 'social':
+                case 'bio':
+                    this.$broadcast('stop-reel', true);
                     break;
                 default:
                     break;
@@ -59393,6 +59399,12 @@ exports.default = {
             if (control) {
                 this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                 this.isPlay = true;
+            }
+        },
+        'stop-reel': function stopReel(action) {
+            if (action) {
+                console.log('is pausing video');
+                this.vjsPlayer.pause();
             }
         }
     }
