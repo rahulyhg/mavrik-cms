@@ -35,6 +35,6 @@
 <script src="/js/packery.pkgd.min.js"></script>
 <script type="text/javascript" src="/js/masonry.pkgd.js"></script>
 <script type="text/javascript" src="/js/video.js"></script>
-<script type="text/javascript" src="/js/admin.js"></script>
+<script type="text/javascript" src="/js/addy.js"></script>
 </body>
 </html>
