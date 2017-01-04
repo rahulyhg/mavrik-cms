@@ -1695,6 +1695,7 @@ strong {
   -webkit-box-align: start;
   align-items: flex-start;
   background-size: cover;
+  background-position: center;
 }
 
 .gallery--add-image {

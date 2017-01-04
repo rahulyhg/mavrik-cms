@@ -3,7 +3,7 @@
 @section('content')
         <div id="fabiana" class="flex-center full position-ref ">
             <div class="content full flex-row-center">
-                <div v-cloak class="content--nav flex-column-center basis--30 tran-05" :class="{'nav--active': activeReel}">
+                <div v-cloak class="content--nav basis--30 tran-05" :class="{'nav--active': activeReel}">
                     <div class="nav-callout">
                         <h1>
                             <span>FABIANA FORMICA</span>
