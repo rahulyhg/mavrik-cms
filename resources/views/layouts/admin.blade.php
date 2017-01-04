@@ -15,7 +15,7 @@
     <link href="https://cdn.quilljs.com/1.1.5/quill.snow.css" rel="stylesheet">
     <link href="/css/materialize.min.css" rel="stylesheet" type="text/css">
     <link href="/css/video-js.css" rel="stylesheet" type="text/css">
-    <link href="/css/admin.css" rel="stylesheet">
+    <link href="/css/addy.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script>
