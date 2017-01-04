@@ -21,6 +21,7 @@ class CreateMaterialTable extends Migration
             $table->foreign('gallery_id')->references('id')->on('galleries')->onDelete('cascade')->nullable();
             $table->string('path');
             $table->string('credit');
+            $table->integer('position')->unsigned()->nullable();
             $table->enum('status', array('active', 'inactive'));
             $table->timestamps();
         });

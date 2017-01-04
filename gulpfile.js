@@ -3,6 +3,13 @@ const elixir = require('laravel-elixir');
 require('laravel-elixir-browserify-official');
 require('laravel-elixir-vueify');
 
+elixir.config.js.browserify.watchify = {
+    enabled: true,
+    options: {
+        poll: true
+    }
+}
+
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management

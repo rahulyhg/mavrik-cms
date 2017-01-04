@@ -28,7 +28,6 @@ import social from './components/admin/social_videos.vue';
 import contact from './components/admin/contact.vue';
 import journal from './components/admin/journal.vue';
 
-
 new Vue({
     el: 'body',
     components: {dashboard,'background-video':backgroundVideo,statistics, 'photo-gallery': photoGallery,social, contact, grid,journal, 'social-media': socialMedia},

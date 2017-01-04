@@ -21,6 +21,7 @@ import contact from './components/message.vue';
 import social from './components/contacts.vue';
 import videos from './components/writing.vue';
 
+
 new Vue({
     el: 'body',
     components: {showreel,bio, photos, contact, videos, social},

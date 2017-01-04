@@ -165,7 +165,7 @@
                     <div class="empty">
                         <img src="/image/svg/folder.svg">
                         <h1>Welcome to the art show!</h1>
-                        <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>
+                        <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delete photo galleries associated to your webpage.</p>
                         <a class="waves-effect waves-light btn red" @click="isAddImageCard = true"><i class="material-icons left">cloud</i>Add Photo</a>
                     </div>
                 </div>
@@ -299,6 +299,7 @@
                         formData.append('gallery_id', $galleryId);
                         formData.append('credit', this.fileStage[i].credit);
                         formData.append('notes', '');
+
                         this.sendHttp('materials', formData, this.successCardUpload);
                     }
 

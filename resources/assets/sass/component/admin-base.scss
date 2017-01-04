@@ -20,6 +20,12 @@ nav{
   overflow-y: visible!important;
 }
 
+.loading--grid{
+  @include fullscreen();
+  @include flex();
+  @include flex-center();
+}
+
 .language--container{
   width: 130px;
   position: relative;
@@ -29,6 +35,10 @@ nav{
   top: 50px!important;
   max-height: 200px;
   overflow: scroll;
+}
+
+.grid-item{
+  cursor: pointer;
 }
 
 .media-icon{
@@ -173,6 +183,10 @@ ul{
   @include flex();
   align-items: center;
   justify-content: center;
+}
+
+.active-item{
+  border: 2px solid red;
 }
 
 .position-ref {

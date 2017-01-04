@@ -14628,7 +14628,7 @@ return jQuery;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.2';
+  var VERSION = '4.17.3';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -16183,9 +16183,9 @@ return jQuery;
      * Shortcut fusion is an optimization to merge iteratee calls; this avoids
      * the creation of intermediate arrays and can greatly reduce the number of
      * iteratee executions. Sections of a chain sequence qualify for shortcut
-     * fusion if the section is applied to an array of at least `200` elements
-     * and any iteratees accept only one argument. The heuristic for whether a
-     * section qualifies for shortcut fusion is subject to change.
+     * fusion if the section is applied to an array and iteratees accept only
+     * one argument. The heuristic for whether a section qualifies for shortcut
+     * fusion is subject to change.
      *
      * Chaining is supported in custom builds as long as the `_#value` method is
      * directly or indirectly included in the build.
@@ -16344,8 +16344,8 @@ return jQuery;
 
     /**
      * By default, the template delimiters used by lodash are like those in
-     * embedded Ruby (ERB). Change the following template settings to use
-     * alternative delimiters.
+     * embedded Ruby (ERB) as well as ES2015 template strings. Change the
+     * following template settings to use alternative delimiters.
      *
      * @static
      * @memberOf _
@@ -16492,8 +16492,7 @@ return jQuery;
           resIndex = 0,
           takeCount = nativeMin(length, this.__takeCount__);
 
-      if (!isArr || arrLength < LARGE_ARRAY_SIZE ||
-          (arrLength == length && takeCount == length)) {
+      if (!isArr || (!isRight && arrLength == length && takeCount == length)) {
         return baseWrapperValue(array, this.__actions__);
       }
       var result = [];
@@ -16607,7 +16606,7 @@ return jQuery;
      */
     function hashHas(key) {
       var data = this.__data__;
-      return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+      return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
     }
 
     /**
@@ -17078,24 +17077,6 @@ return jQuery;
      */
     function arrayShuffle(array) {
       return shuffleSelf(copyArray(array));
-    }
-
-    /**
-     * Used by `_.defaults` to customize its `_.assignIn` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to assign.
-     * @param {Object} object The parent object of `objValue`.
-     * @returns {*} Returns the value to assign.
-     */
-    function assignInDefaults(objValue, srcValue, key, object) {
-      if (objValue === undefined ||
-          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
-        return srcValue;
-      }
-      return objValue;
     }
 
     /**
@@ -17710,8 +17691,7 @@ return jQuery;
       if (value == null) {
         return value === undefined ? undefinedTag : nullTag;
       }
-      value = Object(value);
-      return (symToStringTag && symToStringTag in value)
+      return (symToStringTag && symToStringTag in Object(value))
         ? getRawTag(value)
         : objectToString(value);
     }
@@ -17915,7 +17895,7 @@ return jQuery;
       if (value === other) {
         return true;
       }
-      if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+      if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
         return value !== value && other !== other;
       }
       return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -17938,17 +17918,12 @@ return jQuery;
     function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       var objIsArr = isArray(object),
           othIsArr = isArray(other),
-          objTag = arrayTag,
-          othTag = arrayTag;
+          objTag = objIsArr ? arrayTag : getTag(object),
+          othTag = othIsArr ? arrayTag : getTag(other);
 
-      if (!objIsArr) {
-        objTag = getTag(object);
-        objTag = objTag == argsTag ? objectTag : objTag;
-      }
-      if (!othIsArr) {
-        othTag = getTag(other);
-        othTag = othTag == argsTag ? objectTag : othTag;
-      }
+      objTag = objTag == argsTag ? objectTag : objTag;
+      othTag = othTag == argsTag ? objectTag : othTag;
+
       var objIsObj = objTag == objectTag,
           othIsObj = othTag == objectTag,
           isSameTag = objTag == othTag;
@@ -18396,7 +18371,6 @@ return jQuery;
      * @returns {Object} Returns the new object.
      */
     function basePick(object, paths) {
-      object = Object(object);
       return basePickBy(object, paths, function(value, path) {
         return hasIn(object, path);
       });
@@ -19789,8 +19763,7 @@ return jQuery;
           var args = arguments,
               value = args[0];
 
-          if (wrapper && args.length == 1 &&
-              isArray(value) && value.length >= LARGE_ARRAY_SIZE) {
+          if (wrapper && args.length == 1 && isArray(value)) {
             return wrapper.plant(value).value();
           }
           var index = 0,
@@ -20097,7 +20070,7 @@ return jQuery;
       var func = Math[methodName];
       return function(number, precision) {
         number = toNumber(number);
-        precision = nativeMin(toInteger(precision), 292);
+        precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
         if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
@@ -20202,7 +20175,7 @@ return jQuery;
       thisArg = newData[2];
       partials = newData[3];
       holders = newData[4];
-      arity = newData[9] = newData[9] == null
+      arity = newData[9] = newData[9] === undefined
         ? (isBindKey ? 0 : func.length)
         : nativeMax(newData[9] - length, 0);
 
@@ -20220,6 +20193,63 @@ return jQuery;
       }
       var setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
+    }
+
+    /**
+     * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+     * of source objects to the destination object for all destination properties
+     * that resolve to `undefined`.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to assign.
+     * @param {Object} object The parent object of `objValue`.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsAssignIn(objValue, srcValue, key, object) {
+      if (objValue === undefined ||
+          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+        return srcValue;
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.defaultsDeep` to customize its `_.merge` use to merge source
+     * objects into destination objects that are passed thru.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to merge.
+     * @param {Object} object The parent object of `objValue`.
+     * @param {Object} source The parent object of `srcValue`.
+     * @param {Object} [stack] Tracks traversed source values and their merged
+     *  counterparts.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
+      if (isObject(objValue) && isObject(srcValue)) {
+        // Recursively merge objects and arrays (susceptible to call stack limits).
+        stack.set(srcValue, objValue);
+        baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+        stack['delete'](srcValue);
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.omit` to customize its `_.cloneDeep` use to only clone plain
+     * objects.
+     *
+     * @private
+     * @param {*} value The value to inspect.
+     * @param {string} key The key of the property to inspect.
+     * @returns {*} Returns the uncloned value or `undefined` to defer cloning to `_.cloneDeep`.
+     */
+    function customOmitClone(value, key) {
+      return (key !== undefined && isPlainObject(value)) ? undefined : value;
     }
 
     /**
@@ -20393,9 +20423,9 @@ return jQuery;
      */
     function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
       var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-          objProps = keys(object),
+          objProps = getAllKeys(object),
           objLength = objProps.length,
-          othProps = keys(other),
+          othProps = getAllKeys(other),
           othLength = othProps.length;
 
       if (objLength != othLength && !isPartial) {
@@ -20633,7 +20663,15 @@ return jQuery;
      * @param {Object} object The object to query.
      * @returns {Array} Returns the array of symbols.
      */
-    var getSymbols = nativeGetSymbols ? overArg(nativeGetSymbols, Object) : stubArray;
+    var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+      if (object == null) {
+        return [];
+      }
+      object = Object(object);
+      return arrayFilter(nativeGetSymbols(object), function(symbol) {
+        return propertyIsEnumerable.call(object, symbol);
+      });
+    };
 
     /**
      * Creates an array of the own and inherited enumerable symbols of `object`.
@@ -21117,29 +21155,6 @@ return jQuery;
       data[1] = newBitmask;
 
       return data;
-    }
-
-    /**
-     * Used by `_.defaultsDeep` to customize its `_.merge` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to merge.
-     * @param {Object} object The parent object of `objValue`.
-     * @param {Object} source The parent object of `srcValue`.
-     * @param {Object} [stack] Tracks traversed source values and their merged
-     *  counterparts.
-     * @returns {*} Returns the value to assign.
-     */
-    function mergeDefaults(objValue, srcValue, key, object, source, stack) {
-      if (isObject(objValue) && isObject(srcValue)) {
-        // Recursively merge objects and arrays (susceptible to call stack limits).
-        stack.set(srcValue, objValue);
-        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack);
-        stack['delete'](srcValue);
-      }
-      return objValue;
     }
 
     /**
@@ -22884,7 +22899,7 @@ return jQuery;
      *
      * var users = [
      *   { 'user': 'barney',  'active': false },
-     *   { 'user': 'fred',    'active': false},
+     *   { 'user': 'fred',    'active': false },
      *   { 'user': 'pebbles', 'active': true }
      * ];
      *
@@ -25453,7 +25468,7 @@ return jQuery;
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      start = start === undefined ? 0 : nativeMax(toInteger(start), 0);
+      start = start == null ? 0 : nativeMax(toInteger(start), 0);
       return baseRest(function(args) {
         var array = args[start],
             otherArgs = castSlice(args, 0, start);
@@ -26123,7 +26138,7 @@ return jQuery;
      * date objects, error objects, maps, numbers, `Object` objects, regexes,
      * sets, strings, symbols, and typed arrays. `Object` objects are compared
      * by their own, not inherited, enumerable properties. Functions and DOM
-     * nodes are **not** supported.
+     * nodes are compared by strict equality, i.e. `===`.
      *
      * @static
      * @memberOf _
@@ -27143,7 +27158,9 @@ return jQuery;
      * // => 3
      */
     function toSafeInteger(value) {
-      return baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
+      return value
+        ? baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER)
+        : (value === 0 ? value : 0);
     }
 
     /**
@@ -27397,7 +27414,7 @@ return jQuery;
      * // => { 'a': 1, 'b': 2 }
      */
     var defaults = baseRest(function(args) {
-      args.push(undefined, assignInDefaults);
+      args.push(undefined, customDefaultsAssignIn);
       return apply(assignInWith, undefined, args);
     });
 
@@ -27421,7 +27438,7 @@ return jQuery;
      * // => { 'a': { 'b': 2, 'c': 3 } }
      */
     var defaultsDeep = baseRest(function(args) {
-      args.push(undefined, mergeDefaults);
+      args.push(undefined, customDefaultsMerge);
       return apply(mergeWith, undefined, args);
     });
 
@@ -28083,7 +28100,7 @@ return jQuery;
       });
       copyObject(object, getAllKeysIn(object), result);
       if (isDeep) {
-        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG);
+        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
       }
       var length = paths.length;
       while (length--) {
@@ -29232,7 +29249,10 @@ return jQuery;
      */
     function startsWith(string, target, position) {
       string = toString(string);
-      position = baseClamp(toInteger(position), 0, string.length);
+      position = position == null
+        ? 0
+        : baseClamp(toInteger(position), 0, string.length);
+
       target = baseToString(target);
       return string.slice(position, position + target.length) == target;
     }
@@ -29351,9 +29371,9 @@ return jQuery;
         options = undefined;
       }
       string = toString(string);
-      options = assignInWith({}, options, settings, assignInDefaults);
+      options = assignInWith({}, options, settings, customDefaultsAssignIn);
 
-      var imports = assignInWith({}, options.imports, settings.imports, assignInDefaults),
+      var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn),
           importsKeys = keys(imports),
           importsValues = baseValues(imports, importsKeys);
 
@@ -31437,14 +31457,13 @@ return jQuery;
     // Add `LazyWrapper` methods for `_.drop` and `_.take` variants.
     arrayEach(['drop', 'take'], function(methodName, index) {
       LazyWrapper.prototype[methodName] = function(n) {
-        var filtered = this.__filtered__;
-        if (filtered && !index) {
-          return new LazyWrapper(this);
-        }
         n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
 
-        var result = this.clone();
-        if (filtered) {
+        var result = (this.__filtered__ && !index)
+          ? new LazyWrapper(this)
+          : this.clone();
+
+        if (result.__filtered__) {
           result.__takeCount__ = nativeMin(n, result.__takeCount__);
         } else {
           result.__views__.push({
@@ -31683,7 +31702,7 @@ return jQuery;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],11:[function(require,module,exports){
 //! moment.js
-//! version : 2.17.0
+//! version : 2.17.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -35948,7 +35967,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.17.0';
+hooks.version = '2.17.1';
 
 setHookCallback(createLocal);
 
@@ -59149,9 +59168,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-2cdf09af", module.exports)
+    hotAPI.createRecord("_v-8a49839e", module.exports)
   } else {
-    hotAPI.update("_v-2cdf09af", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-8a49839e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],20:[function(require,module,exports){
@@ -59295,9 +59314,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-7e536322", module.exports)
+    hotAPI.createRecord("_v-8a1f8da6", module.exports)
   } else {
-    hotAPI.update("_v-7e536322", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-8a1f8da6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],21:[function(require,module,exports){
@@ -59320,9 +59339,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5612adba", module.exports)
+    hotAPI.createRecord("_v-9f7e473e", module.exports)
   } else {
-    hotAPI.update("_v-5612adba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-9f7e473e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],22:[function(require,module,exports){
@@ -59340,8 +59359,13 @@ exports.default = {
     data: function data() {
         return {
             timeOut: 0,
+            tick: 0,
+            isReOrder: true,
+            isGrid: false,
             msnryObj: '',
-            items: ['w', 'l', 'r', 'f', 'd', 's', 'a']
+            moveItem: '',
+            itemDestination: '',
+            items: ''
         };
     },
     watch: {
@@ -59361,6 +59385,7 @@ exports.default = {
     },
     methods: {
         masonry: function masonry() {
+            this.isReOrder = false;
             var elem = document.querySelector('.grid');
             var self = this;
             this.msnryObj = new Masonry(elem, {
@@ -59371,6 +59396,9 @@ exports.default = {
             });
             var posts = document.querySelectorAll('.grid-item');
             if (this.items) {
+                this.moveItem = '';
+                this.itemDestination = '';
+                this.isGrid = true;
                 return imagesLoaded(posts, function () {
                     self.msnryObj.layout();
                 });
@@ -59383,6 +59411,47 @@ exports.default = {
         setWork: function setWork(results) {
             this.items = results.data;
         },
+        arrangeMaterial: function arrangeMaterial($id) {
+            var $index = this.findIndex($id);
+            if (this.moveItem) {
+                this.itemDestination = this.items[$index];
+                return this.updatePosition();
+            }
+
+            this.moveItem = this.items[$index];
+            this.msnryObj.layout();
+        },
+        updatePosition: function updatePosition() {
+            var replacement = this.moveItem.position;
+            this.moveItem.position = this.itemDestination.position;
+            this.itemDestination.position = replacement;
+
+            this.isGrid = false;
+            this.isReOrder = true;
+
+            this.updateHttp('/auth/materials/' + this.moveItem.id, this.moveItem, this.updateGrid);
+            this.updateHttp('/auth/materials/' + this.itemDestination.id, this.itemDestination, this.updateGrid);
+        },
+        updateGrid: function updateGrid(results) {
+            var $index = this.findIndex(results.data.id);
+            this.items[$index] = results.data;
+
+            if (this.tick < 1) {
+                return this.tick++;
+            }
+            this.resetGrid();
+        },
+        resetGrid: function resetGrid() {
+            this.msnryObj = '';
+            this.masonry();
+        },
+        findIndex: function findIndex($id) {
+            for (var i = 0; i < this.items.length; i++) {
+                if (this.items[i].id === $id) {
+                    return i;
+                }
+            }
+        },
         getHttp: function getHttp(url, callback) {
             var params = {
                 headers: {
@@ -59392,19 +59461,31 @@ exports.default = {
             this.$http.get(url, params).then(callback).catch(function (err) {
                 return console.error(err);
             });
+        },
+        updateHttp: function updateHttp(url, data, callback) {
+            var params = {
+                headers: {
+                    'X-CSRF-TOKEN': this.token
+                },
+                dataType: 'json'
+            };
+
+            this.$http.put(url, data, params).then(callback).catch(function (err) {
+                return console.error(err);
+            });
         }
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <nav>\n        <div class=\"nav-wrapper\">\n            <div class=\"col s12\">\n                <a href=\"#!\" class=\"breadcrumb\">Content</a>\n                <a href=\"#!\" class=\"breadcrumb\">Grid</a>\n            </div>\n        </div>\n    </nav>\n    <div class=\"component--state\">\n        <div class=\"repository-grid\">\n            <div class=\"grid\">\n                <div class=\"grid-sizer\"></div>\n                <div class=\"repository--material grid-item\" v-for=\"material in items\">\n                    <div class=\"item-image-group\">\n                        <template v-if=\"material.type == 'image'\">\n                            <img :src=\"material.path\">\n                        </template>\n                        <template v-else=\"\">\n                            <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                            <img :src=\"material.credit\">\n                        </template>\n                    </div>\n                    <div class=\"item--callout\">\n                    </div>\n                </div>\n                <!--<div class=\"grid-sizer\"></div>-->\n                <!--<div class=\"repository&#45;&#45;material grid-item\" v-for=\"item in items\">-->\n                    <!--<div class=\"item-image-group\">-->\n                        <!--<img :src=\"item.path\">-->\n                    <!--</div>-->\n                <!--</div>-->\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <nav>\n        <div class=\"nav-wrapper\">\n            <div class=\"col s12\">\n                <a href=\"#!\" class=\"breadcrumb\">Content</a>\n                <a href=\"#!\" class=\"breadcrumb\">Grid</a>\n            </div>\n        </div>\n    </nav>\n    <div class=\"component--state\">\n        <div class=\"repository-grid\">\n            <div class=\"loading--grid\" v-show=\"isReOrder\" transition=\"fade\">\n                <div class=\"preloader-wrapper big active\">\n                    <div class=\"spinner-layer spinner-blue\">\n                        <div class=\"circle-clipper left\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"gap-patch\">\n                        <div class=\"circle\"></div>\n                    </div><div class=\"circle-clipper right\">\n                        <div class=\"circle\"></div>\n                    </div>\n                    </div>\n\n                    <div class=\"spinner-layer spinner-red\">\n                        <div class=\"circle-clipper left\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"gap-patch\">\n                        <div class=\"circle\"></div>\n                    </div><div class=\"circle-clipper right\">\n                        <div class=\"circle\"></div>\n                    </div>\n                    </div>\n\n                    <div class=\"spinner-layer spinner-yellow\">\n                        <div class=\"circle-clipper left\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"gap-patch\">\n                        <div class=\"circle\"></div>\n                    </div><div class=\"circle-clipper right\">\n                        <div class=\"circle\"></div>\n                    </div>\n                    </div>\n\n                    <div class=\"spinner-layer spinner-green\">\n                        <div class=\"circle-clipper left\">\n                            <div class=\"circle\"></div>\n                        </div><div class=\"gap-patch\">\n                        <div class=\"circle\"></div>\n                    </div><div class=\"circle-clipper right\">\n                        <div class=\"circle\"></div>\n                    </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"grid\" v-show=\"isGrid\" transition=\"fade\">\n                <div class=\"grid-sizer\"></div>\n                <div class=\"repository--material grid-item\" v-for=\"material in items | orderBy 'position'\" @click=\"arrangeMaterial(material.id)\" :class=\"{'active-item': moveItem.id == material.id || itemDestination.id == material.id}\">\n                    <div class=\"item-image-group\">\n                        <template v-if=\"material.type == 'image'\">\n                            <img :src=\"material.path\">\n                        </template>\n                        <template v-else=\"\">\n                            <img class=\"video-item--indicator\" v-show=\"activeHoverEnter != $index &amp;&amp; material.type =='video' &amp;&amp; activeHoverExit != $index &amp;&amp; material.type =='video'\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n                            <img :src=\"material.credit\">\n                        </template>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-6a84d2f2", module.exports)
+    hotAPI.createRecord("_v-75d856ee", module.exports)
   } else {
-    hotAPI.update("_v-6a84d2f2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-75d856ee", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],23:[function(require,module,exports){
@@ -60209,9 +60290,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-85eb13f4", module.exports)
+    hotAPI.createRecord("_v-91b73e78", module.exports)
   } else {
-    hotAPI.update("_v-85eb13f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-91b73e78", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"quill":13,"vue":16,"vue-hot-reload-api":14}],24:[function(require,module,exports){
@@ -60537,9 +60618,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-01910664", module.exports)
+    hotAPI.createRecord("_v-6aeb5322", module.exports)
   } else {
-    hotAPI.update("_v-01910664", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6aeb5322", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/gallery-component.vue":28,"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],25:[function(require,module,exports){
@@ -60687,9 +60768,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-1d28a70e", module.exports)
+    hotAPI.createRecord("_v-2c63de92", module.exports)
   } else {
-    hotAPI.update("_v-1d28a70e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2c63de92", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],26:[function(require,module,exports){
@@ -61026,9 +61107,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-48d14df5", module.exports)
+    hotAPI.createRecord("_v-42eb38b3", module.exports)
   } else {
-    hotAPI.update("_v-48d14df5", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-42eb38b3", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],27:[function(require,module,exports){
@@ -61051,9 +61132,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-047a6324", module.exports)
+    hotAPI.createRecord("_v-db12d0b4", module.exports)
   } else {
-    hotAPI.update("_v-047a6324", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-db12d0b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}],28:[function(require,module,exports){
@@ -61191,6 +61272,7 @@ exports.default = {
                     formData.append('gallery_id', $galleryId);
                     formData.append('credit', this.fileStage[i].credit);
                     formData.append('notes', '');
+
                     this.sendHttp('materials', formData, this.successCardUpload);
                 }
 
@@ -61396,15 +61478,15 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"gallery--contents\">\n    <div class=\"gallery--header\" v-bind:style=\"{ 'background-image': 'url(' + gallery.image + ')' }\">\n        <div class=\"card--overlay\"></div>\n        <span class=\"card--headline\">{{gallery.name}}</span>\n        <span class=\"card--headline\">{{gallery.updated_at}}</span>\n        <a class=\"add--gallery btn-floating btn-large waves-effect waves-light red\" @click=\"isAddImageCard = true, isShowMain = false\"><i class=\"material-icons\">add</i></a>\n    </div>\n    <div class=\"gallery--options\">\n        <div class=\"option option--settings\">\n            <img src=\"/image/svg/ic_settings_grey_24px.svg\" @click=\"isShowSettings = true\">\n        </div>\n        <div class=\"option option--search\">\n            <img class=\"search-icon\" src=\"/image/svg/search_icon_grey.svg\">\n            <input type=\"text\" :class=\"{'no_result_input': gallerySearch.length > 0 &amp;&amp; galleryResults.length === 0, 'positive_result_input': gallerySearch.length > 0 &amp;&amp; galleryResults.length > 0}\" v-model=\"gallerySearch\" placeholder=\"Photos\">\n        </div>\n    </div>\n    <div class=\"gallery--main\">\n        <template v-if=\"gallery.materials.length > 0 &amp;&amp; isShowMain\">\n            <div class=\"gallery--image-card card\" v-for=\"material in galleryResults\">\n                <div class=\"card-image waves-effect waves-block waves-light\">\n                    <img class=\"activator\" :src=\"material.path\">\n                </div>\n                <div class=\"card-content\">\n                    <span class=\"card-title activator grey-text text-darken-4\">{{material.name}}<i class=\"material-icons right\">more_vert</i></span>\n                </div>\n                <div class=\"card-reveal\">\n                    <span class=\"card-title grey-text text-darken-4\">Card Title<i class=\"material-icons right\">close</i></span>\n                    <div class=\"row\">\n                        <div class=\"input-field col s6\">\n                            <input :value=\"material.name\" :id=\"'cardName' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.name\" @keydown=\"revealSave(material.id)\">\n                            <label class=\"active\" :for=\"'cardName' + material.id\">Name</label>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"input-field col s6\">\n                            <input :value=\"material.credit\" :id=\"'cardCredit' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.credit\" @keydown=\"revealSave(material.id)\">\n                            <label class=\"active\" :for=\"'cardCredit' + material.id\">Credits</label>\n                        </div>\n                    </div>\n                    <a :id=\"'cardSave' + material.id\" class=\"waves-effect waves-light btn-flat salmon hidden\" @click=\"saveCardEdit($index)\">Save Edit</a>\n                </div>\n                <div class=\"card-action\">\n                    <a class=\"waves-effect waves-red btn-flat\" :class=\"{'red': material.status == 'active'}\" @click=\"saveCardStatus($index)\">{{material.status}}</a>\n                    <a class=\"waves-effect waves-red btn-flat\" @click=\"removeCard(material.id)\">Remove</a>\n                </div>\n            </div>\n        </template>\n        <template v-else=\"\">\n            <div class=\"gallery--settings\" v-show=\"isShowSettings\">\n                <div class=\"settings-header\">\n                    <h3>Gallery Settings</h3>\n                    <p>Here you can adjust all gallery information, settings and data.</p>\n                </div>\n                <div class=\"settings-content\">\n                    \n                </div>\n            </div>\n            <div class=\"gallery--add-image\" v-show=\"isAddImageCard\">\n                <div class=\"upload-box image--upload\">\n                    <div class=\"upload--header\">\n                        <div class=\"row\">\n                            <form class=\"col s12\">\n                                <div class=\"row relative\">\n                                    <ol class=\"carousel-indicators\" v-show=\"supportMultiFile &amp;&amp; fileStage.length > 1\">\n                                        <li data-target=\"#myCarousel\" v-for=\"file in fileStage\" :data-slide-to=\"$index\" :class=\"{'active': $index == 0}\"></li>\n                                    </ol>\n                                    <div class=\"input-field col s6\" v-else=\"\">\n                                        <i class=\"material-icons prefix\">account_circle</i>\n                                        <input id=\"icon_prefix\" type=\"text\" class=\"validate\" v-model=\"newImageName\">\n                                        <label for=\"icon_prefix\">New Name</label>\n                                    </div>\n                                </div>\n                            </form>\n                        </div>\n                    </div>\n                    <div class=\"upload--content\">\n                        <template v-if=\"isPreviewFile &amp;&amp; !isImageUploaded\">\n                            <template v-if=\"supportMultiFile\">\n                                <div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n                                    <!-- Wrapper for slides -->\n                                    <div class=\"carousel-inner\" role=\"listbox\">\n                                        <div v-for=\"file in fileStage\" class=\"item\" :class=\"{'active': $index == 0}\">\n                                            <div class=\"col s12 m7\">\n                                                <div class=\"card horizontal\">\n                                                    <div class=\"card-image\">\n                                                        <img :id=\"'previewFile-' + $index\" src=\"#\">\n                                                    </div>\n                                                    <div class=\"card-stacked\">\n                                                        <div class=\"card-content\">\n                                                            <div class=\"row\">\n                                                                <div class=\"input-field col s6\">\n                                                                    <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.name\">\n                                                                    <label for=\"last_name\">Name</label>\n                                                                </div>\n                                                                <div class=\"input-field col s6\">\n                                                                    <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.credit\">\n                                                                    <label for=\"last_name\">Credit: </label>\n                                                                </div>\n                                                            </div>\n                                                        </div>\n                                                    </div>\n                                                </div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </template>\n                            <template v-else=\"\">\n                                <img id=\"previewFile\" src=\"#\">\n                            </template>\n                        </template>\n                        <template v-else=\"\">\n                            <template v-if=\"supportMultiFile\">\n                                <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"multiple\"></file-upload>\n                            </template>\n                            <template v-else=\"\">\n                                <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"single\"></file-upload>\n                            </template>\n                            <div class=\"upload--data\" v-else=\"\">\n                                <div class=\"upload--instructions\">\n                                    <h3>Additional Info</h3>\n                                    <p>We require some additional information about your new upload. Please fill in the below form fields before submitting your new material.</p>\n                                </div>\n                                <div class=\"upload--credit-input\">\n                                    <div class=\"row\">\n                                        <form class=\"col s12\">\n                                            <div class=\"row\">\n                                                <div class=\"input-field col s12\">\n                                                    <input id=\"credit\" type=\"text\" class=\"validate\" v-model=\"newImageCredit\">\n                                                    <label for=\"credit\" data-error=\"wrong\" data-success=\"right\">Credits: </label>\n                                                </div>\n                                            </div>\n                                        </form>\n                                    </div>\n                                </div>\n                            </div>\n                        </template>\n                    </div>\n                    <div class=\"upload--footer\">\n                        <p class=\"check-box left-aligned\">\n                            <input type=\"checkbox\" class=\"filled-in\" id=\"filled-in-box\" @click=\"supportMultiFile = !supportMultiFile\">\n                            <label for=\"filled-in-box\">Multiple File Upload</label>\n                        </p>\n                        <template v-if=\"!isSubmitReady\">\n                            <button v-show=\"!supportMultiFile\" class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"moveToDataUpload\">\n                                Next\n                            </button>\n\n                            <button v-else=\"\" class=\"btn waves-effect waves-light\" @click=\"toggleImageCard()\">Next Image</button>\n                        </template>\n\n                        <template v-else=\"\">\n\n                            <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"submitNewImage(gallery.id)\">Submit\n                                <i class=\"material-icons right\">send</i>\n                            </button>\n\n                        </template>\n                        <a class=\"waves-effect waves-teal btn-flat\" @click=\"returnToGallery\">cancel</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"empty--state\" transition=\"fade\" v-else=\"\">\n                <div class=\"empty\">\n                    <img src=\"/image/svg/folder.svg\">\n                    <h1>Welcome to the art show!</h1>\n                    <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delte photo galleries associated to your webpage.</p>\n                    <a class=\"waves-effect waves-light btn red\" @click=\"isAddImageCard = true\"><i class=\"material-icons left\">cloud</i>Add Photo</a>\n                </div>\n            </div>\n        </template>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"gallery--contents\">\n    <div class=\"gallery--header\" v-bind:style=\"{ 'background-image': 'url(' + gallery.image + ')' }\">\n        <div class=\"card--overlay\"></div>\n        <span class=\"card--headline\">{{gallery.name}}</span>\n        <span class=\"card--headline\">{{gallery.updated_at}}</span>\n        <a class=\"add--gallery btn-floating btn-large waves-effect waves-light red\" @click=\"isAddImageCard = true, isShowMain = false\"><i class=\"material-icons\">add</i></a>\n    </div>\n    <div class=\"gallery--options\">\n        <div class=\"option option--settings\">\n            <img src=\"/image/svg/ic_settings_grey_24px.svg\" @click=\"isShowSettings = true\">\n        </div>\n        <div class=\"option option--search\">\n            <img class=\"search-icon\" src=\"/image/svg/search_icon_grey.svg\">\n            <input type=\"text\" :class=\"{'no_result_input': gallerySearch.length > 0 &amp;&amp; galleryResults.length === 0, 'positive_result_input': gallerySearch.length > 0 &amp;&amp; galleryResults.length > 0}\" v-model=\"gallerySearch\" placeholder=\"Photos\">\n        </div>\n    </div>\n    <div class=\"gallery--main\">\n        <template v-if=\"gallery.materials.length > 0 &amp;&amp; isShowMain\">\n            <div class=\"gallery--image-card card\" v-for=\"material in galleryResults\">\n                <div class=\"card-image waves-effect waves-block waves-light\">\n                    <img class=\"activator\" :src=\"material.path\">\n                </div>\n                <div class=\"card-content\">\n                    <span class=\"card-title activator grey-text text-darken-4\">{{material.name}}<i class=\"material-icons right\">more_vert</i></span>\n                </div>\n                <div class=\"card-reveal\">\n                    <span class=\"card-title grey-text text-darken-4\">Card Title<i class=\"material-icons right\">close</i></span>\n                    <div class=\"row\">\n                        <div class=\"input-field col s6\">\n                            <input :value=\"material.name\" :id=\"'cardName' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.name\" @keydown=\"revealSave(material.id)\">\n                            <label class=\"active\" :for=\"'cardName' + material.id\">Name</label>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"input-field col s6\">\n                            <input :value=\"material.credit\" :id=\"'cardCredit' + material.id\" type=\"text\" class=\"validate\" v-model=\"material.credit\" @keydown=\"revealSave(material.id)\">\n                            <label class=\"active\" :for=\"'cardCredit' + material.id\">Credits</label>\n                        </div>\n                    </div>\n                    <a :id=\"'cardSave' + material.id\" class=\"waves-effect waves-light btn-flat salmon hidden\" @click=\"saveCardEdit($index)\">Save Edit</a>\n                </div>\n                <div class=\"card-action\">\n                    <a class=\"waves-effect waves-red btn-flat\" :class=\"{'red': material.status == 'active'}\" @click=\"saveCardStatus($index)\">{{material.status}}</a>\n                    <a class=\"waves-effect waves-red btn-flat\" @click=\"removeCard(material.id)\">Remove</a>\n                </div>\n            </div>\n        </template>\n        <template v-else=\"\">\n            <div class=\"gallery--settings\" v-show=\"isShowSettings\">\n                <div class=\"settings-header\">\n                    <h3>Gallery Settings</h3>\n                    <p>Here you can adjust all gallery information, settings and data.</p>\n                </div>\n                <div class=\"settings-content\">\n                    \n                </div>\n            </div>\n            <div class=\"gallery--add-image\" v-show=\"isAddImageCard\">\n                <div class=\"upload-box image--upload\">\n                    <div class=\"upload--header\">\n                        <div class=\"row\">\n                            <form class=\"col s12\">\n                                <div class=\"row relative\">\n                                    <ol class=\"carousel-indicators\" v-show=\"supportMultiFile &amp;&amp; fileStage.length > 1\">\n                                        <li data-target=\"#myCarousel\" v-for=\"file in fileStage\" :data-slide-to=\"$index\" :class=\"{'active': $index == 0}\"></li>\n                                    </ol>\n                                    <div class=\"input-field col s6\" v-else=\"\">\n                                        <i class=\"material-icons prefix\">account_circle</i>\n                                        <input id=\"icon_prefix\" type=\"text\" class=\"validate\" v-model=\"newImageName\">\n                                        <label for=\"icon_prefix\">New Name</label>\n                                    </div>\n                                </div>\n                            </form>\n                        </div>\n                    </div>\n                    <div class=\"upload--content\">\n                        <template v-if=\"isPreviewFile &amp;&amp; !isImageUploaded\">\n                            <template v-if=\"supportMultiFile\">\n                                <div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n                                    <!-- Wrapper for slides -->\n                                    <div class=\"carousel-inner\" role=\"listbox\">\n                                        <div v-for=\"file in fileStage\" class=\"item\" :class=\"{'active': $index == 0}\">\n                                            <div class=\"col s12 m7\">\n                                                <div class=\"card horizontal\">\n                                                    <div class=\"card-image\">\n                                                        <img :id=\"'previewFile-' + $index\" src=\"#\">\n                                                    </div>\n                                                    <div class=\"card-stacked\">\n                                                        <div class=\"card-content\">\n                                                            <div class=\"row\">\n                                                                <div class=\"input-field col s6\">\n                                                                    <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.name\">\n                                                                    <label for=\"last_name\">Name</label>\n                                                                </div>\n                                                                <div class=\"input-field col s6\">\n                                                                    <input id=\"last_name\" type=\"text\" class=\"validate\" v-model=\"file.credit\">\n                                                                    <label for=\"last_name\">Credit: </label>\n                                                                </div>\n                                                            </div>\n                                                        </div>\n                                                    </div>\n                                                </div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </template>\n                            <template v-else=\"\">\n                                <img id=\"previewFile\" src=\"#\">\n                            </template>\n                        </template>\n                        <template v-else=\"\">\n                            <template v-if=\"supportMultiFile\">\n                                <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"multiple\"></file-upload>\n                            </template>\n                            <template v-else=\"\">\n                                <file-upload type=\"image\" :feedback=\"isUpload\" transition=\"fadeIn\" v-show=\"!isImageUploaded\" upload=\"single\"></file-upload>\n                            </template>\n                            <div class=\"upload--data\" v-else=\"\">\n                                <div class=\"upload--instructions\">\n                                    <h3>Additional Info</h3>\n                                    <p>We require some additional information about your new upload. Please fill in the below form fields before submitting your new material.</p>\n                                </div>\n                                <div class=\"upload--credit-input\">\n                                    <div class=\"row\">\n                                        <form class=\"col s12\">\n                                            <div class=\"row\">\n                                                <div class=\"input-field col s12\">\n                                                    <input id=\"credit\" type=\"text\" class=\"validate\" v-model=\"newImageCredit\">\n                                                    <label for=\"credit\" data-error=\"wrong\" data-success=\"right\">Credits: </label>\n                                                </div>\n                                            </div>\n                                        </form>\n                                    </div>\n                                </div>\n                            </div>\n                        </template>\n                    </div>\n                    <div class=\"upload--footer\">\n                        <p class=\"check-box left-aligned\">\n                            <input type=\"checkbox\" class=\"filled-in\" id=\"filled-in-box\" @click=\"supportMultiFile = !supportMultiFile\">\n                            <label for=\"filled-in-box\">Multiple File Upload</label>\n                        </p>\n                        <template v-if=\"!isSubmitReady\">\n                            <button v-show=\"!supportMultiFile\" class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"moveToDataUpload\">\n                                Next\n                            </button>\n\n                            <button v-else=\"\" class=\"btn waves-effect waves-light\" @click=\"toggleImageCard()\">Next Image</button>\n                        </template>\n\n                        <template v-else=\"\">\n\n                            <button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" @click=\"submitNewImage(gallery.id)\">Submit\n                                <i class=\"material-icons right\">send</i>\n                            </button>\n\n                        </template>\n                        <a class=\"waves-effect waves-teal btn-flat\" @click=\"returnToGallery\">cancel</a>\n                    </div>\n                </div>\n            </div>\n            <div class=\"empty--state\" transition=\"fade\" v-else=\"\">\n                <div class=\"empty\">\n                    <img src=\"/image/svg/folder.svg\">\n                    <h1>Welcome to the art show!</h1>\n                    <p>Photo Gallery lets you keep your photos organized how ever you like. <br> At anymoment you can add, edit, and delete photo galleries associated to your webpage.</p>\n                    <a class=\"waves-effect waves-light btn red\" @click=\"isAddImageCard = true\"><i class=\"material-icons left\">cloud</i>Add Photo</a>\n                </div>\n            </div>\n        </template>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3fd124aa", module.exports)
+    hotAPI.createRecord("_v-338567ad", module.exports)
   } else {
-    hotAPI.update("_v-3fd124aa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-338567ad", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"../elements/material-file-upload.vue":29,"vue":16,"vue-hot-reload-api":14}],29:[function(require,module,exports){
@@ -61544,9 +61626,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4716221a", module.exports)
+    hotAPI.createRecord("_v-b0e4c49e", module.exports)
   } else {
-    hotAPI.update("_v-4716221a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b0e4c49e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":16,"vue-hot-reload-api":14}]},{},[17]);

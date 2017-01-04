@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Materials extends Model
 {
-    protected $fillable = ['name', 'type', 'path', 'status', 'credit'];
+    protected $fillable = ['name', 'type', 'path', 'status', 'credit', 'position'];
 
     public static function showAll(){
         return Materials::where('status', 'active')
@@ -14,11 +14,17 @@ class Materials extends Model
     }
     public static function saveMaterial($material)
     {
+        $position = null;
+        if($material['type'] != 'reel'){
+            $position = Materials::where('type', '!=', 'reel')
+                ->count() + 1;
+        }
         $newMaterial = new Materials(array(
             'name' => $material['name'],
             'type' => $material['type'],
             'path' => $material['path'],
             'credit' => $material['credit'],
+            'position' => $position,
             'status' => 'inactive'
         ));
 
