@@ -3,7 +3,7 @@
         <div class="repository">
             <div class="grid" :class="{'transition': isFrozen}">
                 <div class="grid-sizer"></div>
-                <div class="repository--material grid-item" v-for="material in repository" @mouseenter="delayEnter($index)" @mouseleave="delayExit($index)" @click="showItem($index, material.id, material.gallery_id)">
+                <div class="repository--material grid-item" v-for="material in repository | orderBy 'position'" @mouseenter="delayEnter($index)" @mouseleave="delayExit($index)" @click="showItem($index, material.id, material.gallery_id)">
                     <div class="item-image-group">
                         <div class="item-overlay tran-05" :class="{'force-opacity': activeHoverEnter == $index || activeHoverExit == $index}"></div>
                         <template v-if="material.type == 'image'">
