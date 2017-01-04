@@ -16,7 +16,7 @@ require('laravel-elixir-vueify');
 
 elixir(function(mix){
     mix.sass('app.scss')
-        .sass('admin.scss')
+        .sass('addy.scss')
        .browserify('app.js')
         .browserify('addy.js');
 });
