@@ -4,13 +4,16 @@
 
 html, body {
   color: #eeeeee!important;
-  font-family: 'Fashion Fetish', sans-serif!important;
   @include cover();
   margin: 0;
 }
+
+#fabiana{
+  font-family: 'Fashion Fetish', sans-serif!important;
+}
 input, .file-upload label{
   width: 100%!important;
-  height: 50px!important;
+  height: 60px!important;
   margin: 10px 0!important;
 }
 input,textarea,.file-upload label{
@@ -51,6 +54,10 @@ textarea{
 
 .message--form{
   width: 70%;
+}
+
+.opaque-view{
+  opacity: .2;
 }
 
 .file-upload{
@@ -401,6 +408,7 @@ ul{
   right: 0;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 .video--options{
   z-index: 99;

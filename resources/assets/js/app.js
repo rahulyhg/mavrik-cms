@@ -6,8 +6,6 @@
  */
 
 require('./bootstrap');
-var moment = require('moment');
-moment().format();
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the body of the page. From here, you may begin adding components to
@@ -26,15 +24,12 @@ new Vue({
     el: 'body',
     components: {showreel,bio, photos, contact, videos, social},
     ready() {
-        this.setHome();
+        this.view = 'showreel';
         this.fetchMaterials();
     },
     data: {
-        now: Date.now(),
         activeLink: 0,
         myTimeOut: 0,
-        countDown: 0,
-        launch: '2016-10-06T20:03:55',
         view: '',
         linkBoxWidth: '',
         spanWidth: '',
@@ -90,10 +85,14 @@ new Vue({
                     this.$broadcast('transition-grid', true);
                     this.$nextTick(function () {
                         // DOM is now updated
-                        self.activeReel = false;
                         self.masonry();
                         self.$broadcast('transition-grid', false);
+                        clearTimeout(self.myTimeOut);
+                        self.myTimeOut = setTimeout(function(){
+                            self.activeReel = false;
+                        }, 1000);
                     });
+
                     break;
                 case 'contact':
                 case 'social':
@@ -124,7 +123,6 @@ new Vue({
         toggleMenu: function () {
             var self = this;
             if(this.view == 'media'){
-                console.log('media');
                 this.$broadcast('transition-grid', true);
                 clearTimeout(this.myTimeOut);
                 return this.myTimeOut = setTimeout(function () {
@@ -135,40 +133,8 @@ new Vue({
 
             this.activeReel = !this.activeReel;
         },
-        setHome: function () {
-            this.view = 'showreel';
-            // this.setLinkSpan();
-        },
-        incrementDate: function () {
-            clearTimeout(this.countDown);
-            this.countDown = setTimeout(function(){
-                this.now = this.now + 1000;
-                this.incrementDate();
-            }.bind(this), 1000);
-        },
         getWidth: function (target) {
             return target.offsetWidth;
-        },
-        setLinkSpan: function () {
-            var linkBox = this.$els.linkBox,
-                views = this.views.length;
-
-            this.linkBoxWidth = this.getWidth(linkBox),
-
-            this.spanWidth = this.linkBoxWidth / views;
-
-            this.$els.spanLink.style.width = this.spanWidth + 'px';
-
-        },
-        moveSpan: function (index) {
-            clearTimeout(this.myTimeOut);
-            this.$els.spanLink.style.left = this.spanWidth * index + 'px';
-        },
-        returnSpan: function () {
-            var timeOut = 1000;
-            this.myTimeOut = setTimeout(function(){
-                this.$els.spanLink.style.left = this.spanWidth * this.activeLink + 'px';
-            }.bind(this), timeOut);
         },
         fetchMaterials: function () {
             this.getHttp('/auth/materials', this.sortMaterials);
@@ -188,22 +154,6 @@ new Vue({
         },
     },
     filters: {
-        seconds: function (now) {
-            var a = moment(now);//now
-            return (a.diff(this.launch, 'seconds') - (a.diff(this.launch, 'minutes') * 60)) * -1;
-        },
-        minuets: function (now) {
-            var a = moment(now);//now
-            return (a.diff(this.launch, 'minutes') - (a.diff(this.launch, 'hours') * 60)) * -1;
-        },
-        hours: function (now) {
-            var a = moment(now);//now
-            return (a.diff(this.launch, 'hours') - (a.diff(this.launch, 'days') * 24)) * -1;
-        },
-        days: function (now) {
-            var a = moment(now);//now
-            return (a.diff(this.launch, 'days')) * -1;
-        },
         filterFor: function ($array, filterBy) {
             var filtered = [];
             var filterlist = $array;

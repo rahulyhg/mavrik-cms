@@ -18,16 +18,19 @@ strong {
 
 html, body {
   color: #eeeeee !important;
-  font-family: "Fashion Fetish", sans-serif !important;
   height: 100%;
   width: 100%;
   position: relative;
   margin: 0;
 }
 
+#fabiana {
+  font-family: "Fashion Fetish", sans-serif !important;
+}
+
 input, .file-upload label {
   width: 100% !important;
-  height: 50px !important;
+  height: 60px !important;
   margin: 10px 0 !important;
 }
 
@@ -76,6 +79,10 @@ textarea {
 
 .message--form {
   width: 70%;
+}
+
+.opaque-view {
+  opacity: .2;
 }
 
 .file-upload {
@@ -528,6 +535,7 @@ ul li {
   right: 0;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 
 .video--options {

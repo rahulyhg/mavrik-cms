@@ -6,7 +6,7 @@
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
             <template v-if="isPlay">
-                <span @click="controlReel('skip')" class="video--options skip">Skip</span>
+                <span @click="controlReel('skip')" @mouseenter="isOutOfView = false" @mouseleave="isOutOfView = true" class="video--options skip" :class="{'opaque-view': isOutOfView}">Skip</span>
             </template>
             <template v-else>
                 <span @click="controlReel('play')" class="video--options">
@@ -38,7 +38,8 @@
                 isFadeIn: false,
                 isLoadScreen: true,
                 isPlay: true,
-                isInitReel: false
+                isInitReel: false,
+                isOutOfView: false
             }
         },
         methods: {
@@ -50,8 +51,7 @@
                         this.$dispatch('control-reel', false);
                         break;
                     case 'skip':
-                        var path = this.reel[0].path;
-                        this.switchSource(path);
+                        this.switchSource(this.reel[0].path);
                         this.isPlay = false;
                         this.$dispatch('control-reel', true);
                         break;
@@ -70,19 +70,22 @@
                 this.myTimeOut = setTimeout(function(){
                     self.vjsPlayer.src({type: 'video/mp4', src: source});
                     self.vjsPlayer.play();
+
+                    //some how the controls reset to true after changing source; setting them back to false;
+                    self.vjsPlayer.controls = false;
                 }, 500);
             },
             initReel: function () {
 
                 var self = this;
-
+                //set the video display to the height and width of the window
                 this.setWindow();
 
                 var $element = document.getElementById('reel');
                 this.vjsPlayer = videojs($element, {"controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true, "loadingSpinner": false });
 
                 this.vjsPlayer.ready(function () {
-//                    this.src(self.activeReel);
+                    this.src(self.activeReel);
                     this.play();
                     clearTimeout(self.myTimeOut);
                     self.myTimeOut = setTimeout(function(){
@@ -90,6 +93,10 @@
                         clearTimeout(self.myTimeOut);
                         self.myTimeOut = setTimeout(function(){
                             this.isLoadScreen = false;
+                            clearTimeout(self.myTimeOut);
+                            self.myTimeOut = setTimeout(function () {
+                                self.isOutOfView = true;
+                            }, 1500);
                         }.bind(self), 1000);
                     }.bind(self), 1000);
                 });
@@ -109,7 +116,7 @@
                     clearTimeout(this.myTimeOut);
                     this.myTimeOut = setTimeout(function(){
                         this.initReel();
-                    }.bind(this), 200);
+                    }.bind(this), 1000);
             },
             'show-reel': function (control) {
                 if(control){
@@ -119,7 +126,6 @@
             },
             'stop-reel': function (action) {
                 if(action){
-                    console.log('is pausing video');
                     this.vjsPlayer.pause();
                 }
             }

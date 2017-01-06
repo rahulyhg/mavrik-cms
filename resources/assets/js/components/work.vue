@@ -235,12 +235,10 @@
             'transition-grid': function (action) {
                 var self = this;
                 if(action){
-                    console.log('yep');
                     return this.isFrozen = true;
                 }
                 clearTimeout(this.msTimeout);
                 this.msTimeout = setTimeout(function () {
-                    console.log('fuck you');
                     self.isFrozen = false;
                 }, 1200);
             }
