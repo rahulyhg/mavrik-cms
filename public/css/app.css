@@ -597,6 +597,10 @@ ul li {
   height: auto;
 }
 
+.carousel--high {
+  height: 60%;
+}
+
 .item-side {
   position: absolute;
   top: 30%;
@@ -618,7 +622,6 @@ ul li {
   position: relative;
   width: 60%;
   max-height: 90%;
-  background: white;
   overflow: hidden;
 }
 
@@ -1172,6 +1175,7 @@ strong {
 }
 
 .grid-item .item--callout {
+  cursor: pointer;
   height: 100%;
   width: 100%;
   top: 0;

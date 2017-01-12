@@ -446,6 +446,9 @@ ul{
     height: auto;
   }
 }
+.carousel--high{
+  height: 60%;
+}
 .item-side{
   position: absolute;
   top: 30%;
@@ -465,7 +468,6 @@ ul{
   position: relative;
   width: 60%;
   max-height: 90%;
-  background: white;
   overflow: hidden;
 }
 .carousel-indicators li{

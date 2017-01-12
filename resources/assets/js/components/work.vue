@@ -52,7 +52,7 @@
                 <div class="close-gallery">
                     <img class="icon25p" @click="closeGallery" src="/image/svg/ic_highlight_off_white_18px.svg">
                 </div>
-                <div class="carousel-content" role="listbox">
+                <div class="carousel-content" :class="{'carousel--high': galleryType == 'video'}" role="listbox">
                     <div v-for="material in filteredMaterials" class="item" :class="{'active': $index == startItem}">
                         <div class="item--card">
                             <template v-if="galleryType == 'video'">
@@ -138,17 +138,15 @@
             showItem: function ($index, $material_id, $gallery_id) {
               this.masonry.layout();
                 if(!$gallery_id){
-                    console.log('here');
-                    if(this.repository[$index].type == 'video'){
-                        this.galleryType = 'video';
-                        this.filterBy = 'video';
-                        this.filterThrough = 'type';
-                    }
+                    this.galleryType = 'video';
+                    this.filterBy = 'video';
+                    this.filterThrough = 'type';
                 } else {
                     this.galleryType = 'image';
                     this.filterBy = $gallery_id;
                     this.filterThrough = 'gallery_id';
                 }
+
                 var filteredIndex = this.$options.filters.filterForIndex(this.filteredMaterials, $material_id, 'id');
                 this.startItem = filteredIndex;
                 this.activeItem = filteredIndex;

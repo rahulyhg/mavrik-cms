@@ -1891,6 +1891,7 @@ strong {
 }
 
 .grid-item .item--callout {
+  cursor: pointer;
   height: 100%;
   width: 100%;
   top: 0;

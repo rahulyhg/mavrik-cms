@@ -30,6 +30,7 @@
     @include flex-center();
   }
   .item--callout{
+    cursor: pointer;
     @include fullscreen();
     @include flex();
     @include flex-center();
