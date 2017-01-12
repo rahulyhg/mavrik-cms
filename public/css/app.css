@@ -109,7 +109,7 @@ textarea {
 }
 
 .about--fab {
-  overflow: scroll;
+  overflow: hidden;
   padding-top: 50px;
 }
 

@@ -34,28 +34,15 @@ class EmailAuthUser
 
     public function notify()
     {
-        $text = $this->request['text'];
         $sender = $this->request['name'];
+        $subject = $this->request['subject'];
+        $text = $this->request['text'];
         $respond = $this->request['email'];
 
         try {
             //try to send the email
-            if ($this->request->hasFile('file')) {
-
-                $file = $this->request['file'];
-                $pathToFile = $file->getPathName();
-                $display = $file->getClientOriginalName();
-                $mime = File::mimeType($pathToFile);
-
-                Mail::send('email.notification', ['text' => $text, 'sender' => $sender, 'respond' => $respond], function ($m) use ($pathToFile, $display, $mime) {
-
-                    $m->to('fabianaformica@hotmail.com')->subject('New Message Request!');
-                    $m->attach($pathToFile, ['as' => $display, 'mime' => $mime]);
-
-                });
-            }
-            Mail::send('email.notification', ['text' => $text, 'sender' => $sender, 'respond' => $respond], function ($m) {
-                $m->to('fabianaformica@hotmail.com')->subject('New Message Request!');
+            Mail::send('email.notification', ['text' => $text, 'sender' => $sender, 'subject' => $subject,'respond' => $respond], function ($m) use($subject) {
+                $m->to('fabianaformica@hotmail.com')->subject('New Message Request!: ' . $subject);
             });
 
         }

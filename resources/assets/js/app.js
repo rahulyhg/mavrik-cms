@@ -16,13 +16,12 @@ import showreel from './components/reel.vue';
 import bio from './components/about.vue';
 import photos from './components/work.vue';
 import contact from './components/message.vue';
-import social from './components/contacts.vue';
 import videos from './components/writing.vue';
 
 
 new Vue({
     el: 'body',
-    components: {showreel,bio, photos, contact, videos, social},
+    components: {showreel,bio, photos, contact, videos},
     ready() {
         this.view = 'showreel';
         this.fetchMaterials();
@@ -36,7 +35,7 @@ new Vue({
         materials: '',
         msnryObj: '',
         views: [
-            'showreel', 'bio', 'media', 'contact', 'social'
+            'showreel', 'bio', 'media', 'contact'
         ],
         isTitle: false,
         isTag: false,
@@ -88,6 +87,9 @@ new Vue({
                 case 'contact':
                 case 'social':
                 case 'bio':
+                    if(view == 'bio'){
+                        this.activeReel = false;
+                    }
                     this.$broadcast('stop-reel', true);
                     break;
                 default:

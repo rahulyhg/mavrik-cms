@@ -1,12 +1,5 @@
 <template>
     <div class="content full flex-column-center">
-        <div class="title m-b-md">
-            <h1>
-                <span>FABIANA FORMICA</span>
-                <span class="title-underline underline_white"></span>
-            </h1>
-            <span class="small-title">CONTACT</span>
-        </div>
         <div class="about--fab">
             <div class="contact-cards">
                 <div class="outline contact-divider"></div>

@@ -5,6 +5,7 @@
         <h1>New Message Request!</h1>
         <h3>You have a new visitor to your website that wants to get in touch with you. Message below: </h3>
         <p>From: {{$sender}}</p>
+        <p>Subject: {{$subject}}</p>
         <p>{{$text}}</p>
         <p>Please respond back to:  {{$respond}}</p>
 

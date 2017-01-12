@@ -23,7 +23,6 @@
                     <bio v-show="view == 'bio'" :active-view="view" transition="fade"></bio>
                     <photos v-show="view == 'media'" :masonry="msnryObj" :active-view="view" :side-menu="activeReel" transition="fade"></photos>
                     <contact v-show="view == 'contact'" :active-view="view" transition="fade"></contact>
-                    <social v-show="view == 'social'" :active-view="view" transition="fade"></social>
                 </div>
             </div>
         </div>

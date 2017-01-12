@@ -54461,10 +54461,6 @@ var _message = require('./components/message.vue');
 
 var _message2 = _interopRequireDefault(_message);
 
-var _contacts = require('./components/contacts.vue');
-
-var _contacts2 = _interopRequireDefault(_contacts);
-
 var _writing = require('./components/writing.vue');
 
 var _writing2 = _interopRequireDefault(_writing);
@@ -54486,7 +54482,7 @@ require('./bootstrap');
 
 new Vue({
     el: 'body',
-    components: { showreel: _reel2.default, bio: _about2.default, photos: _work2.default, contact: _message2.default, videos: _writing2.default, social: _contacts2.default },
+    components: { showreel: _reel2.default, bio: _about2.default, photos: _work2.default, contact: _message2.default, videos: _writing2.default },
     ready: function ready() {
         this.view = 'showreel';
         this.fetchMaterials();
@@ -54500,7 +54496,7 @@ new Vue({
         spanWidth: '',
         materials: '',
         msnryObj: '',
-        views: ['showreel', 'bio', 'media', 'contact', 'social'],
+        views: ['showreel', 'bio', 'media', 'contact'],
         isTitle: false,
         isTag: false,
         isLinks: false,
@@ -54551,6 +54547,9 @@ new Vue({
                 case 'contact':
                 case 'social':
                 case 'bio':
+                    if (view == 'bio') {
+                        this.activeReel = false;
+                    }
                     this.$broadcast('stop-reel', true);
                     break;
                 default:
@@ -54630,7 +54629,7 @@ new Vue({
 
 });
 
-},{"./bootstrap":14,"./components/about.vue":15,"./components/contacts.vue":16,"./components/message.vue":17,"./components/reel.vue":18,"./components/work.vue":19,"./components/writing.vue":20}],14:[function(require,module,exports){
+},{"./bootstrap":14,"./components/about.vue":15,"./components/message.vue":17,"./components/reel.vue":18,"./components/work.vue":19,"./components/writing.vue":20}],14:[function(require,module,exports){
 'use strict';
 
 window._ = require('lodash');
@@ -54854,15 +54853,15 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"title m-b-md\">\n        <h1>\n            <span>FABIANA FORMICA</span>\n            <span class=\"title-underline underline_white\"></span>\n        </h1>\n        <span class=\"small-title\">CONTACT</span>\n    </div>\n    <div class=\"about--fab\">\n        <div class=\"contact-cards\">\n            <div class=\"outline contact-divider\"></div>\n            <div class=\"contact\" v-for=\"contact in contacts\">\n                <span>{{contact.title}}</span>\n                <span>{{contact.address}}</span>\n                <span>{{contact.telephone}}</span>\n                <span>{{contact.name}}</span>\n                <span>{{contact.email}}</span>\n            </div>\n            <div class=\"outline contact-liner\"></div>\n        </div>\n        <div class=\"social_media\">\n            <div class=\"shelf top_shelf\">\n                <a v-for=\"media in socials | orderBy 'position' | limitBy 3\" class=\"social\" :href=\"media.path\">\n                    <img class=\"social_icons\" :src=\"media.image\" :alt=\"media.name\">\n                </a>\n            </div>\n            <div class=\"shelf bottom_shelf\">\n                <a v-for=\"media in socials | orderBy 'position' | limitBy 6 3\" class=\"social\" :href=\"media.path\">\n                    <img class=\"social_icons\" :src=\"media.image\" :alt=\"media.name\">\n                </a>\n            </div>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"about--fab\">\n        <div class=\"contact-cards\">\n            <div class=\"outline contact-divider\"></div>\n            <div class=\"contact\" v-for=\"contact in contacts\">\n                <span>{{contact.title}}</span>\n                <span>{{contact.address}}</span>\n                <span>{{contact.telephone}}</span>\n                <span>{{contact.name}}</span>\n                <span>{{contact.email}}</span>\n            </div>\n            <div class=\"outline contact-liner\"></div>\n        </div>\n        <div class=\"social_media\">\n            <div class=\"shelf top_shelf\">\n                <a v-for=\"media in socials | orderBy 'position' | limitBy 3\" class=\"social\" :href=\"media.path\">\n                    <img class=\"social_icons\" :src=\"media.image\" :alt=\"media.name\">\n                </a>\n            </div>\n            <div class=\"shelf bottom_shelf\">\n                <a v-for=\"media in socials | orderBy 'position' | limitBy 6 3\" class=\"social\" :href=\"media.path\">\n                    <img class=\"social_icons\" :src=\"media.image\" :alt=\"media.name\">\n                </a>\n            </div>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-14859c94", module.exports)
+    hotAPI.createRecord("_v-2a043e7a", module.exports)
   } else {
-    hotAPI.update("_v-14859c94", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2a043e7a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":12,"vue-hot-reload-api":10}],17:[function(require,module,exports){
@@ -54871,17 +54870,24 @@ if (module.hot) {(function () {  module.hot.accept()
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _contacts = require('../components/elements/contacts.vue');
+
+var _contacts2 = _interopRequireDefault(_contacts);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
+    components: { social: _contacts2.default },
     data: function data() {
         return {
             timer: 0,
             message: {
                 'name': '',
                 'email': '',
+                'subject': '',
                 'text': ''
             },
-            uploadFile: '',
-            fileLabel: 'Your Object',
             isNewMessage: true,
             successMessage: false
         };
@@ -54897,15 +54903,6 @@ exports.default = {
     },
     methods: {
         sendForm: function sendForm() {
-            if (this.uploadFile) {
-                var formData = new FormData();
-                formData.append('file', this.uploadFile);
-                formData.append('name', this.message.name);
-                formData.append('email', this.message.email);
-                formData.append('text', this.message.text);
-                return this.sendHttp('/auth/notify/email', formData, this.thankYou);
-            }
-
             this.sendHttp('/auth/notify/email', this.message, this.thankYou);
         },
         thankYou: function thankYou(results) {
@@ -54917,10 +54914,6 @@ exports.default = {
                     self.successMessage = true;
                 }, 1000);
             }
-        },
-        stageFile: function stageFile() {
-            this.uploadFile = this.$els.touch.files[0];
-            this.fileLabel = this.uploadFile.name;
         },
         sendHttp: function sendHttp(url, data, callback) {
             var params = {
@@ -54937,7 +54930,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"message--form\" v-show=\"isNewMessage\" transition=\"fade\">\n        <div class=\"contact-form\">\n            <input type=\"text\" v-model=\"message.name\" placeholder=\"Your Name\">\n            <input type=\"email\" v-model=\"message.email\" placeholder=\"Your Email\">\n            <div class=\"file-upload\">\n                <div class=\"input--hidden\">\n                    <input id=\"messageFile\" type=\"file\" v-el:touch=\"\" @change=\"stageFile\">\n                </div>\n                <label for=\"messageFile\">{{fileLabel}}</label>\n            </div>\n            <textarea name=\"message\" cols=\"30\" rows=\"10\" v-model=\"message.text\" placeholder=\"Write a Message...\"></textarea>\n        </div>\n        <div class=\"send-form\">\n            <span v-show=\"isFormReady\" @click=\"sendForm\" transition=\"fade\">Send</span>\n        </div>\n    </div>\n    <div class=\"message--response\" v-show=\"successMessage\" transition=\"fade\">\n        <h1>Thank you for visiting my site!</h1>\n        <p>I'll get back to you as soon as I can.</p>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full flex-column-center\">\n    <div class=\"message--form\" v-show=\"isNewMessage\" transition=\"fade\">\n        <div class=\"contact-form\">\n            <input type=\"text\" v-model=\"message.name\" placeholder=\"Your Name\">\n            <input type=\"email\" v-model=\"message.email\" placeholder=\"Your Email\">\n            <input type=\"email\" v-model=\"message.subject\" placeholder=\"Subject\">\n            <textarea name=\"message\" cols=\"30\" rows=\"10\" v-model=\"message.text\" placeholder=\"Write a Message...\"></textarea>\n        </div>\n        <div class=\"send-form\">\n            <span v-show=\"isFormReady\" @click=\"sendForm\" transition=\"fade\">Send</span>\n        </div>\n    </div>\n    <div class=\"message--response\" v-show=\"successMessage\" transition=\"fade\">\n        <h1>Thank you for visiting my site!</h1>\n        <p>I'll get back to you as soon as I can.</p>\n    </div>\n    <social></social>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -54948,7 +54941,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5eb5e2d6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":12,"vue-hot-reload-api":10}],18:[function(require,module,exports){
+},{"../components/elements/contacts.vue":16,"vue":12,"vue-hot-reload-api":10}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
