@@ -1,17 +1,16 @@
 <template>
     <div class="content">
         <div class="video--reel full flex-column-center" v-show="isInitReel" transition="fade" :class="{'no-show': !isFadeIn}">
-            <video id="reel" v-el:video class="video-js vjs-default-skin">
-                <source src="/video/Showreel Fabiana Formica 2016-HD.mp4" type="video/mp4"/>
-                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-            </video>
-            <template v-if="isPlay">
+            <template v-if="isReel" transition="fade">
+                <iframe id="vimeo" src="https://player.vimeo.com/video/190700532?autoplay=1" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                 <span @click="controlReel('skip')" @mouseenter="isOutOfView = false" @mouseleave="isOutOfView = true" class="video--options skip" :class="{'opaque-view': isOutOfView}">Skip</span>
             </template>
             <template v-else>
-                <span @click="controlReel('play')" class="video--options">
-                    <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
-                </span>
+                <video id="reel" v-el:video class="video-js vjs-default-skin">
+                    <source :src="reel[0].path" type="video/mp4"/>
+                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                </video>
+                <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
             </template>
         </div>
         <div class="content--load-screen" v-show="isLoadScreen">
@@ -37,8 +36,8 @@
                 vjsPlayer: '',
                 isFadeIn: false,
                 isLoadScreen: true,
-                isPlay: true,
                 isInitReel: false,
+                isReel: false,
                 isOutOfView: false
             }
         },
@@ -46,60 +45,59 @@
             controlReel: function (control) {
                 switch (control){
                     case 'play':
-                        this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
-                        this.isPlay = true;
+                        this.switchSource(null);
                         this.$dispatch('control-reel', false);
                         break;
                     case 'skip':
                         this.switchSource(this.reel[0].path);
-                        this.isPlay = false;
                         this.$dispatch('control-reel', true);
                         break;
-                    case 'pause':
-                        this.isPlay = false;
                     default:
                         return;
                 }
             },
             switchSource: function (source) {
                 var self = this;
-                this.vjsPlayer.currentTime(0); // 2 minutes into the video
-                this.vjsPlayer.pause();
-
-                clearTimeout(this.myTimeOut);
-                this.myTimeOut = setTimeout(function(){
-                    self.vjsPlayer.src({type: 'video/mp4', src: source});
-                    self.vjsPlayer.play();
-
-                    //some how the controls reset to true after changing source; setting them back to false;
-                    self.vjsPlayer.controls = false;
-                }, 500);
+                this.isReel = !this.isReel;
+                if(source){
+                    console.log('making it here');
+                    clearTimeout(this.myTimeOut);
+                    return this.myTimeOut = setTimeout(function () {
+                        self.setVideo();
+                    },500);
+                }
+                this.vjsPlayer.dispose();
+                console.log(this.isReel);
             },
-            initReel: function () {
-
-                var self = this;
+            setVideo: function () {
                 //set the video display to the height and width of the window
                 this.setWindow();
 
-                var $element = document.getElementById('reel');
+                var $element = this.$els.video;
                 this.vjsPlayer = videojs($element, {"controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true, "loadingSpinner": false });
 
                 this.vjsPlayer.ready(function () {
                     this.src(self.activeReel);
                     this.play();
+                });
+            },
+            initReel: function () {
+
+                var self = this;
+
+                clearTimeout(self.myTimeOut);
+                self.myTimeOut = setTimeout(function(){
+                    self.isFadeIn = true;
                     clearTimeout(self.myTimeOut);
                     self.myTimeOut = setTimeout(function(){
-                        this.isFadeIn = true;
+                        self.isLoadScreen = false;
+                        self.isReel = true;
                         clearTimeout(self.myTimeOut);
-                        self.myTimeOut = setTimeout(function(){
-                            this.isLoadScreen = false;
-                            clearTimeout(self.myTimeOut);
-                            self.myTimeOut = setTimeout(function () {
-                                self.isOutOfView = true;
-                            }, 1500);
-                        }.bind(self), 1000);
-                    }.bind(self), 1000);
-                });
+                        self.myTimeOut = setTimeout(function () {
+                            self.isOutOfView = true;
+                        }, 1500);
+                    }, 1000);
+                }, 1000);
             },
             setWindow: function () {
                 var w = window.innerWidth;
@@ -120,8 +118,8 @@
             },
             'show-reel': function (control) {
                 if(control){
-                   this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                     this.isPlay = true;
+                   this.switchSource(null);
                 }
             },
             'stop-reel': function (action) {

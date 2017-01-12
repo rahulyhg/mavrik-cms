@@ -68,17 +68,8 @@ new Vue({
             this.view = view;
             switch (view){
                 case 'showreel':
-                    if(this.view != 'showreel'){
-                        clearTimeout(this.myTimeOut);
-                        this.myTimeOut = setTimeout(function(){
-                            this.activeReel = false;
-                            this.$broadcast('show-reel', true);
-                        }.bind(this), 1000);
-                        break;
-                    } else{
                         this.activeReel = false;
                         this.$broadcast('show-reel', true);
-                    }
                     break;
                 case 'media':
                     this.$broadcast('stop-reel', true);

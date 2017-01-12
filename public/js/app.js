@@ -54531,17 +54531,8 @@ new Vue({
             this.view = view;
             switch (view) {
                 case 'showreel':
-                    if (this.view != 'showreel') {
-                        clearTimeout(this.myTimeOut);
-                        this.myTimeOut = setTimeout(function () {
-                            this.activeReel = false;
-                            this.$broadcast('show-reel', true);
-                        }.bind(this), 1000);
-                        break;
-                    } else {
-                        this.activeReel = false;
-                        this.$broadcast('show-reel', true);
-                    }
+                    this.activeReel = false;
+                    this.$broadcast('show-reel', true);
                     break;
                 case 'media':
                     this.$broadcast('stop-reel', true);
@@ -54972,8 +54963,8 @@ exports.default = {
             vjsPlayer: '',
             isFadeIn: false,
             isLoadScreen: true,
-            isPlay: true,
             isInitReel: false,
+            isReel: false,
             isOutOfView: false
         };
     },
@@ -54981,60 +54972,59 @@ exports.default = {
         controlReel: function controlReel(control) {
             switch (control) {
                 case 'play':
-                    this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
-                    this.isPlay = true;
+                    this.switchSource(null);
                     this.$dispatch('control-reel', false);
                     break;
                 case 'skip':
                     this.switchSource(this.reel[0].path);
-                    this.isPlay = false;
                     this.$dispatch('control-reel', true);
                     break;
-                case 'pause':
-                    this.isPlay = false;
                 default:
                     return;
             }
         },
         switchSource: function switchSource(source) {
             var self = this;
-            this.vjsPlayer.currentTime(0); // 2 minutes into the video
-            this.vjsPlayer.pause();
-
-            clearTimeout(this.myTimeOut);
-            this.myTimeOut = setTimeout(function () {
-                self.vjsPlayer.src({ type: 'video/mp4', src: source });
-                self.vjsPlayer.play();
-
-                //some how the controls reset to true after changing source; setting them back to false;
-                self.vjsPlayer.controls = false;
-            }, 500);
+            this.isReel = !this.isReel;
+            if (source) {
+                console.log('making it here');
+                clearTimeout(this.myTimeOut);
+                return this.myTimeOut = setTimeout(function () {
+                    self.setVideo();
+                }, 500);
+            }
+            this.vjsPlayer.dispose();
+            console.log(this.isReel);
         },
-        initReel: function initReel() {
-
-            var self = this;
+        setVideo: function setVideo() {
             //set the video display to the height and width of the window
             this.setWindow();
 
-            var $element = document.getElementById('reel');
+            var $element = this.$els.video;
             this.vjsPlayer = videojs($element, { "controls": false, "autoplay": true, "preload": "auto", "muted": false, "loop": true, "loadingSpinner": false });
 
             this.vjsPlayer.ready(function () {
                 this.src(self.activeReel);
                 this.play();
+            });
+        },
+        initReel: function initReel() {
+
+            var self = this;
+
+            clearTimeout(self.myTimeOut);
+            self.myTimeOut = setTimeout(function () {
+                self.isFadeIn = true;
                 clearTimeout(self.myTimeOut);
                 self.myTimeOut = setTimeout(function () {
-                    this.isFadeIn = true;
+                    self.isLoadScreen = false;
+                    self.isReel = true;
                     clearTimeout(self.myTimeOut);
                     self.myTimeOut = setTimeout(function () {
-                        this.isLoadScreen = false;
-                        clearTimeout(self.myTimeOut);
-                        self.myTimeOut = setTimeout(function () {
-                            self.isOutOfView = true;
-                        }, 1500);
-                    }.bind(self), 1000);
-                }.bind(self), 1000);
-            });
+                        self.isOutOfView = true;
+                    }, 1500);
+                }, 1000);
+            }, 1000);
         },
         setWindow: function setWindow() {
             var w = window.innerWidth;
@@ -55054,8 +55044,8 @@ exports.default = {
         },
         'show-reel': function showReel(control) {
             if (control) {
-                this.switchSource('/video/Showreel Fabiana Formica 2016-HD.mp4');
                 this.isPlay = true;
+                this.switchSource(null);
             }
         },
         'stop-reel': function stopReel(action) {
@@ -55066,7 +55056,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\" v-show=\"isInitReel\" transition=\"fade\" :class=\"{'no-show': !isFadeIn}\">\n        <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n            <source src=\"/video/Showreel Fabiana Formica 2016-HD.mp4\" type=\"video/mp4\">\n            <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n        </video>\n        <template v-if=\"isPlay\">\n            <span @click=\"controlReel('skip')\" @mouseenter=\"isOutOfView = false\" @mouseleave=\"isOutOfView = true\" class=\"video--options skip\" :class=\"{'opaque-view': isOutOfView}\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <span @click=\"controlReel('play')\" class=\"video--options\">\n                <img class=\"video-sprite--icon\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n            </span>\n        </template>\n    </div>\n    <div class=\"content--load-screen\" v-show=\"isLoadScreen\">\n        <div class=\"load--callout\">\n            <h1>\n                <span>FABIANA FORMICA</span>\n                <span class=\"title-underline underline_white\"></span>\n            </h1>\n            <span>Actress</span>\n        </div>\n        <p>Loading...</p>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content\">\n    <div class=\"video--reel full flex-column-center\" v-show=\"isInitReel\" transition=\"fade\" :class=\"{'no-show': !isFadeIn}\">\n        <template v-if=\"isReel\" transition=\"fade\">\n            <iframe id=\"vimeo\" src=\"https://player.vimeo.com/video/190700532?autoplay=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\"></iframe>\n            <span @click=\"controlReel('skip')\" @mouseenter=\"isOutOfView = false\" @mouseleave=\"isOutOfView = true\" class=\"video--options skip\" :class=\"{'opaque-view': isOutOfView}\">Skip</span>\n        </template>\n        <template v-else=\"\">\n            <video id=\"reel\" v-el:video=\"\" class=\"video-js vjs-default-skin\">\n                <source :src=\"reel[0].path\" type=\"video/mp4\">\n                <p class=\"vjs-no-js\">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>\n            </video>\n            <img class=\"video-sprite--icon\" src=\"/image/svg/ic_play_circle_outline_white_24px.svg\">\n        </template>\n    </div>\n    <div class=\"content--load-screen\" v-show=\"isLoadScreen\">\n        <div class=\"load--callout\">\n            <h1>\n                <span>FABIANA FORMICA</span>\n                <span class=\"title-underline underline_white\"></span>\n            </h1>\n            <span>Actress</span>\n        </div>\n        <p>Loading...</p>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

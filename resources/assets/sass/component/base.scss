@@ -94,6 +94,7 @@ textarea{
 .video-sprite--icon{
   width: 75px;
   cursor: pointer;
+  z-index: 99;
 }
 .video-sprite--icon:hover{
   -webkit-transition: all 1s ease;
