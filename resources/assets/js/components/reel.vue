@@ -10,7 +10,7 @@
                     <source :src="reel[0].path" type="video/mp4"/>
                     <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
                 </video>
-                <img class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
+                <img @click="controlReel('play')" class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
             </template>
         </div>
         <div class="content--load-screen" v-show="isLoadScreen">
