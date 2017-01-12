@@ -1,5 +1,5 @@
 <template>
-    <div class="content full flex-column-center">
+    <div class="flex-column-center">
         <div class="about--fab">
             <div class="contact-cards">
                 <div class="outline contact-divider"></div>

@@ -5,7 +5,7 @@
                 <input type="text" v-model="message.name" placeholder="Your Name">
                 <input type="email" v-model="message.email" placeholder="Your Email">
                 <input type="email" v-model="message.subject" placeholder="Subject">
-                <textarea name="message" cols="30" rows="10" v-model="message.text" placeholder="Write a Message..."></textarea>
+                <textarea name="message" cols="30" rows="5" v-model="message.text" placeholder="Write a Message..."></textarea>
             </div>
             <div class="send-form">
                 <span v-show="isFormReady" @click="sendForm" transition="fade">Send</span>

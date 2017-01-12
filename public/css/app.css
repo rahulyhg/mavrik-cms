@@ -30,7 +30,7 @@ html, body {
 
 input, .file-upload label {
   width: 100% !important;
-  height: 60px !important;
+  height: 30px !important;
   margin: 10px 0 !important;
 }
 
