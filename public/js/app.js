@@ -55126,6 +55126,7 @@ exports.default = {
         showItem: function showItem($index, $material_id, $gallery_id) {
             this.masonry.layout();
             if (!$gallery_id) {
+                console.log('here');
                 if (this.repository[$index].type == 'video') {
                     this.galleryType = 'video';
                     this.filterBy = 'video';
