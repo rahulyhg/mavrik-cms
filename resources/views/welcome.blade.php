@@ -16,7 +16,7 @@
                     </ul>
                 </div>
                 <div class="content--component basis--100 tran-05" :class="{'content--active': activeReel}">
-                    <div class="menu--toggle">
+                    <div class="menu--toggle" v-show="view == 'bio' || view == 'media' || view == 'contact'">
                         <img src="/image/svg/ic_menu_white_24px.svg" alt="" @click="toggleMenu">
                     </div>
                     <showreel v-show="view == 'showreel'" :active-view="view" :reel="filteredReelMaterials" transition="fade"></showreel>
