@@ -65,7 +65,7 @@ Route::group(['prefix' => 'auth'], function(){
     
     Route::put('/materials/reel/{id}', 'MaterialController@updateReel');
 
-    Route::get('/contents/{type}/{id}', 'ContentController@showContentType');
+    Route::get('/contents/{type}', 'ContentController@showContentType');
     Route::resource('/materials', 'MaterialController');
     Route::resource('/contacts', 'ContactController');
     Route::resource('/contents', 'ContentController');

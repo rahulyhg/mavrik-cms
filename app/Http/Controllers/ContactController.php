@@ -16,7 +16,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        return Contact::showContact();
     }
 
     /**
@@ -28,17 +28,6 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         return Contact::createContact($request->all());
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return Contact::showContact($id);
     }
     
     /**

@@ -832,7 +832,7 @@
             this.entry = new Quill('#editor', {
                 theme: 'snow'
             });
-            this.getHttp('/auth/contents/biography/' + this.user, this.setBio);
+            this.getHttp('/auth/contents/biography', this.setBio);
             this.entry.on('text-change', function(delta, oldDelta, source) {
                 if (source == 'user') {
                     return self.isReadySubmit = true;

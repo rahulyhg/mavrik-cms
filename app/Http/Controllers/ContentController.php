@@ -51,8 +51,8 @@ class ContentController extends Controller
         //
     }
 
-    public function showContentType($type, $id){
-        return Content::showContentType($id,$type);
+    public function showContentType($type){
+        return Content::showContentType($type);
     }
 
     /**

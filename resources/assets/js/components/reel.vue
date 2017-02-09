@@ -7,7 +7,7 @@
             </template>
             <template v-else>
                 <video id="reel" v-el:video class="video-js vjs-default-skin">
-                    <source :src="reel[0].path" type="video/mp4"/>
+                    <source v-if="reel" :src="reel[0].path" type="video/mp4"/>
                     <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
                 </video>
                 <img @click="controlReel('play')" class="video-sprite--icon" src="/image/svg/ic_play_circle_outline_white_24px.svg">
@@ -60,7 +60,6 @@
                 var self = this;
                 this.isReel = !this.isReel;
                 if(source){
-                    console.log('making it here');
                     clearTimeout(this.myTimeOut);
                     return this.myTimeOut = setTimeout(function () {
                         self.setVideo();

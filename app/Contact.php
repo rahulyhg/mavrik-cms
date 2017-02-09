@@ -29,9 +29,9 @@ class Contact extends Model
             ->get();
     }
 
-    public static function showContact($id){
-        return Contact::where('user_id', $id)
-            ->get();
+    public static function showContact(){
+        return Contact::orderBy('created_at')
+        ->limit(2)->get();
     }
 
     public static function updateContact($update, $id){

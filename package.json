@@ -21,6 +21,7 @@
     "laravel-elixir-browserify-official": "^0.1.3",
     "laravel-elixir-vueify": "^2.0.0",
     "moment": "^2.14.1",
+    "quill": "^1.2.0",
     "sortablejs": "^1.5.0-rc1",
     "vue-waterfall": "^0.2.3"
   }

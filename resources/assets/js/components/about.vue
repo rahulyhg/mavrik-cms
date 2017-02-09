@@ -40,7 +40,7 @@
         },
         methods: {
             fetchWork: function () {
-                this.getHttp('/auth/contents/biography/2', this.setBio);
+                this.getHttp('/auth/contents/biography', this.setBio);
             },
             setBio: function (results) {
                 this.entries = results.data;

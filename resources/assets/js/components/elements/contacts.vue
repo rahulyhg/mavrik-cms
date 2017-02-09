@@ -41,7 +41,7 @@
         methods: {
             //vue resource methods
             fetchContacts: function () {
-                this.getHttp('/auth/contacts/2', this.setContacts);
+                this.getHttp('/auth/contacts', this.setContacts);
                 this.getHttp('/auth/social_media', this.setMedia);
             },
             setContacts: function (results) {

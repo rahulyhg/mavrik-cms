@@ -28,9 +28,8 @@ class Content extends Model
         return $newContent= Content::where('id', $content->id)
             ->get();
     }
-    public static function showContentType($id, $type){
-        return Content::where('user_id', $id)
-            ->where('type', $type)
+    public static function showContentType($type){
+        return Content::where('type', $type)
             ->get();
     }
 

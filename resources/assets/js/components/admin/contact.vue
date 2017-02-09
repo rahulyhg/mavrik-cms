@@ -110,7 +110,7 @@
                 )
             },
             fetchContacts: function () {
-              this.getHttp('/auth/contacts/' + this.user, this.setContacts);
+              this.getHttp('/auth/contacts', this.setContacts);
             },
             setContacts: function (results) {
               if(results.data.length > 0){
