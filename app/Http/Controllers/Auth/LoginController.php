@@ -30,11 +30,6 @@ class LoginController extends Controller
      */
     protected $email;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct(EmailAuthUser $email)
     {
         $this->email = $email;
