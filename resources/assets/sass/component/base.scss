@@ -162,6 +162,22 @@ ul{
   @include cover();
 }
 
+.contact--fab{
+  width: 50%;
+  padding-top: 50px;
+}
+
+.contact-section{
+  width: 100%;
+}
+.contact{
+  width: 50%;
+  .contact--content{
+    @include flex();
+    @include flex-column();
+  }
+}
+
 .contact-cards{
   @include flex();
   @include flex-row(nowrap);
@@ -190,14 +206,27 @@ ul{
   .contact{
     @include flex();
     @include flex-column();
+    min-height: 100px;
+    position: relative;
+    .contact--content{
+      width: 200%;
+      position: absolute;
+      top: 0;
+    }
   }
   .contact:nth-child(2){
-    padding-right: 25px;
     text-align: right;
+    .contact--content{
+      right: 0;
+      padding-right: 25px;
+    }
   }
   .contact:nth-child(3){
-    padding-left: 25px;
     text-align: left;
+    .contact--content{
+        left: 0;
+      padding-left: 25px;
+    }
   }
 }
 

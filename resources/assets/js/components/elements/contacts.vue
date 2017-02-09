@@ -1,14 +1,16 @@
 <template>
-    <div class="flex-column-center">
-        <div class="about--fab">
+    <div class="contact-section flex-column-center">
+        <div class="contact--fab">
             <div class="contact-cards">
                 <div class="outline contact-divider"></div>
                 <div class="contact" v-for="contact in contacts">
-                    <span>{{contact.title}}</span>
-                    <span>{{contact.address}}</span>
-                    <span>{{contact.telephone}}</span>
-                    <span>{{contact.name}}</span>
-                    <span>{{contact.email}}</span>
+                    <div class="contact--content">
+                        <span>{{contact.title}}</span>
+                        <span>{{contact.address}}</span>
+                        <span>{{contact.telephone}}</span>
+                        <span>{{contact.name}}</span>
+                        <span>{{contact.email}}</span>
+                    </div>
                 </div>
                 <div class="outline contact-liner"></div>
             </div>
