@@ -54672,7 +54672,7 @@ exports.default = {
         setBio: function setBio(results) {
             this.entries = results.data;
             this.active = this.entries[0].id;
-            this.setText(this.activeBio.text);
+            //                this.setText(this.activeBio.text);
         },
         switchText: function switchText($index) {
             this.activeIndex = $index;

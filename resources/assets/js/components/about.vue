@@ -45,7 +45,7 @@
             setBio: function (results) {
                 this.entries = results.data;
                 this.active = this.entries[0].id;
-                this.setText(this.activeBio.text);
+//                this.setText(this.activeBio.text);
             },
             switchText: function ($index) {
                 this.activeIndex = $index;
