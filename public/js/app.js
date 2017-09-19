@@ -54742,7 +54742,7 @@ exports.default = {
         };
     },
     ready: function ready() {
-        this.fetchContacts();
+        //            this.fetchContacts();
     },
 
     methods: {

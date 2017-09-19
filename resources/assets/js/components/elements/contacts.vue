@@ -38,7 +38,7 @@
             }
         },
         ready (){
-            this.fetchContacts();
+//            this.fetchContacts();
         },
         methods: {
             //vue resource methods
