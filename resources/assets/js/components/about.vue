@@ -2,9 +2,9 @@
     <div class="content full full-fab flex-column-center">
         <div class="about--fab">
             <ul class="lang_options">
-                <li v-for="entry in entries" @click="switchText($index)" :class="{'active': activeIndex == $index}">
-                    {{entry.language}}
-                </li>
+                <!--<li v-for="entry in entries" @click="switchText($index)" :class="{'active': activeIndex == $index}">-->
+                    <!--{{entry.language}}-->
+                <!--</li>-->
             </ul>
             <div id="editor"></div>
         </div>

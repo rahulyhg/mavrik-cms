@@ -25,7 +25,6 @@ new Vue({
     ready() {
         this.view = 'showreel';
         this.fetchMaterials();
-        console.log('FUUUUUUUUUUUUUK');
     },
     data: {
         activeLink: 0,

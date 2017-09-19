@@ -54438,7 +54438,6 @@ new Vue({
     ready: function ready() {
         this.view = 'showreel';
         this.fetchMaterials();
-        console.log('FUUUUUUUUUUUUUK');
     },
 
     data: {
@@ -54718,7 +54717,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full full-fab flex-column-center\">\n    <div class=\"about--fab\">\n        <ul class=\"lang_options\">\n            <li v-for=\"entry in entries\" @click=\"switchText($index)\" :class=\"{'active': activeIndex == $index}\">\n                {{entry.language}}\n            </li>\n        </ul>\n        <div id=\"editor\"></div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"content full full-fab flex-column-center\">\n    <div class=\"about--fab\">\n        <ul class=\"lang_options\">\n            <!--<li v-for=\"entry in entries\" @click=\"switchText($index)\" :class=\"{'active': activeIndex == $index}\">-->\n                <!--{{entry.language}}-->\n            <!--</li>-->\n        </ul>\n        <div id=\"editor\"></div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
