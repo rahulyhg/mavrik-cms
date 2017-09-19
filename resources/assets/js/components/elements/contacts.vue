@@ -3,7 +3,7 @@
         <div class="contact--fab">
             <div class="contact-cards">
                 <div class="outline contact-divider"></div>
-                <div class="contact" v-for="contact in contacts">
+                <div class="contact" v-for="contact in contacts" track-by="$index">
                     <div class="contact--content">
                         <span>{{contact.title}}</span>
                         <span>{{contact.address}}</span>
