@@ -54654,7 +54654,7 @@ exports.default = {
             readOnly: true,
             theme: 'bubble'
         });
-        this.fetchWork();
+        //            this.fetchWork();
     },
 
     computed: {

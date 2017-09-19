@@ -28,7 +28,7 @@
                 readOnly: true,
                 theme: 'bubble'
             });
-            this.fetchWork();
+//            this.fetchWork();
         },
         computed: {
             activeBio: function () {
